@@ -165,18 +165,6 @@
             font-weight: 500;
         }
 
-        .option strong {
-            display: block;
-            color: #0066CC;
-            margin-bottom: 5px;
-        }
-
-        .option p {
-            margin: 0;
-            font-size: 13px;
-            color: #666;
-        }
-
         .rejected-screen,
         .approved-screen {
             display: none;
@@ -321,7 +309,6 @@
             <p class="subtitle">Proceso de Selección</p>
         </div>
 
-        <!-- Introducción -->
         <div class="intro" id="intro">
             <p>
                 Este formulario forma parte del proceso de selección para <strong>Agentes Telefónicos de Renovaciones AT&T (Outbound)</strong>.
@@ -349,7 +336,6 @@
             <button class="btn" onclick="startForm()">Comenzar Pre-evaluación →</button>
         </div>
 
-        <!-- Paso 0: Selección de Sucursal -->
         <div class="form-section step" id="step0">
             <div class="progress-bar">
                 <div class="progress-fill" style="width: 9%"></div>
@@ -374,7 +360,6 @@
             <button class="btn" onclick="nextStep(0)">Continuar →</button>
         </div>
 
-        <!-- Paso 1: Datos personales -->
         <div class="form-section step" id="step1">
             <div class="progress-bar">
                 <div class="progress-fill" style="width: 18%"></div>
@@ -464,7 +449,6 @@
             <button class="btn" onclick="nextStep(1)">Continuar →</button>
         </div>
 
-        <!-- Preguntas 2-10 (del paso 2 al 10) -->
         <div class="form-section step" id="step2">
             <div class="progress-bar"><div class="progress-fill" style="width: 27%"></div></div>
             <div class="question-number">Paso 3 de 11</div>
@@ -537,7 +521,6 @@
             <button class="btn" onclick="submitForm()">Enviar Pre-evaluación →</button>
         </div>
 
-        <!-- Pantalla de rechazo -->
         <div class="rejected-screen" id="rejected-screen">
             <div class="icon">😔</div>
             <h2>Gracias por tu tiempo</h2>
@@ -546,12 +529,10 @@
             <p style="margin-top: 30px; color: #0066CC; font-weight: 600;">Te deseamos mucho éxito en tu búsqueda laboral. 🙌</p>
         </div>
 
-        <!-- Pantalla de aprobación -->
         <div class="approved-screen" id="approved-screen">
             <div class="icon">🎉</div>
             <h2>¡Felicidades! Has pasado el pre-filtro</h2>
             
-            <!-- Score Display -->
             <div class="score-display">
                 <div style="font-size: 16px; opacity: 0.9;">TU CALIFICACIÓN</div>
                 <div class="score-number" id="score-number">0/45</div>
@@ -560,7 +541,6 @@
 
             <p>Tu perfil es compatible con lo que buscamos para el puesto de <strong>Agente Telefónico de Renovaciones AT&T</strong>.</p>
             
-            <!-- Información del reclutador -->
             <div style="background: linear-gradient(135deg, #e6f2ff 0%, #cce5ff 100%); padding: 20px; border-radius: 12px; margin: 25px 0; border-left: 4px solid #0066CC;">
                 <h3 style="color: #0066CC; margin: 0 0 15px 0; font-size: 18px;">👤 Tu Reclutador Asignado</h3>
                 <div style="text-align: left;">
@@ -571,13 +551,11 @@
                 </div>
             </div>
 
-            <!-- Instrucciones para enviar CV -->
             <div style="background: #fff3cd; padding: 18px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #ffc107;">
                 <p style="margin: 0; color: #856404; font-weight: 600; font-size: 16px;">📄 SIGUIENTE PASO:</p>
                 <p style="margin: 10px 0 0 0; color: #856404; font-size: 14px;">Envía tu CV al reclutador <strong>ANTES de tu cita</strong> por WhatsApp o correo electrónico.</p>
             </div>
 
-            <!-- Botón para enviar CV por WhatsApp -->
             <button class="btn" onclick="sendCVWhatsApp()" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); margin-top: 10px; margin-bottom: 20px;">
                 📄 Enviar CV por WhatsApp →
             </button>
@@ -586,7 +564,6 @@
 
             <hr style="border: none; border-top: 2px solid #e0e0e0; margin: 30px 0;">
 
-            <!-- Calendario para agendar cita -->
             <div class="calendar-section">
                 <h3>📅 Agenda tu llamada con el reclutador</h3>
                 <p style="margin-bottom: 15px; color: #6c757d;">Selecciona el día y hora que más te convenga:</p>
@@ -634,6 +611,22 @@
             email: '',
             whatsapp: '',
             whatsappNumero: ''
+        };
+
+        // Verificar si el usuario fue rechazado anteriormente
+        function checkIfRejected() {
+            const rejected = localStorage.getItem('att_rejected');
+            if (rejected === 'true') {
+                document.getElementById('intro').style.display = 'none';
+                document.getElementById('rejected-screen').classList.add('active');
+                document.querySelector('.rejected-screen h2').textContent = 'Ya completaste este formulario';
+                document.querySelector('.rejected-screen p').textContent = 'Detectamos que ya enviaste tu información anteriormente. Si crees que esto es un error, contacta al reclutador.';
+            }
+        }
+
+        // Llamar la verificación al cargar la página
+        window.onload = function() {
+            checkIfRejected();
         };
 
         // Definición de preguntas con puntajes EXACTOS
@@ -694,9 +687,19 @@
             ]
         };
 
+        // Función para mezclar array (desordenar respuestas)
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
         function renderQuestion(questionKey, containerId) {
             const container = document.getElementById(containerId);
-            const options = questions[questionKey];
+            const options = shuffleArray(questions[questionKey]); // MEZCLAR RESPUESTAS
             
             container.innerHTML = '';
             options.forEach((option, index) => {
@@ -756,7 +759,6 @@
                 return { valid: true };
             }
 
-            // Validar preguntas 2-10 (steps 2-10)
             if (step >= 2 && step <= 10) {
                 const questionKey = `q${step - 1}`;
                 const containerId = `options-${questionKey}`;
@@ -766,7 +768,6 @@
                     return { valid: false, message: 'Por favor selecciona una opción.' };
                 }
 
-                // Verificar si es rechazo
                 if (selectedOption.dataset.type === 'reject') {
                     return { valid: true, reject: true };
                 }
@@ -811,6 +812,7 @@
 
             if (validation.reject) {
                 saveStepData(currentStep);
+                localStorage.setItem('att_rejected', 'true'); // BLOQUEAR
                 document.getElementById(`step${currentStep}`).classList.remove('active');
                 document.getElementById('rejected-screen').classList.add('active');
                 return;
@@ -818,7 +820,6 @@
 
             saveStepData(currentStep);
 
-            // Renderizar siguiente pregunta si es necesario
             if (currentStep === 1) {
                 renderQuestion('q1', 'options-q1');
             } else if (currentStep === 2) {
@@ -853,41 +854,32 @@
 
             saveStepData(10);
 
-            // Verificar si hay algún rechazo
             if (validation.reject) {
+                localStorage.setItem('att_rejected', 'true'); // BLOQUEAR
                 document.getElementById('step10').classList.remove('active');
                 document.getElementById('rejected-screen').classList.add('active');
                 return;
             }
 
-            // Calcular clasificación
             let clasificacion = '';
-            let emoji = '';
             if (totalScore >= 41) {
                 clasificacion = '🌟 SOBRESALIENTE';
-                emoji = '⭐⭐⭐';
             } else if (totalScore >= 35) {
                 clasificacion = '⭐ EXCELENTE';
-                emoji = '⭐⭐';
             } else if (totalScore >= 28) {
                 clasificacion = '✅ MUY BUENO';
-                emoji = '⭐';
             } else if (totalScore >= 20) {
                 clasificacion = '⚠️ ACEPTABLE';
-                emoji = '•';
             } else {
                 clasificacion = '❌ NO IDEAL';
-                emoji = '⚠️';
             }
 
             candidateData.puntajeTotal = totalScore;
             candidateData.clasificacion = clasificacion;
 
-            // Mostrar pantalla de aprobación
             document.getElementById('step10').classList.remove('active');
             document.getElementById('approved-screen').classList.add('active');
             
-            // Mostrar puntaje
             document.getElementById('score-number').textContent = `${totalScore}/45`;
             document.getElementById('score-label').textContent = clasificacion;
             
@@ -903,17 +895,16 @@
             maxDate.setDate(maxDate.getDate() + 30);
             dateInput.max = maxDate.toISOString().split('T')[0];
 
-            // Determinar info del reclutador
             if (candidateData.sucursal === 'Torre JV Av Juárez') {
                 reclutadorInfo.nombre = 'Karla Flores';
                 reclutadorInfo.email = 'k.flores@solucell.com.mx';
-                reclutadorInfo.whatsapp = '56 1059 1639';
-                reclutadorInfo.whatsappNumero = '5610591639';
+                reclutadorInfo.whatsapp = '221 349 1520';
+                reclutadorInfo.whatsappNumero = '2213491520';
             } else {
                 reclutadorInfo.nombre = 'Yessica Huerta o Jezabel Monterrosas';
                 reclutadorInfo.email = 'reclutamientocc2@solucell.com.mx';
                 reclutadorInfo.whatsapp = 'Se te informará al confirmar';
-                reclutadorInfo.whatsappNumero = '5610591639';
+                reclutadorInfo.whatsappNumero = '2211557027';
             }
 
             document.getElementById('reclutador-nombre').textContent = reclutadorInfo.nombre;
