@@ -135,6 +135,7 @@
             color: #333;
             margin-bottom: 20px;
             font-weight: 500;
+            line-height: 1.4;
         }
 
         .options {
@@ -150,6 +151,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             background: white;
+            text-align: left;
         }
 
         .option:hover {
@@ -203,6 +205,27 @@
             color: #666;
             line-height: 1.6;
             margin-bottom: 10px;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .score-number {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .score-label {
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 10px;
         }
 
         .calendar-section {
@@ -318,7 +341,7 @@
             </div>
             
             <p>
-                El proceso dura <strong>5-7 minutos</strong> y consta de preguntas sobre tu perfil, preferencias laborales y disponibilidad.
+                El proceso dura <strong>5-7 minutos</strong> y consta de 11 preguntas sobre tu perfil, preferencias laborales y disponibilidad.
             </p>
             <p style="margin-top: 20px; color: #0066CC; font-weight: 600;">
                 ¿Listo para comenzar?
@@ -329,9 +352,9 @@
         <!-- Paso 0: Selección de Sucursal -->
         <div class="form-section step" id="step0">
             <div class="progress-bar">
-                <div class="progress-fill" style="width: 12.5%"></div>
+                <div class="progress-fill" style="width: 9%"></div>
             </div>
-            <div class="question-number">Paso 1 de 8</div>
+            <div class="question-number">Paso 1 de 11</div>
             <h2 style="margin-bottom: 25px; color: #333;">Selección de Sucursal</h2>
             
             <div class="question-text">📍 ¿En qué sucursal te gustaría trabajar?</div>
@@ -354,9 +377,9 @@
         <!-- Paso 1: Datos personales -->
         <div class="form-section step" id="step1">
             <div class="progress-bar">
-                <div class="progress-fill" style="width: 25%"></div>
+                <div class="progress-fill" style="width: 18%"></div>
             </div>
-            <div class="question-number">Paso 2 de 8</div>
+            <div class="question-number">Paso 2 de 11</div>
             <h2 style="margin-bottom: 25px; color: #333;">Información Personal</h2>
 
             <div class="form-group">
@@ -441,69 +464,76 @@
             <button class="btn" onclick="nextStep(1)">Continuar →</button>
         </div>
 
-        <!-- Paso 2: Comisiones -->
+        <!-- Preguntas 2-10 (del paso 2 al 10) -->
         <div class="form-section step" id="step2">
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 37.5%"></div>
-            </div>
-            <div class="question-number">Paso 3 de 8</div>
-            <div class="question-text">¿Qué opinas sobre trabajar con comisiones además de tu sueldo base?</div>
-            <div class="options" id="options-comisiones"></div>
-            <button class="btn" onclick="nextStep(2)" style="margin-top: 20px;">Continuar →</button>
+            <div class="progress-bar"><div class="progress-fill" style="width: 27%"></div></div>
+            <div class="question-number">Paso 3 de 11</div>
+            <div class="question-text">1️⃣ ¿Qué te motiva principalmente a trabajar en un call center?</div>
+            <div class="options" id="options-q1"></div>
+            <button class="btn" onclick="nextStep(2)">Continuar →</button>
         </div>
 
-        <!-- Paso 3: Metas -->
         <div class="form-section step" id="step3">
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 50%"></div>
-            </div>
-            <div class="question-number">Paso 4 de 8</div>
-            <div class="question-text">¿Te sientes cómodo/a trabajando con metas diarias y semanales?</div>
-            <div class="options" id="options-metas"></div>
-            <button class="btn" onclick="nextStep(3)" style="margin-top: 20px;">Continuar →</button>
+            <div class="progress-bar"><div class="progress-fill" style="width: 36%"></div></div>
+            <div class="question-number">Paso 4 de 11</div>
+            <div class="question-text">2️⃣ ¿Cómo te sientes trabajando bajo metas diarias de ventas?</div>
+            <div class="options" id="options-q2"></div>
+            <button class="btn" onclick="nextStep(3)">Continuar →</button>
         </div>
 
-        <!-- Paso 4: Preferencia -->
         <div class="form-section step" id="step4">
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 62.5%"></div>
-            </div>
-            <div class="question-number">Paso 5 de 8</div>
-            <div class="question-text">Entre estas opciones, ¿qué prefieres?</div>
-            <div class="options" id="options-preferencia"></div>
-            <button class="btn" onclick="nextStep(4)" style="margin-top: 20px;">Continuar →</button>
+            <div class="progress-bar"><div class="progress-fill" style="width: 45%"></div></div>
+            <div class="question-number">Paso 5 de 11</div>
+            <div class="question-text">3️⃣ Si un cliente te dice "no me interesa", ¿qué haces?</div>
+            <div class="options" id="options-q3"></div>
+            <button class="btn" onclick="nextStep(4)">Continuar →</button>
         </div>
 
-        <!-- Paso 5: Experiencia -->
         <div class="form-section step" id="step5">
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 75%"></div>
-            </div>
-            <div class="question-number">Paso 6 de 8</div>
-            <div class="question-text">¿Tienes experiencia en ventas?</div>
-            <div class="options" id="options-experiencia"></div>
-            <button class="btn" onclick="nextStep(5)" style="margin-top: 20px;">Continuar →</button>
+            <div class="progress-bar"><div class="progress-fill" style="width: 54%"></div></div>
+            <div class="question-number">Paso 6 de 11</div>
+            <div class="question-text">4️⃣ ¿Qué tan importante es para ti el tema de comisiones?</div>
+            <div class="options" id="options-q4"></div>
+            <button class="btn" onclick="nextStep(5)">Continuar →</button>
         </div>
 
-        <!-- Paso 6: Rechazo -->
         <div class="form-section step" id="step6">
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 87.5%"></div>
-            </div>
-            <div class="question-number">Paso 7 de 8</div>
-            <div class="question-text">¿Cómo manejas que un cliente te diga "no"?</div>
-            <div class="options" id="options-rechazo"></div>
-            <button class="btn" onclick="nextStep(6)" style="margin-top: 20px;">Continuar →</button>
+            <div class="progress-bar"><div class="progress-fill" style="width: 63%"></div></div>
+            <div class="question-number">Paso 7 de 11</div>
+            <div class="question-text">5️⃣ ¿Cómo reaccionas cuando tienes varios días sin cerrar ventas?</div>
+            <div class="options" id="options-q5"></div>
+            <button class="btn" onclick="nextStep(6)">Continuar →</button>
         </div>
 
-        <!-- Paso 7: Disponibilidad -->
         <div class="form-section step" id="step7">
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 100%"></div>
-            </div>
-            <div class="question-number">Paso 8 de 8</div>
-            <div class="question-text">¿Cuál es tu disponibilidad para trabajar?</div>
-            <div class="options" id="options-disponibilidad"></div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 72%"></div></div>
+            <div class="question-number">Paso 8 de 11</div>
+            <div class="question-text">6️⃣ ¿Cómo te describes en temas de puntualidad y asistencia?</div>
+            <div class="options" id="options-q6"></div>
+            <button class="btn" onclick="nextStep(7)">Continuar →</button>
+        </div>
+
+        <div class="form-section step" id="step8">
+            <div class="progress-bar"><div class="progress-fill" style="width: 81%"></div></div>
+            <div class="question-number">Paso 9 de 11</div>
+            <div class="question-text">7️⃣ ¿Qué esperas de un supervisor o coordinador?</div>
+            <div class="options" id="options-q7"></div>
+            <button class="btn" onclick="nextStep(8)">Continuar →</button>
+        </div>
+
+        <div class="form-section step" id="step9">
+            <div class="progress-bar"><div class="progress-fill" style="width: 90%"></div></div>
+            <div class="question-number">Paso 10 de 11</div>
+            <div class="question-text">8️⃣ ¿Cómo manejas la retroalimentación cuando te dicen que algo no lo estás haciendo bien?</div>
+            <div class="options" id="options-q8"></div>
+            <button class="btn" onclick="nextStep(9)">Continuar →</button>
+        </div>
+
+        <div class="form-section step" id="step10">
+            <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+            <div class="question-number">Paso 11 de 11</div>
+            <div class="question-text">9️⃣ ¿Cuánto tiempo planeas quedarte si obtienes buenos ingresos y estabilidad?</div>
+            <div class="options" id="options-q9"></div>
             <button class="btn" onclick="submitForm()">Enviar Pre-evaluación →</button>
         </div>
 
@@ -520,8 +550,43 @@
         <div class="approved-screen" id="approved-screen">
             <div class="icon">🎉</div>
             <h2>¡Felicidades! Has pasado el pre-filtro</h2>
+            
+            <!-- Score Display -->
+            <div class="score-display">
+                <div style="font-size: 16px; opacity: 0.9;">TU CALIFICACIÓN</div>
+                <div class="score-number" id="score-number">0/45</div>
+                <div class="score-label" id="score-label">Cargando...</div>
+            </div>
+
             <p>Tu perfil es compatible con lo que buscamos para el puesto de <strong>Agente Telefónico de Renovaciones AT&T</strong>.</p>
             
+            <!-- Información del reclutador -->
+            <div style="background: linear-gradient(135deg, #e6f2ff 0%, #cce5ff 100%); padding: 20px; border-radius: 12px; margin: 25px 0; border-left: 4px solid #0066CC;">
+                <h3 style="color: #0066CC; margin: 0 0 15px 0; font-size: 18px;">👤 Tu Reclutador Asignado</h3>
+                <div style="text-align: left;">
+                    <p style="margin: 8px 0; color: #333; font-size: 15px;"><strong>Nombre:</strong> <span id="reclutador-nombre"></span></p>
+                    <p style="margin: 8px 0; color: #333; font-size: 15px;"><strong>Sucursal:</strong> <span id="reclutador-sucursal"></span></p>
+                    <p style="margin: 8px 0; color: #333; font-size: 15px;"><strong>📧 Email:</strong> <a href="#" id="reclutador-email" style="color: #0066CC; text-decoration: none;"></a></p>
+                    <p style="margin: 8px 0; color: #333; font-size: 15px;"><strong>💬 WhatsApp:</strong> <span id="reclutador-whatsapp"></span></p>
+                </div>
+            </div>
+
+            <!-- Instrucciones para enviar CV -->
+            <div style="background: #fff3cd; padding: 18px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                <p style="margin: 0; color: #856404; font-weight: 600; font-size: 16px;">📄 SIGUIENTE PASO:</p>
+                <p style="margin: 10px 0 0 0; color: #856404; font-size: 14px;">Envía tu CV al reclutador <strong>ANTES de tu cita</strong> por WhatsApp o correo electrónico.</p>
+            </div>
+
+            <!-- Botón para enviar CV por WhatsApp -->
+            <button class="btn" onclick="sendCVWhatsApp()" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); margin-top: 10px; margin-bottom: 20px;">
+                📄 Enviar CV por WhatsApp →
+            </button>
+
+            <p style="color: #666; font-size: 13px; margin-bottom: 25px;">O envíalo por email haciendo clic en el correo arriba ☝️</p>
+
+            <hr style="border: none; border-top: 2px solid #e0e0e0; margin: 30px 0;">
+
+            <!-- Calendario para agendar cita -->
             <div class="calendar-section">
                 <h3>📅 Agenda tu llamada con el reclutador</h3>
                 <p style="margin-bottom: 15px; color: #6c757d;">Selecciona el día y hora que más te convenga:</p>
@@ -559,72 +624,90 @@
             </div>
         </div>
     </div>
-
     <script>
         let candidateData = {};
         let selectedTime = null;
         let selectedSucursal = null;
+        let totalScore = 0;
+        let reclutadorInfo = {
+            nombre: '',
+            email: '',
+            whatsapp: '',
+            whatsappNumero: ''
+        };
 
-        const questionOptions = {
-            comisiones: [
-                { value: 'Recomendado', text: 'Me motiva ganar más según mi desempeño' },
-                { value: 'Recomendado', text: 'Me gusta el reto de alcanzar metas y ganar comisiones' },
-                { value: 'No Recomendado', text: 'Prefiero un sueldo fijo sin variables' },
-                { value: 'No Recomendado', text: 'No me gustan las comisiones, me generan estrés' }
+        // Definición de preguntas con puntajes EXACTOS
+        const questions = {
+            q1: [
+                { text: 'A) Tener un ingreso fijo aunque no haya comisiones', score: 0, type: 'reject' },
+                { text: 'B) Que sea un trabajo sencillo sin mucha presión', score: 0, type: 'reject' },
+                { text: 'C) Aprender y generar ingresos adicionales con comisiones', score: 3, type: 'good' },
+                { text: 'D) Ganar dinero a través de resultados y superar metas', score: 5, type: 'ideal' }
             ],
-            metas: [
-                { value: 'Recomendado', text: 'Sí, me motiva tener objetivos claros y medibles' },
-                { value: 'Recomendado', text: 'Sí, trabajo mejor bajo presión y con metas definidas' },
-                { value: 'No Recomendado', text: 'No, prefiero trabajar sin presión por resultados' },
-                { value: 'No Recomendado', text: 'Me genera ansiedad trabajar con metas diarias' }
+            q2: [
+                { text: 'A) Me estresa y prefiero evitarlas', score: 0, type: 'reject' },
+                { text: 'B) Solo cumplo lo mínimo para no tener problemas', score: 0, type: 'reject' },
+                { text: 'C) Me adapto y hago mi esfuerzo', score: 3, type: 'good' },
+                { text: 'D) Me motiva competir conmigo mismo y con el equipo', score: 5, type: 'ideal' }
             ],
-            preferencia: [
-                { value: 'Recomendado', text: 'Ganar más dinero con comisiones, aunque tenga que esforzarme más' },
-                { value: 'Recomendado', text: 'Un esquema mixto: sueldo base + comisiones atractivas' },
-                { value: 'No Recomendado', text: 'Sueldo fijo sin presión, aunque gane menos' },
-                { value: 'No Recomendado', text: 'El sueldo fijo cubriría mis gastos' }
+            q3: [
+                { text: 'A) Termino la llamada de inmediato', score: 0, type: 'reject' },
+                { text: 'B) Insisto sin escuchar al cliente', score: 1, type: 'warning' },
+                { text: 'C) Intento explicar brevemente el beneficio', score: 3, type: 'good' },
+                { text: 'D) Investigo el motivo, manejo la objeción y vuelvo a intentar el cierre', score: 5, type: 'ideal' }
             ],
-            experiencia: [
-                { value: 'Neutral', text: 'Sí, tengo experiencia en ventas telefónicas' },
-                { value: 'Neutral', text: 'Sí, en ventas presenciales o mostrador' },
-                { value: 'Neutral', text: 'Poca experiencia, pero estoy dispuesto a aprender' },
-                { value: 'Neutral', text: 'No, sería mi primera experiencia en ventas' }
+            q4: [
+                { text: 'A) No me interesa, prefiero sueldo fijo', score: 0, type: 'reject' },
+                { text: 'B) Solo las veo como un extra ocasional', score: 1, type: 'warning' },
+                { text: 'C) Son importantes, pero no mi prioridad', score: 3, type: 'good' },
+                { text: 'D) Son una parte clave de mi ingreso', score: 5, type: 'ideal' }
             ],
-            rechazo: [
-                { value: 'Recomendado', text: 'Lo veo como parte del trabajo y sigo intentando con el siguiente cliente' },
-                { value: 'Recomendado', text: 'Me motiva a mejorar mi técnica de venta' },
-                { value: 'No Recomendado', text: 'Me frustra y me afecta emocionalmente' },
-                { value: 'No Recomendado', text: 'Prefiero evitar situaciones donde me puedan rechazar' }
+            q5: [
+                { text: 'A) Me desmotivo y bajo el ritmo', score: 0, type: 'reject' },
+                { text: 'B) Culpo a la base o al sistema', score: 0, type: 'reject' },
+                { text: 'C) Pido retroalimentación y sigo intentando', score: 3, type: 'good' },
+                { text: 'D) Ajusto mi estrategia, escucho mis llamadas y busco mejorar', score: 5, type: 'ideal' }
             ],
-            disponibilidad: [
-                { value: 'Recomendado', text: 'Inmediata (esta semana)' },
-                { value: 'Recomendado', text: '1-2 semanas' },
-                { value: 'Neutral', text: '3-4 semanas' },
-                { value: 'No Recomendado', text: 'Más de un mes' }
+            q6: [
+                { text: 'A) A veces llego tarde, depende del día', score: 0, type: 'reject' },
+                { text: 'B) Cumplo mientras no haya problemas personales', score: 1, type: 'warning' },
+                { text: 'C) Suelo ser puntual', score: 3, type: 'good' },
+                { text: 'D) Soy muy puntual y responsable con mis horarios', score: 5, type: 'ideal' }
+            ],
+            q7: [
+                { text: 'A) Que no me presione', score: 0, type: 'reject' },
+                { text: 'B) Que me deje trabajar sin decirme nada', score: 0, type: 'reject' },
+                { text: 'C) Que me apoye cuando lo necesito', score: 3, type: 'good' },
+                { text: 'D) Que me exija, me rete y me ayude a mejorar resultados', score: 5, type: 'ideal' }
+            ],
+            q8: [
+                { text: 'A) Me molesta y me pongo a la defensiva', score: 0, type: 'reject' },
+                { text: 'B) Si no me gusta no lo aplico', score: 0, type: 'reject' },
+                { text: 'C) La tomo en cuenta y trato de mejorar', score: 3, type: 'good' },
+                { text: 'D) La agradezco y la uso para crecer', score: 5, type: 'ideal' }
+            ],
+            q9: [
+                { text: 'A) Solo mientras encuentro otra cosa', score: 0, type: 'reject' },
+                { text: 'B) Un par de meses', score: 0, type: 'reject' },
+                { text: 'C) Al menos 6 meses', score: 3, type: 'good' },
+                { text: 'D) Busco estabilidad y crecimiento a largo plazo', score: 5, type: 'ideal' }
             ]
         };
 
-        function shuffleArray(array) {
-            const shuffled = [...array];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            return shuffled;
-        }
-
-        function renderOptions(stepNumber, questionKey) {
-            const container = document.getElementById(`options-${questionKey}`);
-            const options = shuffleArray(questionOptions[questionKey]);
+        function renderQuestion(questionKey, containerId) {
+            const container = document.getElementById(containerId);
+            const options = questions[questionKey];
             
             container.innerHTML = '';
             options.forEach((option, index) => {
                 const div = document.createElement('div');
                 div.className = 'option';
                 div.textContent = option.text;
-                div.dataset.value = option.value;
+                div.dataset.score = option.score;
+                div.dataset.type = option.type;
+                div.dataset.text = option.text;
                 div.onclick = function() {
-                    document.querySelectorAll(`#options-${questionKey} .option`).forEach(opt => {
+                    document.querySelectorAll(`#${containerId} .option`).forEach(opt => {
                         opt.classList.remove('selected');
                     });
                     this.classList.add('selected');
@@ -647,94 +730,74 @@
         }
 
         function validateStep(step) {
-            switch(step) {
-                case 0:
-                    if (!selectedSucursal) {
-                        return { valid: false, message: 'Por favor selecciona una sucursal.' };
-                    }
-                    candidateData.sucursal = selectedSucursal;
-                    return { valid: true };
-
-                case 1:
-                    const nombre = document.getElementById('nombre').value.trim();
-                    const telefono = document.getElementById('telefono').value.trim();
-                    const edad = document.getElementById('edad').value;
-                    const ubicacion = document.getElementById('ubicacion').value;
-                    const colonia = document.getElementById('colonia').value.trim();
-
-                    if (!nombre || !telefono || !edad || !ubicacion || !colonia) {
-                        return { valid: false, message: 'Por favor completa todos los campos obligatorios.' };
-                    }
-
-                    if (telefono.length < 10) {
-                        return { valid: false, message: 'El teléfono debe tener al menos 10 dígitos.' };
-                    }
-
-                    return { valid: true };
-
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                    const questionKeys = ['comisiones', 'metas', 'preferencia', 'experiencia', 'rechazo', 'disponibilidad'];
-                    const selectedOption = document.querySelector(`#options-${questionKeys[step-2]} .option.selected`);
-                    
-                    if (!selectedOption) {
-                        return { valid: false, message: 'Por favor selecciona una opción.' };
-                    }
-
-                    if (selectedOption.dataset.value === 'No Recomendado' && step !== 7) {
-                        return { valid: true, reject: true };
-                    }
-                    
-                    return { valid: true };
-                    
-                default:
-                    return { valid: true };
+            if (step === 0) {
+                if (!selectedSucursal) {
+                    return { valid: false, message: 'Por favor selecciona una sucursal.' };
+                }
+                candidateData.sucursal = selectedSucursal;
+                return { valid: true };
             }
+
+            if (step === 1) {
+                const nombre = document.getElementById('nombre').value.trim();
+                const telefono = document.getElementById('telefono').value.trim();
+                const edad = document.getElementById('edad').value;
+                const ubicacion = document.getElementById('ubicacion').value;
+                const colonia = document.getElementById('colonia').value.trim();
+
+                if (!nombre || !telefono || !edad || !ubicacion || !colonia) {
+                    return { valid: false, message: 'Por favor completa todos los campos obligatorios.' };
+                }
+
+                if (telefono.length < 10) {
+                    return { valid: false, message: 'El teléfono debe tener al menos 10 dígitos.' };
+                }
+
+                return { valid: true };
+            }
+
+            // Validar preguntas 2-10 (steps 2-10)
+            if (step >= 2 && step <= 10) {
+                const questionKey = `q${step - 1}`;
+                const containerId = `options-${questionKey}`;
+                const selectedOption = document.querySelector(`#${containerId} .option.selected`);
+                
+                if (!selectedOption) {
+                    return { valid: false, message: 'Por favor selecciona una opción.' };
+                }
+
+                // Verificar si es rechazo
+                if (selectedOption.dataset.type === 'reject') {
+                    return { valid: true, reject: true };
+                }
+                
+                return { valid: true };
+            }
+
+            return { valid: true };
         }
 
         function saveStepData(step) {
-            switch(step) {
-                case 1:
-                    candidateData.nombre = document.getElementById('nombre').value;
-                    candidateData.telefono = document.getElementById('telefono').value;
-                    candidateData.edad = document.getElementById('edad').value;
-                    candidateData.ubicacion = document.getElementById('ubicacion').value;
-                    candidateData.colonia = document.getElementById('colonia').value;
-                    break;
-                case 2:
-                    const comisionesOpt = document.querySelector('#options-comisiones .option.selected');
-                    candidateData.comisiones = comisionesOpt.dataset.value;
-                    candidateData.comisionesTexto = comisionesOpt.textContent;
-                    break;
-                case 3:
-                    const metasOpt = document.querySelector('#options-metas .option.selected');
-                    candidateData.metas = metasOpt.dataset.value;
-                    candidateData.metasTexto = metasOpt.textContent;
-                    break;
-                case 4:
-                    const preferenciaOpt = document.querySelector('#options-preferencia .option.selected');
-                    candidateData.preferencia = preferenciaOpt.dataset.value;
-                    candidateData.preferenciaTexto = preferenciaOpt.textContent;
-                    break;
-                case 5:
-                    const experienciaOpt = document.querySelector('#options-experiencia .option.selected');
-                    candidateData.experiencia = experienciaOpt.dataset.value;
-                    candidateData.experienciaTexto = experienciaOpt.textContent;
-                    break;
-                case 6:
-                    const rechazoOpt = document.querySelector('#options-rechazo .option.selected');
-                    candidateData.rechazo = rechazoOpt.dataset.value;
-                    candidateData.rechazoTexto = rechazoOpt.textContent;
-                    break;
-                case 7:
-                    const disponibilidadOpt = document.querySelector('#options-disponibilidad .option.selected');
-                    candidateData.disponibilidad = disponibilidadOpt.dataset.value;
-                    candidateData.disponibilidadTexto = disponibilidadOpt.textContent;
-                    break;
+            if (step === 1) {
+                candidateData.nombre = document.getElementById('nombre').value;
+                candidateData.telefono = document.getElementById('telefono').value;
+                candidateData.edad = document.getElementById('edad').value;
+                candidateData.ubicacion = document.getElementById('ubicacion').value;
+                candidateData.colonia = document.getElementById('colonia').value;
+            } else if (step >= 2 && step <= 10) {
+                const questionKey = `q${step - 1}`;
+                const containerId = `options-${questionKey}`;
+                const selectedOption = document.querySelector(`#${containerId} .option.selected`);
+                
+                if (selectedOption) {
+                    const score = parseInt(selectedOption.dataset.score);
+                    const text = selectedOption.dataset.text;
+                    
+                    candidateData[`pregunta${step - 1}`] = text;
+                    candidateData[`puntaje${step - 1}`] = score;
+                    
+                    totalScore += score;
+                }
             }
         }
 
@@ -755,18 +818,25 @@
 
             saveStepData(currentStep);
 
+            // Renderizar siguiente pregunta si es necesario
             if (currentStep === 1) {
-                renderOptions(2, 'comisiones');
+                renderQuestion('q1', 'options-q1');
             } else if (currentStep === 2) {
-                renderOptions(3, 'metas');
+                renderQuestion('q2', 'options-q2');
             } else if (currentStep === 3) {
-                renderOptions(4, 'preferencia');
+                renderQuestion('q3', 'options-q3');
             } else if (currentStep === 4) {
-                renderOptions(5, 'experiencia');
+                renderQuestion('q4', 'options-q4');
             } else if (currentStep === 5) {
-                renderOptions(6, 'rechazo');
+                renderQuestion('q5', 'options-q5');
             } else if (currentStep === 6) {
-                renderOptions(7, 'disponibilidad');
+                renderQuestion('q6', 'options-q6');
+            } else if (currentStep === 7) {
+                renderQuestion('q7', 'options-q7');
+            } else if (currentStep === 8) {
+                renderQuestion('q8', 'options-q8');
+            } else if (currentStep === 9) {
+                renderQuestion('q9', 'options-q9');
             }
 
             document.getElementById(`step${currentStep}`).classList.remove('active');
@@ -774,26 +844,54 @@
         }
 
         function submitForm() {
-            const validation = validateStep(7);
+            const validation = validateStep(10);
             
             if (!validation.valid) {
                 alert(validation.message);
                 return;
             }
 
-            saveStepData(7);
+            saveStepData(10);
 
-            const rejectReasons = ['comisiones', 'metas', 'preferencia', 'rechazo'];
-            const hasReject = rejectReasons.some(key => candidateData[key] === 'No Recomendado');
-
-            document.getElementById('step7').classList.remove('active');
-
-            if (hasReject) {
+            // Verificar si hay algún rechazo
+            if (validation.reject) {
+                document.getElementById('step10').classList.remove('active');
                 document.getElementById('rejected-screen').classList.add('active');
-            } else {
-                document.getElementById('approved-screen').classList.add('active');
-                setupDatePicker();
+                return;
             }
+
+            // Calcular clasificación
+            let clasificacion = '';
+            let emoji = '';
+            if (totalScore >= 41) {
+                clasificacion = '🌟 SOBRESALIENTE';
+                emoji = '⭐⭐⭐';
+            } else if (totalScore >= 35) {
+                clasificacion = '⭐ EXCELENTE';
+                emoji = '⭐⭐';
+            } else if (totalScore >= 28) {
+                clasificacion = '✅ MUY BUENO';
+                emoji = '⭐';
+            } else if (totalScore >= 20) {
+                clasificacion = '⚠️ ACEPTABLE';
+                emoji = '•';
+            } else {
+                clasificacion = '❌ NO IDEAL';
+                emoji = '⚠️';
+            }
+
+            candidateData.puntajeTotal = totalScore;
+            candidateData.clasificacion = clasificacion;
+
+            // Mostrar pantalla de aprobación
+            document.getElementById('step10').classList.remove('active');
+            document.getElementById('approved-screen').classList.add('active');
+            
+            // Mostrar puntaje
+            document.getElementById('score-number').textContent = `${totalScore}/45`;
+            document.getElementById('score-label').textContent = clasificacion;
+            
+            setupDatePicker();
         }
 
         function setupDatePicker() {
@@ -804,6 +902,42 @@
             const maxDate = new Date();
             maxDate.setDate(maxDate.getDate() + 30);
             dateInput.max = maxDate.toISOString().split('T')[0];
+
+            // Determinar info del reclutador
+            if (candidateData.sucursal === 'Torre JV Av Juárez') {
+                reclutadorInfo.nombre = 'Karla Flores';
+                reclutadorInfo.email = 'k.flores@solucell.com.mx';
+                reclutadorInfo.whatsapp = '56 1059 1639';
+                reclutadorInfo.whatsappNumero = '5610591639';
+            } else {
+                reclutadorInfo.nombre = 'Yessica Huerta o Jezabel Monterrosas';
+                reclutadorInfo.email = 'reclutamientocc2@solucell.com.mx';
+                reclutadorInfo.whatsapp = 'Se te informará al confirmar';
+                reclutadorInfo.whatsappNumero = '5610591639';
+            }
+
+            document.getElementById('reclutador-nombre').textContent = reclutadorInfo.nombre;
+            document.getElementById('reclutador-sucursal').textContent = candidateData.sucursal;
+            document.getElementById('reclutador-email').textContent = reclutadorInfo.email;
+            document.getElementById('reclutador-email').href = 'mailto:' + reclutadorInfo.email;
+            document.getElementById('reclutador-whatsapp').textContent = reclutadorInfo.whatsapp;
+        }
+
+        function sendCVWhatsApp() {
+            const mensaje = `Hola ${reclutadorInfo.nombre.split(' ')[0]}, soy ${candidateData.nombre}.
+
+Acabo de completar el pre-filtro para el puesto de Agente Telefónico AT&T y he agendado mi entrevista.
+
+📋 *Datos de mi cita:*
+📅 Fecha: Pendiente de confirmar
+🏢 Sucursal: ${candidateData.sucursal}
+
+Adjunto mi CV para su revisión.
+
+¡Saludos!`;
+
+            const whatsappURL = `https://wa.me/52${reclutadorInfo.whatsappNumero}?text=${encodeURIComponent(mensaje)}`;
+            window.open(whatsappURL, '_blank');
         }
 
         function selectTime(time) {
@@ -861,18 +995,26 @@
                 edad: data.edad,
                 ubicacion: data.ubicacion,
                 colonia: data.colonia,
-                comisiones: data.comisiones,
-                comisionesTexto: data.comisionesTexto,
-                metas: data.metas,
-                metasTexto: data.metasTexto,
-                preferencia: data.preferencia,
-                preferenciaTexto: data.preferenciaTexto,
-                experiencia: data.experiencia,
-                experienciaTexto: data.experienciaTexto,
-                rechazo: data.rechazo,
-                rechazoTexto: data.rechazoTexto,
-                disponibilidad: data.disponibilidad,
-                disponibilidadTexto: data.disponibilidadTexto,
+                pregunta1: data.pregunta1,
+                puntaje1: data.puntaje1,
+                pregunta2: data.pregunta2,
+                puntaje2: data.puntaje2,
+                pregunta3: data.pregunta3,
+                puntaje3: data.puntaje3,
+                pregunta4: data.pregunta4,
+                puntaje4: data.puntaje4,
+                pregunta5: data.pregunta5,
+                puntaje5: data.puntaje5,
+                pregunta6: data.pregunta6,
+                puntaje6: data.puntaje6,
+                pregunta7: data.pregunta7,
+                puntaje7: data.puntaje7,
+                pregunta8: data.pregunta8,
+                puntaje8: data.puntaje8,
+                pregunta9: data.pregunta9,
+                puntaje9: data.puntaje9,
+                puntajeTotal: data.puntajeTotal,
+                clasificacion: data.clasificacion,
                 citaFecha: data.citaFecha,
                 citaHora: data.citaHora,
                 estado: 'Aprobado - Cita Agendada'
