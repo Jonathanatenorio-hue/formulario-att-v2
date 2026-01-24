@@ -311,6 +311,12 @@
                 <li>Trabajo por objetivos y metas diarias</li>
                 <li>Llamadas salientes (outbound) para renovar contratos AT&T</li>
             </ul>
+            
+            <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #0066CC;">
+                <p style="margin: 0 0 10px 0;"><strong style="color: #00aa00;">✅ Si te gusta hablar por teléfono, trabajar con objetivos claros y ganar más según tu desempeño, continúa.</strong></p>
+                <p style="margin: 0;"><strong style="color: #cc0000;">❌ Si prefieres un empleo sin metas, comisiones o presión por resultados, este proceso no es compatible contigo.</strong></p>
+            </div>
+            
             <p>
                 El proceso dura <strong>5-7 minutos</strong> y consta de preguntas sobre tu perfil, preferencias laborales y disponibilidad.
             </p>
@@ -559,7 +565,6 @@
         let selectedTime = null;
         let selectedSucursal = null;
 
-        // Definir todas las opciones de las preguntas
         const questionOptions = {
             comisiones: [
                 { value: 'Recomendado', text: 'Me motiva ganar más según mi desempeño' },
@@ -701,22 +706,34 @@
                     candidateData.colonia = document.getElementById('colonia').value;
                     break;
                 case 2:
-                    candidateData.comisiones = document.querySelector('#options-comisiones .option.selected').dataset.value;
+                    const comisionesOpt = document.querySelector('#options-comisiones .option.selected');
+                    candidateData.comisiones = comisionesOpt.dataset.value;
+                    candidateData.comisionesTexto = comisionesOpt.textContent;
                     break;
                 case 3:
-                    candidateData.metas = document.querySelector('#options-metas .option.selected').dataset.value;
+                    const metasOpt = document.querySelector('#options-metas .option.selected');
+                    candidateData.metas = metasOpt.dataset.value;
+                    candidateData.metasTexto = metasOpt.textContent;
                     break;
                 case 4:
-                    candidateData.preferencia = document.querySelector('#options-preferencia .option.selected').dataset.value;
+                    const preferenciaOpt = document.querySelector('#options-preferencia .option.selected');
+                    candidateData.preferencia = preferenciaOpt.dataset.value;
+                    candidateData.preferenciaTexto = preferenciaOpt.textContent;
                     break;
                 case 5:
-                    candidateData.experiencia = document.querySelector('#options-experiencia .option.selected').dataset.value;
+                    const experienciaOpt = document.querySelector('#options-experiencia .option.selected');
+                    candidateData.experiencia = experienciaOpt.dataset.value;
+                    candidateData.experienciaTexto = experienciaOpt.textContent;
                     break;
                 case 6:
-                    candidateData.rechazo = document.querySelector('#options-rechazo .option.selected').dataset.value;
+                    const rechazoOpt = document.querySelector('#options-rechazo .option.selected');
+                    candidateData.rechazo = rechazoOpt.dataset.value;
+                    candidateData.rechazoTexto = rechazoOpt.textContent;
                     break;
                 case 7:
-                    candidateData.disponibilidad = document.querySelector('#options-disponibilidad .option.selected').dataset.value;
+                    const disponibilidadOpt = document.querySelector('#options-disponibilidad .option.selected');
+                    candidateData.disponibilidad = disponibilidadOpt.dataset.value;
+                    candidateData.disponibilidadTexto = disponibilidadOpt.textContent;
                     break;
             }
         }
@@ -845,11 +862,17 @@
                 ubicacion: data.ubicacion,
                 colonia: data.colonia,
                 comisiones: data.comisiones,
+                comisionesTexto: data.comisionesTexto,
                 metas: data.metas,
+                metasTexto: data.metasTexto,
                 preferencia: data.preferencia,
+                preferenciaTexto: data.preferenciaTexto,
                 experiencia: data.experiencia,
+                experienciaTexto: data.experienciaTexto,
                 rechazo: data.rechazo,
+                rechazoTexto: data.rechazoTexto,
                 disponibilidad: data.disponibilidad,
+                disponibilidadTexto: data.disponibilidadTexto,
                 citaFecha: data.citaFecha,
                 citaHora: data.citaHora,
                 estado: 'Aprobado - Cita Agendada'
