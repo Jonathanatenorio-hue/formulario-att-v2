@@ -722,20 +722,52 @@
             document.getElementById(`response-${questionId}`).value = '';
         }
 
-        // Cargar candidatos
+        // Cargar candidatos desde Google Sheets
         async function cargarCandidatos() {
-            // Datos de ejemplo - se conectará a Google Sheets
-            candidatos = [
-                { nombre: 'Juan Pérez García', telefono: '2211234567', edad: 25, ubicacion: 'Puebla Centro', sucursal: 'Torre JV Juárez', puntaje: 42, clasificacion: '🌟 SOBRESALIENTE', traslado: '30 - 45 minutos', ingreso: '$12,000 - $15,000' },
-                { nombre: 'María López Hernández', telefono: '2219876543', edad: 28, ubicacion: 'Cholula', sucursal: 'Edificio Inbursa Antequera', puntaje: 38, clasificacion: '⭐ EXCELENTE', traslado: '45 minutos - 1 hora', ingreso: '$15,000 - $18,000' }
-            ];
-            
             const select = document.getElementById('candidato-select');
-            select.innerHTML = '<option value="">-- Selecciona un candidato --</option>';
+            select.innerHTML = '<option value="">⏳ Cargando candidatos...</option>';
             
-            candidatos.forEach((c, index) => {
-                select.innerHTML += `<option value="${index}">${c.nombre} - ${c.telefono} - ${c.puntaje}pts ${c.clasificacion}</option>`;
-            });
+            // Determinar sucursal según reclutadora
+            let sucursalFiltro = '';
+            if (selectedReclutadora.ubicacion === 'Torre JV Juárez') {
+                sucursalFiltro = 'Torre JV Juárez';
+            } else {
+                sucursalFiltro = 'Edificio Inbursa Antequera';
+            }
+            
+            try {
+                const url = `${GOOGLE_SCRIPT_URL}?action=getCandidatos&sucursal=${encodeURIComponent(sucursalFiltro)}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.candidatos) {
+                    candidatos = data.candidatos;
+                    
+                    select.innerHTML = '<option value="">-- Selecciona un candidato --</option>';
+                    
+                    if (candidatos.length === 0) {
+                        select.innerHTML = '<option value="">No hay candidatos pendientes</option>';
+                        return;
+                    }
+                    
+                    candidatos.forEach((c, index) => {
+                        const puntajeIcon = c.puntaje >= 41 ? '🌟' : c.puntaje >= 35 ? '⭐' : '✅';
+                        select.innerHTML += `<option value="${index}">${c.nombre} - ${c.telefono} - ${c.puntaje}pts ${puntajeIcon}</option>`;
+                    });
+                } else {
+                    throw new Error('No se pudieron cargar los candidatos');
+                }
+                
+            } catch (error) {
+                console.error('Error cargando candidatos:', error);
+                select.innerHTML = '<option value="">Error al cargar - Intenta de nuevo</option>';
+                
+                // Fallback: datos de ejemplo para pruebas
+                candidatos = [
+                    { nombre: 'Error de conexión', telefono: '0000000000', edad: 0, ubicacion: 'N/A', sucursal: sucursalFiltro, puntaje: 0, clasificacion: 'N/A', tiempoTraslado: 'N/A', ingresoEsperado: 'N/A' }
+                ];
+            }
         }
 
         function selectReclutadora(nombre, ubicacion) {
@@ -763,11 +795,12 @@
             document.getElementById('info-edad').textContent = selectedCandidato.edad + ' años';
             document.getElementById('info-ubicacion').textContent = selectedCandidato.ubicacion;
             document.getElementById('info-sucursal').textContent = selectedCandidato.sucursal;
-            document.getElementById('info-traslado').textContent = selectedCandidato.traslado;
-            document.getElementById('info-ingreso').textContent = selectedCandidato.ingreso;
+            document.getElementById('info-traslado').textContent = selectedCandidato.tiempoTraslado || 'No especificado';
+            document.getElementById('info-ingreso').textContent = selectedCandidato.ingresoEsperado || 'No especificado';
             
             const puntajeClass = selectedCandidato.puntaje >= 41 ? 'score-high' : selectedCandidato.puntaje >= 35 ? 'score-med' : 'score-low';
-            document.getElementById('info-puntaje').innerHTML = `<span class="score-badge ${puntajeClass}">${selectedCandidato.puntaje}/45 pts - ${selectedCandidato.clasificacion}</span>`;
+            const clasificacionTexto = selectedCandidato.clasificacion || (selectedCandidato.puntaje >= 41 ? '🌟 SOBRESALIENTE' : selectedCandidato.puntaje >= 35 ? '⭐ EXCELENTE' : '✅ APROBADO');
+            document.getElementById('info-puntaje').innerHTML = `<span class="score-badge ${puntajeClass}">${selectedCandidato.puntaje}/45 pts - ${clasificacionTexto}</span>`;
             
             document.getElementById('candidate-info').style.display = 'block';
             document.getElementById('section-evaluacion').classList.remove('hidden');
