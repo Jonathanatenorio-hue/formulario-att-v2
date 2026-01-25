@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevista Telefónica | Expertcell - AT&T</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #00A8E1 0%, #0066CC 100%); color: white; padding: 30px; border-radius: 16px 16px 0 0; text-align: center; }
+        .header h1 { font-size: 24px; margin-bottom: 5px; }
+        .header p { opacity: 0.9; font-size: 14px; }
+        .content { background: white; padding: 30px; border-radius: 0 0 16px 16px; }
+        
+        .scoring-guide { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 2px solid #4CAF50; }
+        .scoring-guide h3 { color: #2e7d32; margin-bottom: 15px; font-size: 16px; text-align: center; }
+        .scoring-guide .ranges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .scoring-guide .range { padding: 12px; border-radius: 8px; text-align: center; }
+        .scoring-guide .range-pass { background: #4CAF50; color: white; }
+        .scoring-guide .range-maybe { background: #FF9800; color: white; }
+        .scoring-guide .range-fail { background: #f44336; color: white; }
+        .scoring-guide .range strong { display: block; font-size: 18px; }
+        .scoring-guide .range span { font-size: 12px; }
+        
+        .section { margin-bottom: 30px; padding-bottom: 25px; border-bottom: 2px solid #eee; }
+        .section:last-child { border-bottom: none; margin-bottom: 0; }
+        .section-title { font-size: 18px; color: #333; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #333; font-weight: 600; }
+        .form-group select, .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 15px; }
+        .form-group select:focus, .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #0066CC; }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        
+        .candidate-info { background: linear-gradient(135deg, #e8f4fd 0%, #d1e8fa 100%); padding: 20px; border-radius: 12px; margin-bottom: 20px; display: none; }
+        .candidate-info h3 { color: #0066CC; margin-bottom: 15px; font-size: 16px; }
+        .candidate-info .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .candidate-info .info-item { font-size: 14px; }
+        .candidate-info .info-item strong { color: #333; }
+        
+        .score-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+        .score-high { background: #c8e6c9; color: #2e7d32; }
+        .score-med { background: #fff9c4; color: #f57f17; }
+        .score-low { background: #ffcdd2; color: #c62828; }
+        
+        .evaluation-card { background: #f8f9fa; border-radius: 12px; padding: 25px; margin-bottom: 25px; border-left: 4px solid #0066CC; }
+        .evaluation-card h4 { color: #333; margin-bottom: 8px; font-size: 18px; }
+        .evaluation-card .question { color: #0066CC; font-style: italic; margin-bottom: 15px; font-size: 15px; background: #e3f2fd; padding: 12px; border-radius: 8px; }
+        
+        .flags-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .flag-box { padding: 15px; border-radius: 8px; font-size: 13px; }
+        .red-flags { background: #ffebee; border: 1px solid #ffcdd2; }
+        .red-flags h5 { color: #c62828; margin-bottom: 10px; font-size: 14px; }
+        .red-flags li { color: #b71c1c; margin-left: 15px; margin-bottom: 5px; }
+        .green-flags { background: #e8f5e9; border: 1px solid #c8e6c9; }
+        .green-flags h5 { color: #2e7d32; margin-bottom: 10px; font-size: 14px; }
+        .green-flags li { color: #1b5e20; margin-left: 15px; margin-bottom: 5px; }
+        
+        .rubrica-box { background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .rubrica-box h5 { color: #333; margin-bottom: 10px; font-size: 14px; }
+        .rubrica-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; padding: 8px; border-radius: 6px; font-size: 13px; }
+        .rubrica-item.r1 { background: #ffebee; }
+        .rubrica-item.r2 { background: #fff3e0; }
+        .rubrica-item.r3 { background: #fff8e1; }
+        .rubrica-item.r4 { background: #e8f5e9; }
+        .rubrica-item.r5 { background: #e3f2fd; }
+        .rubrica-item .score { font-weight: bold; min-width: 25px; }
+        
+        .response-section { margin-bottom: 20px; }
+        .response-section label { display: block; margin-bottom: 8px; color: #333; font-weight: 600; font-size: 15px; }
+        .response-section textarea { width: 100%; min-height: 100px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; resize: vertical; }
+        .response-section textarea:focus { outline: none; border-color: #0066CC; }
+        .response-section textarea.recording { border-color: #f44336; background: #fff5f5; }
+        
+        .voice-controls { display: flex; gap: 10px; margin-bottom: 10px; }
+        .btn-voice { padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s; }
+        .btn-record { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); color: white; }
+        .btn-record:hover { transform: scale(1.05); }
+        .btn-record.recording { animation: pulse 1s infinite; }
+        .btn-clear { background: #ff9800; color: white; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        
+        .voice-status { font-size: 13px; color: #666; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .voice-status.active { color: #f44336; font-weight: 600; }
+        .recording-dot { width: 10px; height: 10px; background: #f44336; border-radius: 50%; animation: pulse 1s infinite; }
+        
+        .score-selector { margin-top: 20px; }
+        .score-selector label { display: block; margin-bottom: 10px; color: #333; font-weight: 600; }
+        .score-options { display: flex; gap: 10px; flex-wrap: wrap; }
+        .score-option { padding: 15px 20px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.3s; flex: 1; min-width: 70px; }
+        .score-option:hover { border-color: #0066CC; background: #f0f8ff; }
+        .score-option.selected { border-color: #0066CC; background: #0066CC; color: white; }
+        .score-option .number { font-size: 24px; font-weight: bold; display: block; }
+        .score-option .label { font-size: 11px; display: block; margin-top: 3px; }
+        
+        .result-panel { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 12px; color: white; text-align: center; margin-top: 25px; display: none; }
+        .result-panel h3 { font-size: 22px; margin-bottom: 15px; }
+        .result-panel .total-score { font-size: 56px; font-weight: bold; margin: 15px 0; }
+        .result-panel .verdict { font-size: 22px; padding: 12px 30px; border-radius: 30px; display: inline-block; margin-top: 15px; }
+        .verdict-pass { background: #4CAF50; }
+        .verdict-maybe { background: #FF9800; }
+        .verdict-fail { background: #f44336; }
+        
+        .agenda-section { display: none; margin-top: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 25px; border-radius: 12px; border: 2px solid #4CAF50; }
+        .agenda-section h3 { color: #2e7d32; margin-bottom: 20px; text-align: center; }
+        .agenda-section.rejected { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); border-color: #f44336; }
+        .agenda-section.rejected h3 { color: #c62828; }
+        
+        .viernes-selector { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .viernes-option { padding: 15px; border: 2px solid #4CAF50; border-radius: 10px; cursor: pointer; text-align: center; transition: all 0.3s; background: white; }
+        .viernes-option:hover { background: #e8f5e9; }
+        .viernes-option.selected { background: #4CAF50; color: white; }
+        .viernes-option .fecha { font-weight: 600; font-size: 14px; }
+        .viernes-option .disponibles { font-size: 12px; opacity: 0.8; }
+        
+        .horarios-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .horario-slot { padding: 12px; border: 2px solid #4CAF50; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.3s; background: white; font-size: 14px; }
+        .horario-slot:hover:not(.ocupado) { background: #e8f5e9; }
+        .horario-slot.selected { background: #4CAF50; color: white; }
+        .horario-slot.ocupado { background: #ffcdd2; border-color: #f44336; color: #c62828; cursor: not-allowed; text-decoration: line-through; }
+        .horario-slot.comida { background: #fff3e0; border-color: #ff9800; color: #e65100; cursor: not-allowed; }
+        
+        .email-field { margin: 20px 0; }
+        .email-field input { padding: 15px; font-size: 16px; }
+        
+        .btn { padding: 14px 30px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #00A8E1 0%, #0066CC 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,102,204,0.3); }
+        .btn-success { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; margin-top: 15px; }
+        .btn-whatsapp { background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: white; margin-top: 10px; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        
+        .reclutadora-select { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .reclutadora-option { padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; cursor: pointer; text-align: center; transition: all 0.3s; }
+        .reclutadora-option:hover { border-color: #0066CC; background: #f0f8ff; }
+        .reclutadora-option.selected { border-color: #0066CC; background: linear-gradient(135deg, #e6f2ff 0%, #cce5ff 100%); }
+        .reclutadora-option .name { font-weight: 600; color: #333; display: block; }
+        .reclutadora-option .location { font-size: 12px; color: #666; }
+        
+        .hidden { display: none !important; }
+        
+        .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .confirmacion-panel { display: none; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 30px; border-radius: 12px; margin-top: 20px; text-align: center; border: 2px solid #4CAF50; }
+        .confirmacion-panel h3 { color: #2e7d32; margin-bottom: 15px; }
+        .confirmacion-panel .detalle { background: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: left; }
+        .confirmacion-panel .detalle p { margin: 10px 0; font-size: 14px; }
+        
+        @media (max-width: 600px) {
+            .flags-container { grid-template-columns: 1fr; }
+            .reclutadora-select { grid-template-columns: 1fr; }
+            .score-options { justify-content: center; }
+            .candidate-info .info-grid { grid-template-columns: 1fr; }
+            .scoring-guide .ranges { grid-template-columns: 1fr; }
+            .voice-controls { flex-wrap: wrap; }
+            .viernes-selector { grid-template-columns: 1fr 1fr; }
+            .horarios-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📞 Entrevista Telefónica</h1>
+            <p>Evaluación de Candidatos - Agente AT&T</p>
+        </div>
+        
+        <div class="content">
+            <!-- Guía de Rangos -->
+            <div class="scoring-guide">
+                <h3>📊 GUÍA DE APROBACIÓN</h3>
+                <div class="ranges">
+                    <div class="range range-pass">
+                        <strong>25-30 pts</strong>
+                        <span>✅ PASA A PANEL</span>
+                    </div>
+                    <div class="range range-maybe">
+                        <strong>20-24 pts</strong>
+                        <span>⚠️ CON RESERVAS</span>
+                    </div>
+                    <div class="range range-fail">
+                        <strong>0-19 pts</strong>
+                        <span>❌ NO PASA</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 1: Seleccionar Reclutadora -->
+            <div class="section" id="section-reclutadora">
+                <div class="section-title">👤 ¿Quién realiza la entrevista?</div>
+                <div class="reclutadora-select">
+                    <div class="reclutadora-option" onclick="selectReclutadora('Karla Flores', 'Torre JV Juárez')">
+                        <span class="name">Karla Flores</span>
+                        <span class="location">Torre JV Juárez</span>
+                    </div>
+                    <div class="reclutadora-option" onclick="selectReclutadora('Yessica Huerta', 'Edificio Inbursa')">
+                        <span class="name">Yessica Huerta</span>
+                        <span class="location">Edificio Inbursa</span>
+                    </div>
+                    <div class="reclutadora-option" onclick="selectReclutadora('Jezabel Monterrosas', 'Edificio Inbursa')">
+                        <span class="name">Jezabel Monterrosas</span>
+                        <span class="location">Edificio Inbursa</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 2: Seleccionar Candidato -->
+            <div class="section hidden" id="section-candidato">
+                <div class="section-title">🎯 Selecciona el candidato a entrevistar</div>
+                <div class="form-group">
+                    <label>Candidatos pendientes de entrevista:</label>
+                    <select id="candidato-select" onchange="loadCandidate()">
+                        <option value="">-- Selecciona un candidato --</option>
+                    </select>
+                </div>
+                
+                <div class="candidate-info" id="candidate-info">
+                    <h3>📋 Información del Candidato</h3>
+                    <div class="info-grid">
+                        <div class="info-item"><strong>Nombre:</strong> <span id="info-nombre"></span></div>
+                        <div class="info-item"><strong>Teléfono:</strong> <span id="info-telefono"></span></div>
+                        <div class="info-item"><strong>Edad:</strong> <span id="info-edad"></span></div>
+                        <div class="info-item"><strong>Ubicación:</strong> <span id="info-ubicacion"></span></div>
+                        <div class="info-item"><strong>Sucursal:</strong> <span id="info-sucursal"></span></div>
+                        <div class="info-item"><strong>Pre-filtro:</strong> <span id="info-puntaje"></span></div>
+                        <div class="info-item"><strong>Tiempo traslado:</strong> <span id="info-traslado"></span></div>
+                        <div class="info-item"><strong>Ingreso esperado:</strong> <span id="info-ingreso"></span></div>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 20px; border-radius: 12px; margin-top: 15px; border: 2px solid #4CAF50;">
+                    <h4 style="color: #2e7d32; margin-bottom: 15px; font-size: 16px;">📞 GUÍA DE INICIO DE LLAMADA</h4>
+                    
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <p style="margin: 0 0 10px 0; color: #333; font-weight: 600;">🎯 Objetivo del inicio:</p>
+                        <ul style="margin: 0; padding-left: 20px; color: #555; font-size: 14px;">
+                            <li>Romper el hielo</li>
+                            <li>Validar interés real</li>
+                            <li>Confirmar que entiende a qué viene</li>
+                            <li>Preparar el terreno para filtrar sin que se sienta interrogatorio</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ffc107;">
+                        <p style="margin: 0; color: #856404; font-size: 14px;">🧠 <strong>TIP CLAVE:</strong> No repitas el formulario. Úsalo como contexto, no como cuestionario otra vez. El aspirante debe sentir: <em>"Aquí ya leyeron mi info, no estoy empezando de cero"</em>.</p>
+                    </div>
+                    
+                    <div style="background: white; padding: 15px; border-radius: 8px;">
+                        <p style="margin: 0 0 12px 0; color: #2e7d32; font-weight: 600;">🗣️ GUION RECOMENDADO:</p>
+                        
+                        <div style="margin-bottom: 12px; padding: 10px; background: #f5f5f5; border-radius: 6px;">
+                            <p style="margin: 0 0 5px 0; color: #0066CC; font-weight: 600; font-size: 13px;">1️⃣ Apertura corta y profesional:</p>
+                            <p style="margin: 0; color: #333; font-size: 14px; font-style: italic;">"Hola <strong>[Nombre]</strong>, ¿cómo estás? Te habla <strong>[Tu nombre]</strong> de Expertcell, ¿tienes 8–10 minutos para platicar contigo?"</p>
+                            <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">🔹 Esto da control y respeto al tiempo.</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 12px; padding: 10px; background: #f5f5f5; border-radius: 6px;">
+                            <p style="margin: 0 0 5px 0; color: #0066CC; font-weight: 600; font-size: 13px;">2️⃣ Reconocimiento del formulario (genera conexión):</p>
+                            <p style="margin: 0; color: #333; font-size: 14px; font-style: italic;">"Vi que ya llenaste el formulario de la vacante y quiero agradecerte el tiempo, <strong>ya tengo claro tu perfil general</strong>."</p>
+                            <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">👉 Crea conexión y le da importancia a tu candidato.</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 12px; padding: 10px; background: #f5f5f5; border-radius: 6px;">
+                            <p style="margin: 0 0 5px 0; color: #0066CC; font-weight: 600; font-size: 13px;">3️⃣ Enmarca la llamada (quita nervios):</p>
+                            <p style="margin: 0; color: #333; font-size: 14px; font-style: italic;">"Esta llamada es solo para validar algunos puntos y confirmar que estemos alineados, <strong>no es una entrevista larga ni complicada</strong>."</p>
+                            <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">🎯 Aquí el aspirante se relaja.</p>
+                        </div>
+                        
+                        <div style="padding: 10px; background: #e3f2fd; border-radius: 6px; border-left: 4px solid #2196F3;">
+                            <p style="margin: 0 0 5px 0; color: #1565c0; font-weight: 600; font-size: 13px;">4️⃣ Pregunta de arranque inteligente (no obvia):</p>
+                            <p style="margin: 0; color: #333; font-size: 14px;">Ahora sí, comienza con las preguntas de evaluación 👇</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 3: Evaluación -->
+            <div class="section hidden" id="section-evaluacion">
+                <div class="section-title">📝 Evaluación de la Entrevista</div>
+                
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #2196F3;">
+                    <p style="margin: 0; color: #1565c0; font-size: 14px;">🎤 <strong>Transcripción de voz:</strong> Haz clic en "Grabar" y habla o acerca el teléfono. El audio se convertirá a texto automáticamente.</p>
+                </div>
+
+                <!-- Pregunta 1: Coherencia -->
+                <div class="evaluation-card" id="card-q1">
+                    <h4>1️⃣ Coherencia</h4>
+                    <div class="question">📢 "En el formulario comentaste que te motiva ganar por resultados, cuéntame una experiencia donde eso haya pasado."</div>
+                    
+                    <div class="flags-container">
+                        <div class="flag-box red-flags">
+                            <h5>🚩 Red Flags</h5>
+                            <ul>
+                                <li>Respuestas vagas sin detalles</li>
+                                <li>Cambia la historia</li>
+                                <li>Se contradice con el formulario</li>
+                            </ul>
+                        </div>
+                        <div class="flag-box green-flags">
+                            <h5>💎 Green Flags</h5>
+                            <ul>
+                                <li>Ejemplo concreto y específico</li>
+                                <li>Historia coherente con fechas/datos</li>
+                                <li>Menciona logros medibles</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="rubrica-box">
+                        <h5>📏 RÚBRICA DE EVALUACIÓN:</h5>
+                        <div class="rubrica-item r1"><span class="score">1</span> No tiene ejemplo, inventa o contradice completamente lo del formulario</div>
+                        <div class="rubrica-item r2"><span class="score">2</span> Ejemplo muy vago, sin detalles, parece inventado</div>
+                        <div class="rubrica-item r3"><span class="score">3</span> Tiene ejemplo pero le faltan detalles o fechas específicas</div>
+                        <div class="rubrica-item r4"><span class="score">4</span> Buen ejemplo con algunos datos concretos, coherente</div>
+                        <div class="rubrica-item r5"><span class="score">5</span> Ejemplo excelente con números, fechas y logros específicos</div>
+                    </div>
+                    
+                    <div class="response-section">
+                        <label>✍️ Respuesta del candidato:</label>
+                        <div class="voice-controls">
+                            <button class="btn-voice btn-record" onclick="toggleRecording('q1')" id="btn-record-q1">🎤 Grabar</button>
+                            <button class="btn-voice btn-clear" onclick="clearText('q1')">🗑️ Limpiar</button>
+                        </div>
+                        <div class="voice-status" id="voice-status-q1">🎤 Listo para grabar</div>
+                        <textarea id="response-q1" placeholder="Escribe o usa el micrófono para transcribir la respuesta..."></textarea>
+                    </div>
+                    
+                    <div class="score-selector">
+                        <label>📊 Puntaje:</label>
+                        <div class="score-options" id="score-options-q1">
+                            <div class="score-option" onclick="selectScore('q1', 1)"><span class="number">1</span><span class="label">Muy mal</span></div>
+                            <div class="score-option" onclick="selectScore('q1', 2)"><span class="number">2</span><span class="label">Mal</span></div>
+                            <div class="score-option" onclick="selectScore('q1', 3)"><span class="number">3</span><span class="label">Regular</span></div>
+                            <div class="score-option" onclick="selectScore('q1', 4)"><span class="number">4</span><span class="label">Bien</span></div>
+                            <div class="score-option" onclick="selectScore('q1', 5)"><span class="number">5</span><span class="label">Excelente</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 2: Comunicación -->
+                <div class="evaluation-card" id="card-q2">
+                    <h4>2️⃣ Comunicación Real</h4>
+                    <div class="question">📢 "Explícame en 30 segundos qué es lo que hacías en tu último trabajo."</div>
+                    
+                    <div class="flags-container">
+                        <div class="flag-box red-flags">
+                            <h5>🚩 Red Flags</h5>
+                            <ul>
+                                <li>Desordenado, no va al punto</li>
+                                <li>Inseguro, titubea mucho</li>
+                                <li>Usa muchas muletillas</li>
+                            </ul>
+                        </div>
+                        <div class="flag-box green-flags">
+                            <h5>💎 Green Flags</h5>
+                            <ul>
+                                <li>Orden mental, va directo</li>
+                                <li>Claridad y fluidez verbal</li>
+                                <li>Seguridad al hablar</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <p style="background: #ffebee; padding: 10px; border-radius: 6px; font-size: 13px; color: #c62828; margin-bottom: 15px;">⚠️ <strong>Si aquí falla, no sirve para ventas, punto.</strong></p>
+                    
+                    <div class="rubrica-box">
+                        <h5>📏 RÚBRICA DE EVALUACIÓN:</h5>
+                        <div class="rubrica-item r1"><span class="score">1</span> Incomprensible, muy nervioso, no puede explicar qué hacía</div>
+                        <div class="rubrica-item r2"><span class="score">2</span> Muy desordenado, muchas muletillas, titubea constantemente</div>
+                        <div class="rubrica-item r3"><span class="score">3</span> Se entiende pero titubea, algunas muletillas, falta fluidez</div>
+                        <div class="rubrica-item r4"><span class="score">4</span> Claro y ordenado, pocas pausas, se expresa bien</div>
+                        <div class="rubrica-item r5"><span class="score">5</span> Excelente fluidez, seguro, claro, conciso y profesional</div>
+                    </div>
+                    
+                    <div class="response-section">
+                        <label>✍️ Respuesta del candidato:</label>
+                        <div class="voice-controls">
+                            <button class="btn-voice btn-record" onclick="toggleRecording('q2')" id="btn-record-q2">🎤 Grabar</button>
+                            <button class="btn-voice btn-clear" onclick="clearText('q2')">🗑️ Limpiar</button>
+                        </div>
+                        <div class="voice-status" id="voice-status-q2">🎤 Listo para grabar</div>
+                        <textarea id="response-q2" placeholder="Escribe o usa el micrófono..."></textarea>
+                    </div>
+                    
+                    <div class="score-selector">
+                        <label>📊 Puntaje:</label>
+                        <div class="score-options" id="score-options-q2">
+                            <div class="score-option" onclick="selectScore('q2', 1)"><span class="number">1</span><span class="label">Muy mal</span></div>
+                            <div class="score-option" onclick="selectScore('q2', 2)"><span class="number">2</span><span class="label">Mal</span></div>
+                            <div class="score-option" onclick="selectScore('q2', 3)"><span class="number">3</span><span class="label">Regular</span></div>
+                            <div class="score-option" onclick="selectScore('q2', 4)"><span class="number">4</span><span class="label">Bien</span></div>
+                            <div class="score-option" onclick="selectScore('q2', 5)"><span class="number">5</span><span class="label">Excelente</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 3: Manejo del Rechazo -->
+                <div class="evaluation-card" id="card-q3">
+                    <h4>3️⃣ Manejo del Rechazo</h4>
+                    <div class="question">📢 "Cuéntame una llamada difícil que recuerdes y cómo la manejaste."</div>
+                    
+                    <div class="flags-container">
+                        <div class="flag-box red-flags">
+                            <h5>🚩 Red Flags</h5>
+                            <ul>
+                                <li>Culpa al cliente</li>
+                                <li>Culpa a la empresa/sistema</li>
+                                <li>Evita el tema</li>
+                            </ul>
+                        </div>
+                        <div class="flag-box green-flags">
+                            <h5>💎 Green Flags</h5>
+                            <ul>
+                                <li>Asume responsabilidad</li>
+                                <li>Aprendió de la situación</li>
+                                <li>Muestra resiliencia</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="rubrica-box">
+                        <h5>📏 RÚBRICA DE EVALUACIÓN:</h5>
+                        <div class="rubrica-item r1"><span class="score">1</span> Culpa totalmente al cliente o empresa, actitud de víctima</div>
+                        <div class="rubrica-item r2"><span class="score">2</span> Evita el tema o no tiene ejemplos, parece que se rinde fácil</div>
+                        <div class="rubrica-item r3"><span class="score">3</span> Tiene ejemplo pero no muestra aprendizaje claro</div>
+                        <div class="rubrica-item r4"><span class="score">4</span> Buen ejemplo, asume responsabilidad, muestra mejora</div>
+                        <div class="rubrica-item r5"><span class="score">5</span> Excelente manejo, resiliente, aprendió y tiene estrategias</div>
+                    </div>
+                    
+                    <div class="response-section">
+                        <label>✍️ Respuesta del candidato:</label>
+                        <div class="voice-controls">
+                            <button class="btn-voice btn-record" onclick="toggleRecording('q3')" id="btn-record-q3">🎤 Grabar</button>
+                            <button class="btn-voice btn-clear" onclick="clearText('q3')">🗑️ Limpiar</button>
+                        </div>
+                        <div class="voice-status" id="voice-status-q3">🎤 Listo para grabar</div>
+                        <textarea id="response-q3" placeholder="Escribe o usa el micrófono..."></textarea>
+                    </div>
+                    
+                    <div class="score-selector">
+                        <label>📊 Puntaje:</label>
+                        <div class="score-options" id="score-options-q3">
+                            <div class="score-option" onclick="selectScore('q3', 1)"><span class="number">1</span><span class="label">Muy mal</span></div>
+                            <div class="score-option" onclick="selectScore('q3', 2)"><span class="number">2</span><span class="label">Mal</span></div>
+                            <div class="score-option" onclick="selectScore('q3', 3)"><span class="number">3</span><span class="label">Regular</span></div>
+                            <div class="score-option" onclick="selectScore('q3', 4)"><span class="number">4</span><span class="label">Bien</span></div>
+                            <div class="score-option" onclick="selectScore('q3', 5)"><span class="number">5</span><span class="label">Excelente</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 4: Energía y Actitud -->
+                <div class="evaluation-card" id="card-q4">
+                    <h4>4️⃣ Energía y Actitud</h4>
+                    <div class="question">📢 "¿Qué es lo que más te gusta y lo que menos te gusta de trabajar en ventas?"</div>
+                    
+                    <div class="flags-container">
+                        <div class="flag-box red-flags">
+                            <h5>🚩 Red Flags</h5>
+                            <ul>
+                                <li>Actitud negativa hacia ventas</li>
+                                <li>Sin autoconocimiento</li>
+                                <li>Inmadurez emocional</li>
+                            </ul>
+                        </div>
+                        <div class="flag-box green-flags">
+                            <h5>💎 Green Flags</h5>
+                            <ul>
+                                <li>Honestidad equilibrada</li>
+                                <li>Autoconocimiento claro</li>
+                                <li>Madurez y profesionalismo</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="rubrica-box">
+                        <h5>📏 RÚBRICA DE EVALUACIÓN:</h5>
+                        <div class="rubrica-item r1"><span class="score">1</span> Muy negativo hacia ventas, no le gusta nada, inmaduro</div>
+                        <div class="rubrica-item r2"><span class="score">2</span> Más negativo que positivo, poco autoconocimiento</div>
+                        <div class="rubrica-item r3"><span class="score">3</span> Respuesta básica, ni muy positivo ni muy negativo</div>
+                        <div class="rubrica-item r4"><span class="score">4</span> Equilibrado, honesto, muestra autoconocimiento</div>
+                        <div class="rubrica-item r5"><span class="score">5</span> Excelente actitud, maduro, sabe sus fortalezas y áreas de mejora</div>
+                    </div>
+                    
+                    <div class="response-section">
+                        <label>✍️ Respuesta del candidato:</label>
+                        <div class="voice-controls">
+                            <button class="btn-voice btn-record" onclick="toggleRecording('q4')" id="btn-record-q4">🎤 Grabar</button>
+                            <button class="btn-voice btn-clear" onclick="clearText('q4')">🗑️ Limpiar</button>
+                        </div>
+                        <div class="voice-status" id="voice-status-q4">🎤 Listo para grabar</div>
+                        <textarea id="response-q4" placeholder="Escribe o usa el micrófono..."></textarea>
+                    </div>
+                    
+                    <div class="score-selector">
+                        <label>📊 Puntaje:</label>
+                        <div class="score-options" id="score-options-q4">
+                            <div class="score-option" onclick="selectScore('q4', 1)"><span class="number">1</span><span class="label">Muy mal</span></div>
+                            <div class="score-option" onclick="selectScore('q4', 2)"><span class="number">2</span><span class="label">Mal</span></div>
+                            <div class="score-option" onclick="selectScore('q4', 3)"><span class="number">3</span><span class="label">Regular</span></div>
+                            <div class="score-option" onclick="selectScore('q4', 4)"><span class="number">4</span><span class="label">Bien</span></div>
+                            <div class="score-option" onclick="selectScore('q4', 5)"><span class="number">5</span><span class="label">Excelente</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 5: Realismo del Puesto -->
+                <div class="evaluation-card" id="card-q5">
+                    <h4>5️⃣ Realismo del Puesto</h4>
+                    <div class="question">📢 "Aquí trabajamos con metas diarias, seguimiento y presión constante. ¿Qué parte de eso te costaría más y cómo la manejarías?"</div>
+                    
+                    <div class="flags-container">
+                        <div class="flag-box red-flags">
+                            <h5>🚩 Red Flags</h5>
+                            <ul>
+                                <li>Idealiza el puesto ("todo bien")</li>
+                                <li>No reconoce dificultades</li>
+                                <li>Sin estrategia de manejo</li>
+                            </ul>
+                        </div>
+                        <div class="flag-box green-flags">
+                            <h5>💎 Green Flags</h5>
+                            <ul>
+                                <li>Consciente de los retos</li>
+                                <li>Tiene estrategia concreta</li>
+                                <li>Realista y preparado</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <p style="background: #fff3cd; padding: 10px; border-radius: 6px; font-size: 13px; color: #856404; margin-bottom: 15px;">⚠️ <strong>Esto elimina al que idealiza y aguanta solo 1 semana.</strong></p>
+                    
+                    <div class="rubrica-box">
+                        <h5>📏 RÚBRICA DE EVALUACIÓN:</h5>
+                        <div class="rubrica-item r1"><span class="score">1</span> Dice que no le costará nada, idealiza completamente</div>
+                        <div class="rubrica-item r2"><span class="score">2</span> Reconoce algo pero no tiene estrategia, parece ingenuo</div>
+                        <div class="rubrica-item r3"><span class="score">3</span> Reconoce retos pero estrategia básica o vaga</div>
+                        <div class="rubrica-item r4"><span class="score">4</span> Consciente de retos, tiene plan razonable</div>
+                        <div class="rubrica-item r5"><span class="score">5</span> Muy realista, estrategia concreta, experiencia previa con presión</div>
+                    </div>
+                    
+                    <div class="response-section">
+                        <label>✍️ Respuesta del candidato:</label>
+                        <div class="voice-controls">
+                            <button class="btn-voice btn-record" onclick="toggleRecording('q5')" id="btn-record-q5">🎤 Grabar</button>
+                            <button class="btn-voice btn-clear" onclick="clearText('q5')">🗑️ Limpiar</button>
+                        </div>
+                        <div class="voice-status" id="voice-status-q5">🎤 Listo para grabar</div>
+                        <textarea id="response-q5" placeholder="Escribe o usa el micrófono..."></textarea>
+                    </div>
+                    
+                    <div class="score-selector">
+                        <label>📊 Puntaje:</label>
+                        <div class="score-options" id="score-options-q5">
+                            <div class="score-option" onclick="selectScore('q5', 1)"><span class="number">1</span><span class="label">Muy mal</span></div>
+                            <div class="score-option" onclick="selectScore('q5', 2)"><span class="number">2</span><span class="label">Mal</span></div>
+                            <div class="score-option" onclick="selectScore('q5', 3)"><span class="number">3</span><span class="label">Regular</span></div>
+                            <div class="score-option" onclick="selectScore('q5', 4)"><span class="number">4</span><span class="label">Bien</span></div>
+                            <div class="score-option" onclick="selectScore('q5', 5)"><span class="number">5</span><span class="label">Excelente</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pregunta 6: Cierre/Autoventa -->
+                <div class="evaluation-card" id="card-q6">
+                    <h4>6️⃣ Cierre - Autoventa</h4>
+                    <div class="question">📢 "¿Por qué crees que deberíamos avanzar contigo y no con otro candidato?"</div>
+                    
+                    <div class="flags-container">
+                        <div class="flag-box red-flags">
+                            <h5>🚩 Red Flags</h5>
+                            <ul>
+                                <li>No sabe qué decir</li>
+                                <li>Respuesta genérica</li>
+                                <li>Inseguro, sin convicción</li>
+                            </ul>
+                        </div>
+                        <div class="flag-box green-flags">
+                            <h5>💎 Green Flags</h5>
+                            <ul>
+                                <li>Se vende con confianza</li>
+                                <li>Argumenta diferenciadores</li>
+                                <li>Cierra con fuerza</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <p style="background: #e8f5e9; padding: 10px; border-radius: 6px; font-size: 13px; color: #2e7d32; margin-bottom: 15px;">💎 <strong>Si no sabe venderse aquí, no venderá planes.</strong></p>
+                    
+                    <div class="rubrica-box">
+                        <h5>📏 RÚBRICA DE EVALUACIÓN:</h5>
+                        <div class="rubrica-item r1"><span class="score">1</span> No sabe qué decir, se queda callado o respuesta vacía</div>
+                        <div class="rubrica-item r2"><span class="score">2</span> Respuesta genérica: "soy responsable, puntual"</div>
+                        <div class="rubrica-item r3"><span class="score">3</span> Algo de argumentación pero falta convicción</div>
+                        <div class="rubrica-item r4"><span class="score">4</span> Buenos argumentos, se diferencia, cierra bien</div>
+                        <div class="rubrica-item r5"><span class="score">5</span> Excelente cierre, confianza, diferenciadores claros, vendedor nato</div>
+                    </div>
+                    
+                    <div class="response-section">
+                        <label>✍️ Respuesta del candidato:</label>
+                        <div class="voice-controls">
+                            <button class="btn-voice btn-record" onclick="toggleRecording('q6')" id="btn-record-q6">🎤 Grabar</button>
+                            <button class="btn-voice btn-clear" onclick="clearText('q6')">🗑️ Limpiar</button>
+                        </div>
+                        <div class="voice-status" id="voice-status-q6">🎤 Listo para grabar</div>
+                        <textarea id="response-q6" placeholder="Escribe o usa el micrófono..."></textarea>
+                    </div>
+                    
+                    <div class="score-selector">
+                        <label>📊 Puntaje:</label>
+                        <div class="score-options" id="score-options-q6">
+                            <div class="score-option" onclick="selectScore('q6', 1)"><span class="number">1</span><span class="label">Muy mal</span></div>
+                            <div class="score-option" onclick="selectScore('q6', 2)"><span class="number">2</span><span class="label">Mal</span></div>
+                            <div class="score-option" onclick="selectScore('q6', 3)"><span class="number">3</span><span class="label">Regular</span></div>
+                            <div class="score-option" onclick="selectScore('q6', 4)"><span class="number">4</span><span class="label">Bien</span></div>
+                            <div class="score-option" onclick="selectScore('q6', 5)"><span class="number">5</span><span class="label">Excelente</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Observaciones Generales -->
+                <div class="evaluation-card" style="border-left-color: #9c27b0;">
+                    <h4>📝 Observaciones Generales</h4>
+                    <div class="form-group">
+                        <textarea id="observaciones-generales" placeholder="Comentarios adicionales sobre el candidato, impresión general, recomendaciones..." style="min-height: 100px;"></textarea>
+                    </div>
+                </div>
+
+                <!-- Panel de Resultado -->
+                <div class="result-panel" id="result-panel">
+                    <h3>Resultado de la Entrevista</h3>
+                    <div class="total-score" id="total-score">0/30</div>
+                    <p id="verdict-text" style="margin: 10px 0; font-size: 16px;"></p>
+                    <div class="verdict" id="verdict-badge"></div>
+                </div>
+
+                <!-- Botón Calcular -->
+                <button class="btn btn-primary" id="btn-calcular" onclick="calcularResultado()">
+                    📊 Calcular Resultado
+                </button>
+            </div>
+
+            <!-- Sección de Agenda (para aprobados) -->
+            <div class="agenda-section" id="agenda-section">
+                <h3>📅 Agendar Entrevista Panel (Viernes)</h3>
+                
+                <div class="email-field">
+                    <label style="font-weight: 600; margin-bottom: 8px; display: block;">📧 Correo del candidato para enviar instrucciones:</label>
+                    <input type="email" id="email-candidato" placeholder="ejemplo@correo.com">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="font-weight: 600; margin-bottom: 10px; display: block;">Selecciona el viernes:</label>
+                    <div class="viernes-selector" id="viernes-selector"></div>
+                </div>
+                
+                <div id="horarios-container" style="display: none;">
+                    <label style="font-weight: 600; margin-bottom: 10px; display: block;">Selecciona el horario:</label>
+                    <div class="horarios-grid" id="horarios-grid"></div>
+                </div>
+                
+                <button class="btn btn-success" id="btn-agendar" onclick="confirmarAgenda()" style="display: none;">
+                    ✅ Confirmar Cita
+                </button>
+            </div>
+
+            <!-- Sección para rechazados -->
+            <div class="agenda-section rejected" id="rejected-section" style="display: none;">
+                <h3>😔 Candidato No Aprobado</h3>
+                <p style="margin: 15px 0; color: #c62828;">El candidato no alcanzó el puntaje mínimo requerido.</p>
+                <button class="btn btn-whatsapp" onclick="enviarWhatsAppRechazo()">
+                    💬 Enviar agradecimiento por WhatsApp
+                </button>
+            </div>
+
+            <!-- Panel de Confirmación -->
+            <div class="confirmacion-panel" id="confirmacion-panel">
+                <h3>✅ ¡Cita Agendada Exitosamente!</h3>
+                <div class="detalle">
+                    <p><strong>👤 Candidato:</strong> <span id="conf-nombre"></span></p>
+                    <p><strong>📅 Fecha:</strong> <span id="conf-fecha"></span></p>
+                    <p><strong>🕐 Hora:</strong> <span id="conf-hora"></span></p>
+                    <p><strong>📍 Sucursal:</strong> <span id="conf-sucursal"></span></p>
+                    <p><strong>📧 Email:</strong> <span id="conf-email"></span></p>
+                </div>
+                <button class="btn btn-whatsapp" onclick="enviarWhatsAppAprobado()">
+                    💬 Enviar instrucciones por WhatsApp
+                </button>
+                <button class="btn btn-primary" onclick="enviarEmailAprobado()" style="margin-top: 10px;">
+                    📧 Enviar instrucciones por Email
+                </button>
+                <button class="btn" onclick="location.reload()" style="margin-top: 15px; background: #666; color: white;">
+                    🔄 Nueva Evaluación
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let selectedReclutadora = null;
+        let selectedCandidato = null;
+        let scores = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0 };
+        let candidatos = [];
+        let recognition = null;
+        let isRecording = {};
+        let selectedViernes = null;
+        let selectedHorario = null;
+        let resultadoFinal = null;
+        
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
+
+        // Horarios disponibles
+        const HORARIOS = [
+            { hora: '10:00', fin: '10:45' },
+            { hora: '10:45', fin: '11:30' },
+            { hora: '11:30', fin: '12:15' },
+            { hora: '12:15', fin: '13:00' },
+            { hora: '13:00', fin: '13:45' },
+            { hora: '13:45', fin: '14:30' },
+            { hora: '14:30', fin: '16:00', comida: true },
+            { hora: '16:00', fin: '16:45' },
+            { hora: '16:45', fin: '17:30' },
+            { hora: '17:30', fin: '18:15' },
+            { hora: '18:15', fin: '19:00' }
+        ];
+
+        // Direcciones
+        const DIRECCIONES = {
+            'Torre JV Juárez': 'Av. Juárez 2925, La Paz, 72160, Puebla',
+            'Edificio Inbursa Antequera': 'Cto Interior 49, Nueva Antequera, 72180, Puebla',
+            'Edificio Inbursa': 'Cto Interior 49, Nueva Antequera, 72180, Puebla'
+        };
+
+        // Documentos requeridos
+        const DOCUMENTOS = [
+            'Currículum',
+            'INE',
+            'CURP',
+            'Constancia de Situación Fiscal (RFC)',
+            'NSS (Número de Seguro Social)',
+            'Acta de Nacimiento',
+            'Comprobante de domicilio (no mayor a 3 meses)',
+            'Certificado de estudios (máximo grado)',
+            'Constancia laboral de empleos anteriores',
+            'Estado de cuenta (con nombre, número de cuenta, CLABE y banco)',
+            'Hoja de Infonavit (solo si aplica)',
+            'Hoja de Fonacot (solo si aplica)',
+            'Contacto de emergencia (nombre, parentesco, teléfono y fecha de nacimiento)'
+        ];
+
+        // Slots ocupados (se cargaría de Google Sheets)
+        let slotsOcupados = {};
+
+        // Inicializar reconocimiento de voz
+        function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'es-MX';
+                
+                recognition.onresult = function(event) {
+                    let finalTranscript = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript + ' ';
+                        }
+                    }
+                    for (let q in isRecording) {
+                        if (isRecording[q]) {
+                            const textarea = document.getElementById(`response-${q}`);
+                            if (finalTranscript) {
+                                textarea.value += finalTranscript;
+                            }
+                        }
+                    }
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('Error:', event.error);
+                    stopAllRecording();
+                };
+                
+                recognition.onend = function() {
+                    for (let q in isRecording) {
+                        if (isRecording[q]) {
+                            recognition.start();
+                            break;
+                        }
+                    }
+                };
+            }
+        }
+
+        function toggleRecording(questionId) {
+            if (!recognition) {
+                alert('Tu navegador no soporta transcripción de voz. Escribe manualmente.');
+                return;
+            }
+            
+            const btn = document.getElementById(`btn-record-${questionId}`);
+            const status = document.getElementById(`voice-status-${questionId}`);
+            const textarea = document.getElementById(`response-${questionId}`);
+            
+            if (isRecording[questionId]) {
+                isRecording[questionId] = false;
+                btn.classList.remove('recording');
+                btn.innerHTML = '🎤 Grabar';
+                status.innerHTML = '🎤 Listo para grabar';
+                status.classList.remove('active');
+                textarea.classList.remove('recording');
+                
+                let anyRecording = false;
+                for (let q in isRecording) {
+                    if (isRecording[q]) anyRecording = true;
+                }
+                if (!anyRecording) recognition.stop();
+            } else {
+                stopAllRecording();
+                isRecording[questionId] = true;
+                btn.classList.add('recording');
+                btn.innerHTML = '⏹️ Detener';
+                status.innerHTML = '<span class="recording-dot"></span> Grabando...';
+                status.classList.add('active');
+                textarea.classList.add('recording');
+                try { recognition.start(); } catch (e) {}
+            }
+        }
+
+        function stopAllRecording() {
+            for (let i = 1; i <= 6; i++) {
+                const q = `q${i}`;
+                isRecording[q] = false;
+                const btn = document.getElementById(`btn-record-${q}`);
+                const status = document.getElementById(`voice-status-${q}`);
+                const textarea = document.getElementById(`response-${q}`);
+                if (btn) { btn.classList.remove('recording'); btn.innerHTML = '🎤 Grabar'; }
+                if (status) { status.innerHTML = '🎤 Listo para grabar'; status.classList.remove('active'); }
+                if (textarea) { textarea.classList.remove('recording'); }
+            }
+            if (recognition) { try { recognition.stop(); } catch(e) {} }
+        }
+
+        function clearText(questionId) {
+            document.getElementById(`response-${questionId}`).value = '';
+        }
+
+        // Cargar candidatos
+        async function cargarCandidatos() {
+            // Datos de ejemplo - se conectará a Google Sheets
+            candidatos = [
+                { nombre: 'Juan Pérez García', telefono: '2211234567', edad: 25, ubicacion: 'Puebla Centro', sucursal: 'Torre JV Juárez', puntaje: 42, clasificacion: '🌟 SOBRESALIENTE', traslado: '30 - 45 minutos', ingreso: '$12,000 - $15,000' },
+                { nombre: 'María López Hernández', telefono: '2219876543', edad: 28, ubicacion: 'Cholula', sucursal: 'Edificio Inbursa Antequera', puntaje: 38, clasificacion: '⭐ EXCELENTE', traslado: '45 minutos - 1 hora', ingreso: '$15,000 - $18,000' }
+            ];
+            
+            const select = document.getElementById('candidato-select');
+            select.innerHTML = '<option value="">-- Selecciona un candidato --</option>';
+            
+            candidatos.forEach((c, index) => {
+                select.innerHTML += `<option value="${index}">${c.nombre} - ${c.telefono} - ${c.puntaje}pts ${c.clasificacion}</option>`;
+            });
+        }
+
+        function selectReclutadora(nombre, ubicacion) {
+            document.querySelectorAll('.reclutadora-option').forEach(opt => opt.classList.remove('selected'));
+            event.target.closest('.reclutadora-option').classList.add('selected');
+            selectedReclutadora = { nombre, ubicacion };
+            document.getElementById('section-candidato').classList.remove('hidden');
+            cargarCandidatos();
+        }
+
+        function loadCandidate() {
+            const select = document.getElementById('candidato-select');
+            const index = select.value;
+            
+            if (index === '') {
+                document.getElementById('candidate-info').style.display = 'none';
+                document.getElementById('section-evaluacion').classList.add('hidden');
+                return;
+            }
+            
+            selectedCandidato = candidatos[index];
+            
+            document.getElementById('info-nombre').textContent = selectedCandidato.nombre;
+            document.getElementById('info-telefono').textContent = selectedCandidato.telefono;
+            document.getElementById('info-edad').textContent = selectedCandidato.edad + ' años';
+            document.getElementById('info-ubicacion').textContent = selectedCandidato.ubicacion;
+            document.getElementById('info-sucursal').textContent = selectedCandidato.sucursal;
+            document.getElementById('info-traslado').textContent = selectedCandidato.traslado;
+            document.getElementById('info-ingreso').textContent = selectedCandidato.ingreso;
+            
+            const puntajeClass = selectedCandidato.puntaje >= 41 ? 'score-high' : selectedCandidato.puntaje >= 35 ? 'score-med' : 'score-low';
+            document.getElementById('info-puntaje').innerHTML = `<span class="score-badge ${puntajeClass}">${selectedCandidato.puntaje}/45 pts - ${selectedCandidato.clasificacion}</span>`;
+            
+            document.getElementById('candidate-info').style.display = 'block';
+            document.getElementById('section-evaluacion').classList.remove('hidden');
+            
+            resetEvaluacion();
+        }
+
+        function resetEvaluacion() {
+            scores = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0 };
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`response-q${i}`).value = '';
+                document.querySelectorAll(`#score-options-q${i} .score-option`).forEach(opt => opt.classList.remove('selected'));
+            }
+            document.getElementById('observaciones-generales').value = '';
+            document.getElementById('result-panel').style.display = 'none';
+            document.getElementById('agenda-section').style.display = 'none';
+            document.getElementById('rejected-section').style.display = 'none';
+            document.getElementById('confirmacion-panel').style.display = 'none';
+            document.getElementById('btn-calcular').style.display = 'block';
+            stopAllRecording();
+        }
+
+        function selectScore(questionId, score) {
+            scores[questionId] = score;
+            document.querySelectorAll(`#score-options-${questionId} .score-option`).forEach(opt => opt.classList.remove('selected'));
+            event.target.closest('.score-option').classList.add('selected');
+        }
+
+        function calcularResultado() {
+            let faltantes = [];
+            for (let i = 1; i <= 6; i++) {
+                if (scores[`q${i}`] === 0) faltantes.push(`Pregunta ${i}: falta puntaje`);
+            }
+            
+            if (faltantes.length > 0) {
+                alert('⚠️ Faltan datos:\n\n' + faltantes.join('\n'));
+                return;
+            }
+            
+            const total = Object.values(scores).reduce((a, b) => a + b, 0);
+            
+            document.getElementById('total-score').textContent = `${total}/30`;
+            
+            let verdict, verdictClass, verdictText;
+            if (total >= 25) {
+                verdict = '✅ PASA A PANEL';
+                verdictClass = 'verdict-pass';
+                verdictText = 'Excelente candidato. Procede a agendar entrevista panel.';
+                resultadoFinal = 'PASA';
+            } else if (total >= 20) {
+                verdict = '⚠️ PASA CON RESERVAS';
+                verdictClass = 'verdict-maybe';
+                verdictText = 'Candidato con áreas de mejora. Procede a agendar con observaciones.';
+                resultadoFinal = 'RESERVAS';
+            } else {
+                verdict = '❌ NO PASA';
+                verdictClass = 'verdict-fail';
+                verdictText = 'No cumple con el perfil. Agradecer y cerrar proceso.';
+                resultadoFinal = 'NO PASA';
+            }
+            
+            document.getElementById('verdict-badge').textContent = verdict;
+            document.getElementById('verdict-badge').className = 'verdict ' + verdictClass;
+            document.getElementById('verdict-text').textContent = verdictText;
+            
+            document.getElementById('result-panel').style.display = 'block';
+            document.getElementById('btn-calcular').style.display = 'none';
+            
+            // Mostrar sección correspondiente
+            if (total >= 20) {
+                document.getElementById('agenda-section').style.display = 'block';
+                cargarViernes();
+            } else {
+                document.getElementById('rejected-section').style.display = 'block';
+            }
+            
+            document.getElementById('result-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function cargarViernes() {
+            const container = document.getElementById('viernes-selector');
+            container.innerHTML = '';
+            
+            const hoy = new Date();
+            const viernes = [];
+            
+            // Buscar próximos 4 viernes
+            for (let i = 0; i < 30 && viernes.length < 4; i++) {
+                const fecha = new Date(hoy);
+                fecha.setDate(hoy.getDate() + i);
+                if (fecha.getDay() === 5) { // Viernes
+                    viernes.push(fecha);
+                }
+            }
+            
+            viernes.forEach(v => {
+                const fechaStr = v.toISOString().split('T')[0];
+                const opciones = { weekday: 'long', day: 'numeric', month: 'long' };
+                const fechaLegible = v.toLocaleDateString('es-MX', opciones);
+                
+                const div = document.createElement('div');
+                div.className = 'viernes-option';
+                div.innerHTML = `<div class="fecha">${fechaLegible}</div><div class="disponibles">10 slots disponibles</div>`;
+                div.onclick = () => selectViernes(fechaStr, fechaLegible, div);
+                container.appendChild(div);
+            });
+        }
+
+        function selectViernes(fecha, fechaLegible, element) {
+            document.querySelectorAll('.viernes-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedViernes = { fecha, fechaLegible };
+            
+            document.getElementById('horarios-container').style.display = 'block';
+            cargarHorarios(fecha);
+        }
+
+        function cargarHorarios(fecha) {
+            const container = document.getElementById('horarios-grid');
+            container.innerHTML = '';
+            
+            const sucursal = selectedCandidato.sucursal;
+            const ocupados = slotsOcupados[fecha + '_' + sucursal] || [];
+            
+            HORARIOS.forEach(h => {
+                const div = document.createElement('div');
+                div.className = 'horario-slot';
+                
+                if (h.comida) {
+                    div.classList.add('comida');
+                    div.innerHTML = `🍽️ COMIDA`;
+                } else if (ocupados.includes(h.hora)) {
+                    div.classList.add('ocupado');
+                    div.innerHTML = `${h.hora} - ${h.fin}`;
+                } else {
+                    div.innerHTML = `${h.hora} - ${h.fin}`;
+                    div.onclick = () => selectHorario(h.hora, h.fin, div);
+                }
+                
+                container.appendChild(div);
+            });
+            
+            document.getElementById('btn-agendar').style.display = 'block';
+        }
+
+        function selectHorario(inicio, fin, element) {
+            if (element.classList.contains('ocupado') || element.classList.contains('comida')) return;
+            
+            document.querySelectorAll('.horario-slot').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedHorario = { inicio, fin };
+        }
+
+        function confirmarAgenda() {
+            const email = document.getElementById('email-candidato').value.trim();
+            
+            if (!email) {
+                alert('⚠️ Por favor ingresa el correo del candidato');
+                return;
+            }
+            
+            if (!selectedViernes) {
+                alert('⚠️ Por favor selecciona un viernes');
+                return;
+            }
+            
+            if (!selectedHorario) {
+                alert('⚠️ Por favor selecciona un horario');
+                return;
+            }
+            
+            // Guardar en Google Sheets
+            guardarEvaluacionYCita(email);
+        }
+
+        async function guardarEvaluacionYCita(email) {
+            const btn = document.getElementById('btn-agendar');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Guardando...';
+            
+            const total = Object.values(scores).reduce((a, b) => a + b, 0);
+            
+            const data = {
+                tipo: 'entrevista_telefonica',
+                timestamp: new Date().toLocaleString('es-MX'),
+                reclutadora: selectedReclutadora.nombre,
+                candidato_nombre: selectedCandidato.nombre,
+                candidato_telefono: selectedCandidato.telefono,
+                candidato_email: email,
+                candidato_sucursal: selectedCandidato.sucursal,
+                puntaje_prefiltro: selectedCandidato.puntaje,
+                
+                respuesta_q1: document.getElementById('response-q1').value,
+                respuesta_q2: document.getElementById('response-q2').value,
+                respuesta_q3: document.getElementById('response-q3').value,
+                respuesta_q4: document.getElementById('response-q4').value,
+                respuesta_q5: document.getElementById('response-q5').value,
+                respuesta_q6: document.getElementById('response-q6').value,
+                
+                puntaje_q1: scores.q1,
+                puntaje_q2: scores.q2,
+                puntaje_q3: scores.q3,
+                puntaje_q4: scores.q4,
+                puntaje_q5: scores.q5,
+                puntaje_q6: scores.q6,
+                puntaje_total: total,
+                
+                resultado: resultadoFinal,
+                observaciones: document.getElementById('observaciones-generales').value,
+                
+                panel_fecha: selectedViernes.fecha,
+                panel_hora: selectedHorario.inicio,
+                panel_hora_fin: selectedHorario.fin
+            };
+            
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                // Mostrar confirmación
+                document.getElementById('agenda-section').style.display = 'none';
+                document.getElementById('confirmacion-panel').style.display = 'block';
+                
+                document.getElementById('conf-nombre').textContent = selectedCandidato.nombre;
+                document.getElementById('conf-fecha').textContent = selectedViernes.fechaLegible;
+                document.getElementById('conf-hora').textContent = `${selectedHorario.inicio} - ${selectedHorario.fin}`;
+                document.getElementById('conf-sucursal').textContent = selectedCandidato.sucursal;
+                document.getElementById('conf-email').textContent = email;
+                
+                document.getElementById('confirmacion-panel').scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('⚠️ Error al guardar. Intenta de nuevo.');
+                btn.disabled = false;
+                btn.innerHTML = '✅ Confirmar Cita';
+            }
+        }
+
+        function enviarWhatsAppAprobado() {
+            const direccion = DIRECCIONES[selectedCandidato.sucursal] || selectedCandidato.sucursal;
+            const docsLista = DOCUMENTOS.slice(0, 10).map((d, i) => `${i+1}. ${d}`).join('\n');
+            
+            const mensaje = `¡Hola ${selectedCandidato.nombre.split(' ')[0]}! 🎉
+
+*¡Felicidades!* Has sido seleccionado para la *Entrevista Panel* en ExpertCell.
+
+📅 *FECHA:* ${selectedViernes.fechaLegible}
+🕐 *HORA:* ${selectedHorario.inicio}
+📍 *LUGAR:* ${selectedCandidato.sucursal}
+📌 *DIRECCIÓN:* ${direccion}
+
+⏱️ *Duración estimada:* 45 minutos
+🕘 *Llega 15 minutos antes*
+
+📄 *DOCUMENTOS A LLEVAR (en PDF legible):*
+${docsLista}
+
+*Opcionales:*
+• Hoja de Infonavit (si aplica)
+• Hoja de Fonacot (si aplica)
+
+También necesitamos:
+• Contacto de emergencia (nombre, parentesco, teléfono y fecha de nacimiento)
+
+👔 *Vestimenta:* Formal/Semiformal
+
+¡Te esperamos! Cualquier duda estamos a tus órdenes.
+
+*ExpertCell - e-Team Contact Center*`;
+
+            const whatsappURL = `https://wa.me/52${selectedCandidato.telefono}?text=${encodeURIComponent(mensaje)}`;
+            window.open(whatsappURL, '_blank');
+        }
+
+        function enviarEmailAprobado() {
+            const email = document.getElementById('email-candidato').value;
+            const direccion = DIRECCIONES[selectedCandidato.sucursal] || selectedCandidato.sucursal;
+            
+            const subject = `✅ Confirmación Entrevista Panel - ExpertCell | ${selectedViernes.fechaLegible}`;
+            const body = `Hola ${selectedCandidato.nombre.split(' ')[0]},
+
+¡Felicidades! Has sido seleccionado para la Entrevista Panel en ExpertCell.
+
+DETALLES DE TU CITA:
+📅 Fecha: ${selectedViernes.fechaLegible}
+🕐 Hora: ${selectedHorario.inicio}
+📍 Lugar: ${selectedCandidato.sucursal}
+📌 Dirección: ${direccion}
+
+⏱️ Duración estimada: 45 minutos
+🕘 Por favor llega 15 minutos antes
+
+DOCUMENTOS A LLEVAR (en PDF legible):
+1. Currículum
+2. INE
+3. CURP
+4. Constancia de Situación Fiscal (RFC)
+5. NSS (Número de Seguro Social)
+6. Acta de Nacimiento
+7. Comprobante de domicilio (no mayor a 3 meses)
+8. Certificado de estudios (máximo grado)
+9. Constancia laboral de empleos anteriores
+10. Estado de cuenta (con nombre, número de cuenta, CLABE y banco)
+
+Opcionales:
+- Hoja de Infonavit (solo si aplica)
+- Hoja de Fonacot (solo si aplica)
+
+También necesitamos:
+- Contacto de emergencia (nombre, parentesco, teléfono y fecha de nacimiento)
+
+Vestimenta: Formal/Semiformal
+
+¡Te esperamos!
+
+Saludos,
+ExpertCell - e-Team Contact Center`;
+
+            const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.open(mailtoURL, '_blank');
+        }
+
+        function enviarWhatsAppRechazo() {
+            if (!selectedCandidato) {
+                alert('Error: No hay candidato seleccionado');
+                return;
+            }
+            
+            const nombreCorto = selectedCandidato.nombre.split(' ')[0];
+            const telefono = selectedCandidato.telefono.replace(/\D/g, ''); // Solo números
+            
+            const mensaje = `Hola ${nombreCorto},
+
+Gracias por tu interés en formar parte de ExpertCell y por el tiempo dedicado a nuestro proceso de selección.
+
+En esta ocasión hemos decidido continuar con otros candidatos cuyo perfil se ajusta más a los requerimientos actuales de la posición.
+
+Te invitamos a seguir en contacto y aplicar a futuras vacantes.
+
+¡Te deseamos mucho éxito en tu búsqueda laboral! 🙌
+
+Saludos,
+*ExpertCell - e-Team Contact Center*`;
+
+            // Guardar rechazo en Google Sheets
+            guardarRechazo();
+
+            const whatsappURL = `https://wa.me/52${telefono}?text=${encodeURIComponent(mensaje)}`;
+            window.open(whatsappURL, '_blank');
+        }
+
+        async function guardarRechazo() {
+            const total = Object.values(scores).reduce((a, b) => a + b, 0);
+            
+            const data = {
+                tipo: 'entrevista_telefonica',
+                timestamp: new Date().toLocaleString('es-MX'),
+                reclutadora: selectedReclutadora.nombre,
+                candidato_nombre: selectedCandidato.nombre,
+                candidato_telefono: selectedCandidato.telefono,
+                candidato_email: '',
+                candidato_sucursal: selectedCandidato.sucursal,
+                puntaje_prefiltro: selectedCandidato.puntaje,
+                
+                respuesta_q1: document.getElementById('response-q1').value,
+                respuesta_q2: document.getElementById('response-q2').value,
+                respuesta_q3: document.getElementById('response-q3').value,
+                respuesta_q4: document.getElementById('response-q4').value,
+                respuesta_q5: document.getElementById('response-q5').value,
+                respuesta_q6: document.getElementById('response-q6').value,
+                
+                puntaje_q1: scores.q1,
+                puntaje_q2: scores.q2,
+                puntaje_q3: scores.q3,
+                puntaje_q4: scores.q4,
+                puntaje_q5: scores.q5,
+                puntaje_q6: scores.q6,
+                puntaje_total: total,
+                
+                resultado: 'NO PASA',
+                observaciones: document.getElementById('observaciones-generales').value,
+                
+                panel_fecha: '',
+                panel_hora: '',
+                panel_hora_fin: ''
+            };
+            
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                console.log('Rechazo guardado');
+            } catch (error) {
+                console.error('Error al guardar rechazo:', error);
+            }
+        }
+
+        // Inicializar
+        window.onload = function() {
+            initSpeechRecognition();
+        };
+    </script>
+</body>
+</html>
