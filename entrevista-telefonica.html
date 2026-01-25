@@ -279,10 +279,6 @@
             <!-- Paso 3: Evaluación -->
             <div class="section hidden" id="section-evaluacion">
                 <div class="section-title">📝 Evaluación de la Entrevista</div>
-                
-                <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #2196F3;">
-                    <p style="margin: 0; color: #1565c0; font-size: 14px;">🎤 <strong>Transcripción de voz:</strong> Haz clic en "Grabar" y habla o acerca el teléfono. El audio se convertirá a texto automáticamente.</p>
-                </div>
 
                 <!-- Pregunta 1: Coherencia -->
                 <div class="evaluation-card" id="card-q1">
@@ -319,12 +315,7 @@
                     
                     <div class="response-section">
                         <label>✍️ Respuesta del candidato:</label>
-                        <div class="voice-controls">
-                            <button class="btn-voice btn-record" onclick="toggleRecording('q1')" id="btn-record-q1">🎤 Grabar</button>
-                            <button class="btn-voice btn-clear" onclick="clearText('q1')">🗑️ Limpiar</button>
-                        </div>
-                        <div class="voice-status" id="voice-status-q1">🎤 Listo para grabar</div>
-                        <textarea id="response-q1" placeholder="Escribe o usa el micrófono para transcribir la respuesta..."></textarea>
+                        <textarea id="response-q1" placeholder="Escribe aquí la respuesta del candidato..."></textarea>
                     </div>
                     
                     <div class="score-selector">
@@ -376,12 +367,7 @@
                     
                     <div class="response-section">
                         <label>✍️ Respuesta del candidato:</label>
-                        <div class="voice-controls">
-                            <button class="btn-voice btn-record" onclick="toggleRecording('q2')" id="btn-record-q2">🎤 Grabar</button>
-                            <button class="btn-voice btn-clear" onclick="clearText('q2')">🗑️ Limpiar</button>
-                        </div>
-                        <div class="voice-status" id="voice-status-q2">🎤 Listo para grabar</div>
-                        <textarea id="response-q2" placeholder="Escribe o usa el micrófono..."></textarea>
+                        <textarea id="response-q2" placeholder="Escribe aquí la respuesta del candidato..."></textarea>
                     </div>
                     
                     <div class="score-selector">
@@ -431,12 +417,7 @@
                     
                     <div class="response-section">
                         <label>✍️ Respuesta del candidato:</label>
-                        <div class="voice-controls">
-                            <button class="btn-voice btn-record" onclick="toggleRecording('q3')" id="btn-record-q3">🎤 Grabar</button>
-                            <button class="btn-voice btn-clear" onclick="clearText('q3')">🗑️ Limpiar</button>
-                        </div>
-                        <div class="voice-status" id="voice-status-q3">🎤 Listo para grabar</div>
-                        <textarea id="response-q3" placeholder="Escribe o usa el micrófono..."></textarea>
+                        <textarea id="response-q3" placeholder="Escribe aquí la respuesta del candidato..."></textarea>
                     </div>
                     
                     <div class="score-selector">
@@ -486,12 +467,7 @@
                     
                     <div class="response-section">
                         <label>✍️ Respuesta del candidato:</label>
-                        <div class="voice-controls">
-                            <button class="btn-voice btn-record" onclick="toggleRecording('q4')" id="btn-record-q4">🎤 Grabar</button>
-                            <button class="btn-voice btn-clear" onclick="clearText('q4')">🗑️ Limpiar</button>
-                        </div>
-                        <div class="voice-status" id="voice-status-q4">🎤 Listo para grabar</div>
-                        <textarea id="response-q4" placeholder="Escribe o usa el micrófono..."></textarea>
+                        <textarea id="response-q4" placeholder="Escribe aquí la respuesta del candidato..."></textarea>
                     </div>
                     
                     <div class="score-selector">
@@ -543,12 +519,7 @@
                     
                     <div class="response-section">
                         <label>✍️ Respuesta del candidato:</label>
-                        <div class="voice-controls">
-                            <button class="btn-voice btn-record" onclick="toggleRecording('q5')" id="btn-record-q5">🎤 Grabar</button>
-                            <button class="btn-voice btn-clear" onclick="clearText('q5')">🗑️ Limpiar</button>
-                        </div>
-                        <div class="voice-status" id="voice-status-q5">🎤 Listo para grabar</div>
-                        <textarea id="response-q5" placeholder="Escribe o usa el micrófono..."></textarea>
+                        <textarea id="response-q5" placeholder="Escribe aquí la respuesta del candidato..."></textarea>
                     </div>
                     
                     <div class="score-selector">
@@ -600,12 +571,7 @@
                     
                     <div class="response-section">
                         <label>✍️ Respuesta del candidato:</label>
-                        <div class="voice-controls">
-                            <button class="btn-voice btn-record" onclick="toggleRecording('q6')" id="btn-record-q6">🎤 Grabar</button>
-                            <button class="btn-voice btn-clear" onclick="clearText('q6')">🗑️ Limpiar</button>
-                        </div>
-                        <div class="voice-status" id="voice-status-q6">🎤 Listo para grabar</div>
-                        <textarea id="response-q6" placeholder="Escribe o usa el micrófono..."></textarea>
+                        <textarea id="response-q6" placeholder="Escribe aquí la respuesta del candidato..."></textarea>
                     </div>
                     
                     <div class="score-selector">
@@ -704,8 +670,6 @@
         let selectedCandidato = null;
         let scores = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0 };
         let candidatos = [];
-        let recognition = null;
-        let isRecording = {};
         let selectedViernes = null;
         let selectedHorario = null;
         let resultadoFinal = null;
@@ -753,167 +717,6 @@
 
         // Slots ocupados (se cargaría de Google Sheets)
         let slotsOcupados = {};
-        
-        // Variable para controlar qué pregunta está grabando
-        let currentRecordingQuestion = null;
-
-        // Inicializar reconocimiento de voz
-        function initSpeechRecognition() {
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                recognition = new SpeechRecognition();
-                recognition.continuous = true;
-                recognition.interimResults = true;
-                recognition.lang = 'es-MX';
-                recognition.maxAlternatives = 1;
-                
-                recognition.onstart = function() {
-                    console.log('Reconocimiento iniciado');
-                    if (currentRecordingQuestion) {
-                        const status = document.getElementById(`voice-status-${currentRecordingQuestion}`);
-                        if (status) {
-                            status.innerHTML = '<span class="recording-dot"></span> Grabando... habla ahora';
-                            status.classList.add('active');
-                        }
-                    }
-                };
-                
-                recognition.onresult = function(event) {
-                    if (!currentRecordingQuestion) return;
-                    
-                    const textarea = document.getElementById(`response-${currentRecordingQuestion}`);
-                    if (!textarea) return;
-                    
-                    let interimTranscript = '';
-                    let finalTranscript = '';
-                    
-                    for (let i = event.resultIndex; i < event.results.length; i++) {
-                        const transcript = event.results[i][0].transcript;
-                        if (event.results[i].isFinal) {
-                            finalTranscript += transcript + ' ';
-                        } else {
-                            interimTranscript += transcript;
-                        }
-                    }
-                    
-                    if (finalTranscript) {
-                        textarea.value += finalTranscript;
-                    }
-                };
-                
-                recognition.onerror = function(event) {
-                    console.error('Error de reconocimiento:', event.error);
-                    
-                    // No detener si es un error de "no-speech" (silencio)
-                    if (event.error === 'no-speech') {
-                        console.log('No se detectó voz, continuando...');
-                        return;
-                    }
-                    
-                    // Para otros errores, detener
-                    if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-                        alert('⚠️ Permiso de micrófono denegado. Por favor permite el acceso al micrófono en la configuración del navegador.');
-                        stopRecordingCompletely();
-                    }
-                };
-                
-                recognition.onend = function() {
-                    console.log('Reconocimiento terminado');
-                    
-                    // Si todavía debería estar grabando, reiniciar
-                    if (currentRecordingQuestion && isRecording[currentRecordingQuestion]) {
-                        console.log('Reiniciando reconocimiento...');
-                        setTimeout(function() {
-                            if (currentRecordingQuestion && isRecording[currentRecordingQuestion]) {
-                                try {
-                                    recognition.start();
-                                } catch (e) {
-                                    console.log('Error al reiniciar:', e);
-                                }
-                            }
-                        }, 100);
-                    }
-                };
-                
-                console.log('Reconocimiento de voz inicializado correctamente');
-            } else {
-                console.log('Reconocimiento de voz no soportado');
-            }
-        }
-        
-        function stopRecordingCompletely() {
-            currentRecordingQuestion = null;
-            for (let i = 1; i <= 6; i++) {
-                const q = `q${i}`;
-                isRecording[q] = false;
-                const btn = document.getElementById(`btn-record-${q}`);
-                const status = document.getElementById(`voice-status-${q}`);
-                const textarea = document.getElementById(`response-${q}`);
-                if (btn) { btn.classList.remove('recording'); btn.innerHTML = '🎤 Grabar'; }
-                if (status) { status.innerHTML = '🎤 Listo para grabar'; status.classList.remove('active'); }
-                if (textarea) { textarea.classList.remove('recording'); }
-            }
-            if (recognition) {
-                try { recognition.stop(); } catch(e) {}
-            }
-        }
-
-        function toggleRecording(questionId) {
-            if (!recognition) {
-                alert('Tu navegador no soporta transcripción de voz. Escribe manualmente.');
-                return;
-            }
-            
-            const btn = document.getElementById(`btn-record-${questionId}`);
-            const status = document.getElementById(`voice-status-${questionId}`);
-            const textarea = document.getElementById(`response-${questionId}`);
-            
-            if (isRecording[questionId]) {
-                // DETENER grabación
-                console.log('Deteniendo grabación para:', questionId);
-                isRecording[questionId] = false;
-                currentRecordingQuestion = null;
-                
-                btn.classList.remove('recording');
-                btn.innerHTML = '🎤 Grabar';
-                status.innerHTML = '🎤 Listo para grabar';
-                status.classList.remove('active');
-                textarea.classList.remove('recording');
-                
-                try { recognition.stop(); } catch(e) {}
-                
-            } else {
-                // INICIAR grabación
-                console.log('Iniciando grabación para:', questionId);
-                
-                // Primero detener cualquier otra grabación
-                stopRecordingCompletely();
-                
-                // Esperar un momento y luego iniciar
-                setTimeout(function() {
-                    isRecording[questionId] = true;
-                    currentRecordingQuestion = questionId;
-                    
-                    btn.classList.add('recording');
-                    btn.innerHTML = '⏹️ Detener';
-                    status.innerHTML = '<span class="recording-dot"></span> Iniciando...';
-                    status.classList.add('active');
-                    textarea.classList.add('recording');
-                    
-                    try {
-                        recognition.start();
-                    } catch (e) {
-                        console.error('Error al iniciar:', e);
-                        alert('Error al iniciar el micrófono. Intenta de nuevo.');
-                        stopRecordingCompletely();
-                    }
-                }, 200);
-            }
-        }
-
-        function stopAllRecording() {
-            stopRecordingCompletely();
-        }
 
         function clearText(questionId) {
             document.getElementById(`response-${questionId}`).value = '';
@@ -1376,7 +1179,7 @@ Saludos,
 
         // Inicializar
         window.onload = function() {
-            initSpeechRecognition();
+            console.log('Formulario cargado');
         };
     </script>
 </body>
