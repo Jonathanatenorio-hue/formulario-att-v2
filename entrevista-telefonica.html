@@ -918,12 +918,27 @@
             cargarHorarios(fecha);
         }
 
-        function cargarHorarios(fecha) {
+        async function cargarHorarios(fecha) {
             const container = document.getElementById('horarios-grid');
-            container.innerHTML = '';
+            container.innerHTML = '<p style="text-align:center; color:#666;">⏳ Cargando horarios...</p>';
             
             const sucursal = selectedCandidato.sucursal;
-            const ocupados = slotsOcupados[fecha + '_' + sucursal] || [];
+            
+            // Obtener slots ocupados desde Google Sheets
+            let ocupados = [];
+            try {
+                const url = `${GOOGLE_SCRIPT_URL}?action=getSlots&fecha=${encodeURIComponent(fecha)}&sucursal=${encodeURIComponent(sucursal)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.ocupados) {
+                    ocupados = data.ocupados;
+                }
+            } catch (error) {
+                console.error('Error cargando slots:', error);
+            }
+            
+            container.innerHTML = '';
             
             HORARIOS.forEach(h => {
                 const div = document.createElement('div');
