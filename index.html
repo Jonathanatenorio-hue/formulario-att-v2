@@ -83,7 +83,6 @@
             <p style="margin-top: 20px; color: #0066CC; font-weight: 600;">¿Listo para comenzar?</p>
             <button class="btn" onclick="startForm()">Comenzar Pre-evaluación →</button>
         </div>
-
         <!-- Paso 0: Selección de Sucursal -->
         <div class="form-section step" id="step0">
             <div class="progress-bar"><div class="progress-fill" style="width: 7%"></div></div>
@@ -97,7 +96,6 @@
             </div>
             <button class="btn" onclick="nextStep(0)">Continuar →</button>
         </div>
-
         <!-- Paso 1: Datos personales -->
         <div class="form-section step" id="step1">
             <div class="progress-bar"><div class="progress-fill" style="width: 15%"></div></div>
@@ -142,7 +140,6 @@
             <div class="form-group"><label>Colonia <span class="required">*</span></label><input type="text" id="colonia" required placeholder="Ej: Del Valle, Roma Norte"></div>
             <button class="btn" onclick="nextStep(1)">Continuar →</button>
         </div>
-
         <!-- Paso 2: Tiempo de traslado -->
         <div class="form-section step" id="step2">
             <div class="progress-bar"><div class="progress-fill" style="width: 23%"></div></div>
@@ -169,7 +166,6 @@
             </div>
             <button class="btn" onclick="nextStep(2)">Continuar →</button>
         </div>
-
         <!-- Paso 3: Ingreso esperado -->
         <div class="form-section step" id="step3">
             <div class="progress-bar"><div class="progress-fill" style="width: 30%"></div></div>
@@ -190,7 +186,6 @@
             </div>
             <button class="btn" onclick="nextStep(3)">Continuar →</button>
         </div>
-
         <!-- Preguntas 4-12 (evaluación con puntaje) -->
         <div class="form-section step" id="step4"><div class="progress-bar"><div class="progress-fill" style="width: 38%"></div></div><div class="question-number">Paso 5 de 13</div><div class="question-text">1️⃣ ¿Qué te motiva principalmente a trabajar en un call center?</div><div class="options" id="options-q1"></div><button class="btn" onclick="nextStep(4)">Continuar →</button></div>
         <div class="form-section step" id="step5"><div class="progress-bar"><div class="progress-fill" style="width: 46%"></div></div><div class="question-number">Paso 6 de 13</div><div class="question-text">2️⃣ ¿Cómo te sientes trabajando bajo metas diarias de ventas?</div><div class="options" id="options-q2"></div><button class="btn" onclick="nextStep(5)">Continuar →</button></div>
@@ -201,7 +196,6 @@
         <div class="form-section step" id="step10"><div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div><div class="question-number">Paso 11 de 13</div><div class="question-text">7️⃣ ¿Qué esperas de un supervisor o coordinador?</div><div class="options" id="options-q7"></div><button class="btn" onclick="nextStep(10)">Continuar →</button></div>
         <div class="form-section step" id="step11"><div class="progress-bar"><div class="progress-fill" style="width: 92%"></div></div><div class="question-number">Paso 12 de 13</div><div class="question-text">8️⃣ ¿Cómo manejas la retroalimentación cuando te dicen que algo no lo estás haciendo bien?</div><div class="options" id="options-q8"></div><button class="btn" onclick="nextStep(11)">Continuar →</button></div>
         <div class="form-section step" id="step12"><div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div><div class="question-number">Paso 13 de 13</div><div class="question-text">9️⃣ ¿Cuánto tiempo planeas quedarte si obtienes buenos ingresos y estabilidad?</div><div class="options" id="options-q9"></div><button class="btn" onclick="submitForm()">Enviar Pre-evaluación →</button></div>
-
         <!-- Pantalla de rechazo -->
         <div class="rejected-screen" id="rejected-screen">
             <div class="icon">😔</div>
@@ -210,7 +204,6 @@
             <p>Te recomendamos buscar oportunidades que se ajusten mejor a tus preferencias laborales.</p>
             <p style="margin-top: 30px; color: #0066CC; font-weight: 600;">Te deseamos mucho éxito en tu búsqueda laboral. 🙌</p>
         </div>
-
         <!-- Pantalla de aprobación -->
         <div class="approved-screen" id="approved-screen">
             <div class="icon">🎉</div>
@@ -230,13 +223,6 @@
                     <p style="margin: 8px 0; color: #333; font-size: 15px;"><strong>💬 WhatsApp:</strong> <span id="reclutador-whatsapp"></span></p>
                 </div>
             </div>
-            <div style="background: #fff3cd; padding: 18px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #ffc107;">
-                <p style="margin: 0; color: #856404; font-weight: 600; font-size: 16px;">📄 SIGUIENTE PASO:</p>
-                <p style="margin: 10px 0 0 0; color: #856404; font-size: 14px;">Envía tu CV al reclutador <strong>ANTES de tu cita</strong> por WhatsApp o correo electrónico.</p>
-            </div>
-            <button class="btn" onclick="sendCVWhatsApp()" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); margin-top: 10px; margin-bottom: 20px;">📄 Enviar CV por WhatsApp →</button>
-            <p style="color: #666; font-size: 13px; margin-bottom: 25px;">O envíalo por email haciendo clic en el correo arriba ☝️</p>
-            <hr style="border: none; border-top: 2px solid #e0e0e0; margin: 30px 0;">
             <div class="calendar-section">
                 <h3>📅 Agenda tu llamada con el reclutador</h3>
                 <p style="margin-bottom: 15px; color: #6c757d;">Selecciona el día y hora que más te convenga:</p>
@@ -266,37 +252,125 @@
                 </div>
                 <button class="btn" onclick="confirmAppointment()">Confirmar Cita →</button>
             </div>
+            
+            <!-- Sección que aparece DESPUÉS de confirmar la cita -->
+            <div id="seccion-post-cita" style="display: none; margin-top: 30px;">
+                <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 25px; border-radius: 12px; text-align: center; border: 2px solid #4CAF50;">
+                    <div style="font-size: 50px; margin-bottom: 15px;">✅</div>
+                    <h3 style="color: #2e7d32; margin-bottom: 10px;">¡Cita Agendada Exitosamente!</h3>
+                    <p style="color: #333; margin-bottom: 5px;"><strong>📅 Fecha:</strong> <span id="cita-confirmada-fecha"></span></p>
+                    <p style="color: #333; margin-bottom: 15px;"><strong>🕐 Hora:</strong> <span id="cita-confirmada-hora"></span></p>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 18px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                    <p style="margin: 0; color: #856404; font-weight: 600; font-size: 16px;">📄 ÚLTIMO PASO:</p>
+                    <p style="margin: 10px 0 0 0; color: #856404; font-size: 14px;">Envía tu CV al reclutador <strong>ANTES de tu cita</strong> por WhatsApp o correo electrónico.</p>
+                </div>
+                
+                <button class="btn" onclick="sendCVWhatsApp()" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); margin-top: 10px;">📄 Enviar CV por WhatsApp →</button>
+                <p style="color: #666; font-size: 13px; margin-top: 15px;">O envíalo por email: <a href="#" id="email-link-final" style="color: #0066CC;"></a></p>
+            </div>
         </div>
     </div>
-
     <script>
 let candidateData={},selectedTime=null,selectedSucursal=null,selectedDireccion=null,totalScore=0,reclutadorInfo={nombre:'',email:'',whatsapp:'',whatsappNumero:''};
-
 const direcciones = {
     'Torre JV Juárez': 'Av. Juárez 2925, La Paz, 72160, Puebla',
     'Edificio Inbursa Antequera': 'Cto Interior 49, Nueva Antequera, 72180, Puebla'
 };
-
 const mapsLinks = {
     'Torre JV Juárez': 'https://maps.google.com/?q=Av.+Juárez+2925,+La+Paz,+72160,+Puebla',
     'Edificio Inbursa Antequera': 'https://maps.google.com/?q=Cto+Interior+49,+Nueva+Antequera,+72180,+Puebla'
 };
-
 function checkIfRejected(){const rejected=localStorage.getItem('att_rejected');if(rejected==='true'){document.getElementById('intro').style.display='none';document.getElementById('rejected-screen').classList.add('active');document.querySelector('.rejected-screen h2').textContent='Ya completaste este formulario';document.querySelector('.rejected-screen p').textContent='Detectamos que ya enviaste tu información anteriormente.'}}
 window.onload=function(){checkIfRejected()};
 
-const questions={q1:[{text:'A) Tener un ingreso fijo aunque no haya comisiones',score:0,type:'reject'},{text:'B) Que sea un trabajo sencillo sin mucha presión',score:0,type:'reject'},{text:'C) Aprender y generar ingresos adicionales con comisiones',score:3,type:'good'},{text:'D) Ganar dinero a través de resultados y superar metas',score:5,type:'ideal'}],q2:[{text:'A) Me estresa y prefiero evitarlas',score:0,type:'reject'},{text:'B) Solo cumplo lo mínimo para no tener problemas',score:0,type:'reject'},{text:'C) Me adapto y hago mi esfuerzo',score:3,type:'good'},{text:'D) Me motiva competir conmigo mismo y con el equipo',score:5,type:'ideal'}],q3:[{text:'A) Termino la llamada de inmediato',score:0,type:'reject'},{text:'B) Insisto sin escuchar al cliente',score:1,type:'warning'},{text:'C) Intento explicar brevemente el beneficio',score:3,type:'good'},{text:'D) Investigo el motivo, manejo la objeción y vuelvo a intentar el cierre',score:5,type:'ideal'}],q4:[{text:'A) No me interesa, prefiero sueldo fijo',score:0,type:'reject'},{text:'B) Solo las veo como un extra ocasional',score:1,type:'warning'},{text:'C) Son importantes, pero no mi prioridad',score:3,type:'good'},{text:'D) Son una parte clave de mi ingreso',score:5,type:'ideal'}],q5:[{text:'A) Me desmotivo y bajo el ritmo',score:0,type:'reject'},{text:'B) Culpo a la base o al sistema',score:0,type:'reject'},{text:'C) Pido retroalimentación y sigo intentando',score:3,type:'good'},{text:'D) Ajusto mi estrategia, escucho mis llamadas y busco mejorar',score:5,type:'ideal'}],q6:[{text:'A) A veces llego tarde, depende del día',score:0,type:'reject'},{text:'B) Cumplo mientras no haya problemas personales',score:1,type:'warning'},{text:'C) Suelo ser puntual',score:3,type:'good'},{text:'D) Soy muy puntual y responsable con mis horarios',score:5,type:'ideal'}],q7:[{text:'A) Que no me presione',score:0,type:'reject'},{text:'B) Que me deje trabajar sin decirme nada',score:0,type:'reject'},{text:'C) Que me apoye cuando lo necesito',score:3,type:'good'},{text:'D) Que me exija, me rete y me ayude a mejorar resultados',score:5,type:'ideal'}],q8:[{text:'A) Me molesta y me pongo a la defensiva',score:0,type:'reject'},{text:'B) Si no me gusta no lo aplico',score:0,type:'reject'},{text:'C) La tomo en cuenta y trato de mejorar',score:3,type:'good'},{text:'D) La agradezco y la uso para crecer',score:5,type:'ideal'}],q9:[{text:'A) Solo mientras encuentro otra cosa',score:0,type:'reject'},{text:'B) Un par de meses',score:0,type:'reject'},{text:'C) Al menos 6 meses',score:3,type:'good'},{text:'D) Busco estabilidad y crecimiento a largo plazo',score:5,type:'ideal'}]};
+// PREGUNTAS SIN LETRAS - Las letras se agregan dinámicamente
+const questions={
+    q1:[
+        {text:'Tener un ingreso fijo aunque no haya comisiones',score:0,type:'reject'},
+        {text:'Que sea un trabajo sencillo sin mucha presión',score:0,type:'reject'},
+        {text:'Aprender y generar ingresos adicionales con comisiones',score:3,type:'good'},
+        {text:'Ganar dinero a través de resultados y superar metas',score:5,type:'ideal'}
+    ],
+    q2:[
+        {text:'Me estresa y prefiero evitarlas',score:0,type:'reject'},
+        {text:'Solo cumplo lo mínimo para no tener problemas',score:0,type:'reject'},
+        {text:'Me adapto y hago mi esfuerzo',score:3,type:'good'},
+        {text:'Me motiva competir conmigo mismo y con el equipo',score:5,type:'ideal'}
+    ],
+    q3:[
+        {text:'Termino la llamada de inmediato',score:0,type:'reject'},
+        {text:'Insisto sin escuchar al cliente',score:1,type:'warning'},
+        {text:'Intento explicar brevemente el beneficio',score:3,type:'good'},
+        {text:'Investigo el motivo, manejo la objeción y vuelvo a intentar el cierre',score:5,type:'ideal'}
+    ],
+    q4:[
+        {text:'No me interesa, prefiero sueldo fijo',score:0,type:'reject'},
+        {text:'Solo las veo como un extra ocasional',score:1,type:'warning'},
+        {text:'Son importantes, pero no mi prioridad',score:3,type:'good'},
+        {text:'Son una parte clave de mi ingreso',score:5,type:'ideal'}
+    ],
+    q5:[
+        {text:'Me desmotivo y bajo el ritmo',score:0,type:'reject'},
+        {text:'Culpo a la base o al sistema',score:0,type:'reject'},
+        {text:'Pido retroalimentación y sigo intentando',score:3,type:'good'},
+        {text:'Ajusto mi estrategia, escucho mis llamadas y busco mejorar',score:5,type:'ideal'}
+    ],
+    q6:[
+        {text:'A veces llego tarde, depende del día',score:0,type:'reject'},
+        {text:'Cumplo mientras no haya problemas personales',score:1,type:'warning'},
+        {text:'Suelo ser puntual',score:3,type:'good'},
+        {text:'Soy muy puntual y responsable con mis horarios',score:5,type:'ideal'}
+    ],
+    q7:[
+        {text:'Que no me presione',score:0,type:'reject'},
+        {text:'Que me deje trabajar sin decirme nada',score:0,type:'reject'},
+        {text:'Que me apoye cuando lo necesito',score:3,type:'good'},
+        {text:'Que me exija, me rete y me ayude a mejorar resultados',score:5,type:'ideal'}
+    ],
+    q8:[
+        {text:'Me molesta y me pongo a la defensiva',score:0,type:'reject'},
+        {text:'Si no me gusta no lo aplico',score:0,type:'reject'},
+        {text:'La tomo en cuenta y trato de mejorar',score:3,type:'good'},
+        {text:'La agradezco y la uso para crecer',score:5,type:'ideal'}
+    ],
+    q9:[
+        {text:'Solo mientras encuentro otra cosa',score:0,type:'reject'},
+        {text:'Un par de meses',score:0,type:'reject'},
+        {text:'Al menos 6 meses',score:3,type:'good'},
+        {text:'Busco estabilidad y crecimiento a largo plazo',score:5,type:'ideal'}
+    ]
+};
 
 function shuffleArray(array){const shuffled=[...array];for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]}return shuffled}
 
-function renderQuestion(questionKey,containerId){const container=document.getElementById(containerId);const options=shuffleArray(questions[questionKey]);container.innerHTML='';options.forEach((option,index)=>{const div=document.createElement('div');div.className='option';div.textContent=option.text;div.dataset.score=option.score;div.dataset.type=option.type;div.dataset.text=option.text;div.onclick=function(){document.querySelectorAll(`#${containerId} .option`).forEach(opt=>{opt.classList.remove('selected')});this.classList.add('selected')};container.appendChild(div)})}
+// FUNCIÓN CORREGIDA: Agrega letras A), B), C), D) dinámicamente después de mezclar
+function renderQuestion(questionKey,containerId){
+    const container=document.getElementById(containerId);
+    const options=shuffleArray(questions[questionKey]);
+    const letras=['A)','B)','C)','D)'];
+    container.innerHTML='';
+    options.forEach((option,index)=>{
+        const div=document.createElement('div');
+        div.className='option';
+        div.textContent=letras[index]+' '+option.text;
+        div.dataset.score=option.score;
+        div.dataset.type=option.type;
+        div.dataset.text=option.text;
+        div.onclick=function(){
+            document.querySelectorAll(`#${containerId} .option`).forEach(opt=>{
+                opt.classList.remove('selected')
+            });
+            this.classList.add('selected')
+        };
+        container.appendChild(div)
+    })
+}
 
 function selectSucursal(sucursal,direccion){document.querySelectorAll('#options-sucursal .option').forEach(opt=>{opt.classList.remove('selected')});event.target.closest('.option').classList.add('selected');selectedSucursal=sucursal;selectedDireccion=direccion}
-
 function abrirMaps(){if(selectedSucursal&&mapsLinks[selectedSucursal]){window.open(mapsLinks[selectedSucursal],'_blank')}else{alert('Por favor selecciona primero una sucursal.')}}
-
 function startForm(){document.getElementById('intro').style.display='none';document.getElementById('step0').classList.add('active')}
-
 function validateStep(step){
     if(step===0){if(!selectedSucursal)return{valid:false,message:'Por favor selecciona una sucursal.'};candidateData.sucursal=selectedSucursal;candidateData.direccionSucursal=selectedDireccion;return{valid:true}}
     if(step===1){const nombre=document.getElementById('nombre').value.trim();const telefono=document.getElementById('telefono').value.trim();const edad=document.getElementById('edad').value;const ubicacion=document.getElementById('ubicacion').value;const colonia=document.getElementById('colonia').value.trim();if(!nombre||!telefono||!edad||!ubicacion||!colonia)return{valid:false,message:'Por favor completa todos los campos obligatorios.'};if(telefono.length<10)return{valid:false,message:'El teléfono debe tener al menos 10 dígitos.'};return{valid:true}}
@@ -305,14 +379,12 @@ function validateStep(step){
     if(step>=4&&step<=12){const questionKey=`q${step-3}`;const containerId=`options-${questionKey}`;const selectedOption=document.querySelector(`#${containerId} .option.selected`);if(!selectedOption)return{valid:false,message:'Por favor selecciona una opción.'};if(selectedOption.dataset.type==='reject')return{valid:true,reject:true};return{valid:true}}
     return{valid:true}
 }
-
 function saveStepData(step){
     if(step===1){candidateData.nombre=document.getElementById('nombre').value;candidateData.telefono=document.getElementById('telefono').value;candidateData.edad=document.getElementById('edad').value;candidateData.ubicacion=document.getElementById('ubicacion').value;candidateData.colonia=document.getElementById('colonia').value}
     else if(step===2){candidateData.tiempoTraslado=document.getElementById('tiempo-traslado').value}
     else if(step===3){candidateData.ingresoEsperado=document.getElementById('ingreso-esperado').value}
     else if(step>=4&&step<=12){const questionKey=`q${step-3}`;const containerId=`options-${questionKey}`;const selectedOption=document.querySelector(`#${containerId} .option.selected`);if(selectedOption){const score=parseInt(selectedOption.dataset.score);const text=selectedOption.dataset.text;candidateData[`pregunta${step-3}`]=text;candidateData[`puntaje${step-3}`]=score;totalScore+=score;console.log('Guardado paso '+step+': ',text,score)}}
 }
-
 function nextStep(currentStep){
     const validation=validateStep(currentStep);
     if(!validation.valid){alert(validation.message);return}
@@ -339,7 +411,6 @@ function nextStep(currentStep){
     document.getElementById(`step${currentStep}`).classList.remove('active');
     document.getElementById(`step${currentStep+1}`).classList.add('active')
 }
-
 function submitForm(){
     const validation=validateStep(12);
     if(!validation.valid){alert(validation.message);return}
@@ -363,7 +434,6 @@ function submitForm(){
     document.getElementById('score-label').textContent=clasificacion;
     setupDatePicker()
 }
-
 function setupDatePicker(){
     const dateInput=document.getElementById('fecha-cita');
     const today=new Date();
@@ -390,14 +460,19 @@ function setupDatePicker(){
     document.getElementById('reclutador-email').href='mailto:'+reclutadorInfo.email;
     document.getElementById('reclutador-whatsapp').textContent=reclutadorInfo.whatsapp
 }
-
 function sendCVWhatsApp(){
+    // Formatear fecha
+    const fechaObj = new Date(candidateData.citaFecha + 'T12:00:00');
+    const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const fechaFormateada = fechaObj.toLocaleDateString('es-MX', opcionesFecha);
+    
     const mensaje=`Hola ${reclutadorInfo.nombre.split(' ')[0]}, soy ${candidateData.nombre}.
 
 Acabo de completar el pre-filtro para el puesto de Agente Telefónico AT&T.
 
 📋 *Datos de mi cita:*
-📅 Fecha: Pendiente de confirmar
+📅 Fecha: ${fechaFormateada}
+🕐 Hora: ${candidateData.citaHora}
 🏢 Sucursal: ${candidateData.sucursal}
 
 Adjunto mi CV para su revisión.
@@ -406,9 +481,7 @@ Adjunto mi CV para su revisión.
     const whatsappURL=`https://wa.me/52${reclutadorInfo.whatsappNumero}?text=${encodeURIComponent(mensaje)}`;
     window.open(whatsappURL,'_blank')
 }
-
 function selectTime(time){document.querySelectorAll('.time-slot').forEach(slot=>{slot.classList.remove('selected')});event.target.classList.add('selected');selectedTime=time}
-
 function confirmAppointment(){
     const fecha=document.getElementById('fecha-cita').value;
     if(!fecha){alert('Por favor selecciona una fecha.');return}
@@ -425,8 +498,24 @@ function confirmAppointment(){
     console.log('Datos completos:',candidateData);
     
     sendToGoogleSheets(candidateData).then(()=>{
-        alert('✅ Expertcell agradece tu interés\n\n¡Cita agendada exitosamente!\n\n📅 Fecha: '+fecha+'\n🕐 Hora: '+selectedTime+'\n\n📞 El reclutador te contactará en el horario elegido.\n\n¡Mucho éxito! 🚀');
-        setTimeout(()=>{location.reload()},4000)
+        // Ocultar sección de calendario
+        document.querySelector('.calendar-section').style.display='none';
+        
+        // Formatear fecha para mostrar
+        const fechaObj = new Date(fecha + 'T12:00:00');
+        const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const fechaFormateada = fechaObj.toLocaleDateString('es-MX', opcionesFecha);
+        
+        // Mostrar sección post-cita
+        document.getElementById('seccion-post-cita').style.display='block';
+        document.getElementById('cita-confirmada-fecha').textContent=fechaFormateada;
+        document.getElementById('cita-confirmada-hora').textContent=selectedTime;
+        document.getElementById('email-link-final').textContent=reclutadorInfo.email;
+        document.getElementById('email-link-final').href='mailto:'+reclutadorInfo.email;
+        
+        // Scroll a la sección
+        document.getElementById('seccion-post-cita').scrollIntoView({ behavior: 'smooth' });
+        
     }).catch(error=>{
         console.error('Error:',error);
         alert('⚠️ Hubo un problema. Intenta de nuevo.');
@@ -434,7 +523,6 @@ function confirmAppointment(){
         btn.textContent='Confirmar Cita →'
     })
 }
-
 async function sendToGoogleSheets(data){
     const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
     
