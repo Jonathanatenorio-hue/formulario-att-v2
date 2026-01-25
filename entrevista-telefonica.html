@@ -1003,6 +1003,9 @@
             
             const total = Object.values(scores).reduce((a, b) => a + b, 0);
             
+            // Generar token único para confirmación
+            const tokenConfirmacion = 'conf_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
             const data = {
                 tipo: 'entrevista_telefonica',
                 timestamp: new Date().toLocaleString('es-MX'),
@@ -1033,8 +1036,12 @@
                 
                 panel_fecha: selectedViernes.fecha,
                 panel_hora: selectedHorario.inicio,
-                panel_hora_fin: selectedHorario.fin
+                panel_hora_fin: selectedHorario.fin,
+                token_confirmacion: tokenConfirmacion
             };
+            
+            // Guardar token para usarlo en WhatsApp/Email
+            window.tokenConfirmacion = tokenConfirmacion;
             
             try {
                 await fetch(GOOGLE_SCRIPT_URL, {
@@ -1067,6 +1074,7 @@
         function enviarWhatsAppAprobado() {
             const direccion = DIRECCIONES[selectedCandidato.sucursal] || selectedCandidato.sucursal;
             const docsLista = DOCUMENTOS.slice(0, 10).map((d, i) => `${i+1}. ${d}`).join('\n');
+            const linkConfirmacion = `${GOOGLE_SCRIPT_URL}?action=confirmar&token=${window.tokenConfirmacion}`;
             
             const mensaje = `¡Hola ${selectedCandidato.nombre.split(' ')[0]}! 🎉
 
@@ -1094,6 +1102,9 @@ También necesitamos:
 
 👔 *Vestimenta:* Formal/Semiformal
 
+✅ *POR FAVOR CONFIRMA TU ASISTENCIA* haciendo clic aquí:
+${linkConfirmacion}
+
 ¡Te esperamos! Cualquier duda estamos a tus órdenes.
 
 *ExpertCell - e-Team Contact Center*`;
@@ -1105,6 +1116,7 @@ También necesitamos:
         function enviarEmailAprobado() {
             const email = document.getElementById('email-candidato').value;
             const direccion = DIRECCIONES[selectedCandidato.sucursal] || selectedCandidato.sucursal;
+            const linkConfirmacion = `${GOOGLE_SCRIPT_URL}?action=confirmar&token=${window.tokenConfirmacion}`;
             
             const subject = `✅ Confirmación Entrevista Panel - ExpertCell | ${selectedViernes.fechaLegible}`;
             const body = `Hola ${selectedCandidato.nombre.split(' ')[0]},
@@ -1142,6 +1154,9 @@ También necesitamos:
 - Contacto de emergencia (nombre, parentesco, teléfono y fecha de nacimiento)
 
 Vestimenta: Formal/Semiformal
+
+✅ POR FAVOR CONFIRMA TU ASISTENCIA haciendo clic en este enlace:
+${linkConfirmacion}
 
 ¡Te esperamos!
 
