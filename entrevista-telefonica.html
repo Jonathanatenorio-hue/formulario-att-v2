@@ -753,6 +753,9 @@
 
         // Slots ocupados (se cargaría de Google Sheets)
         let slotsOcupados = {};
+        
+        // Variable para controlar qué pregunta está grabando
+        let currentRecordingQuestion = null;
 
         // Inicializar reconocimiento de voz
         function initSpeechRecognition() {
@@ -762,37 +765,96 @@
                 recognition.continuous = true;
                 recognition.interimResults = true;
                 recognition.lang = 'es-MX';
+                recognition.maxAlternatives = 1;
                 
-                recognition.onresult = function(event) {
-                    let finalTranscript = '';
-                    for (let i = event.resultIndex; i < event.results.length; i++) {
-                        if (event.results[i].isFinal) {
-                            finalTranscript += event.results[i][0].transcript + ' ';
+                recognition.onstart = function() {
+                    console.log('Reconocimiento iniciado');
+                    if (currentRecordingQuestion) {
+                        const status = document.getElementById(`voice-status-${currentRecordingQuestion}`);
+                        if (status) {
+                            status.innerHTML = '<span class="recording-dot"></span> Grabando... habla ahora';
+                            status.classList.add('active');
                         }
                     }
-                    for (let q in isRecording) {
-                        if (isRecording[q]) {
-                            const textarea = document.getElementById(`response-${q}`);
-                            if (finalTranscript) {
-                                textarea.value += finalTranscript;
-                            }
+                };
+                
+                recognition.onresult = function(event) {
+                    if (!currentRecordingQuestion) return;
+                    
+                    const textarea = document.getElementById(`response-${currentRecordingQuestion}`);
+                    if (!textarea) return;
+                    
+                    let interimTranscript = '';
+                    let finalTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript + ' ';
+                        } else {
+                            interimTranscript += transcript;
                         }
+                    }
+                    
+                    if (finalTranscript) {
+                        textarea.value += finalTranscript;
                     }
                 };
                 
                 recognition.onerror = function(event) {
-                    console.error('Error:', event.error);
-                    stopAllRecording();
+                    console.error('Error de reconocimiento:', event.error);
+                    
+                    // No detener si es un error de "no-speech" (silencio)
+                    if (event.error === 'no-speech') {
+                        console.log('No se detectó voz, continuando...');
+                        return;
+                    }
+                    
+                    // Para otros errores, detener
+                    if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                        alert('⚠️ Permiso de micrófono denegado. Por favor permite el acceso al micrófono en la configuración del navegador.');
+                        stopRecordingCompletely();
+                    }
                 };
                 
                 recognition.onend = function() {
-                    for (let q in isRecording) {
-                        if (isRecording[q]) {
-                            recognition.start();
-                            break;
-                        }
+                    console.log('Reconocimiento terminado');
+                    
+                    // Si todavía debería estar grabando, reiniciar
+                    if (currentRecordingQuestion && isRecording[currentRecordingQuestion]) {
+                        console.log('Reiniciando reconocimiento...');
+                        setTimeout(function() {
+                            if (currentRecordingQuestion && isRecording[currentRecordingQuestion]) {
+                                try {
+                                    recognition.start();
+                                } catch (e) {
+                                    console.log('Error al reiniciar:', e);
+                                }
+                            }
+                        }, 100);
                     }
                 };
+                
+                console.log('Reconocimiento de voz inicializado correctamente');
+            } else {
+                console.log('Reconocimiento de voz no soportado');
+            }
+        }
+        
+        function stopRecordingCompletely() {
+            currentRecordingQuestion = null;
+            for (let i = 1; i <= 6; i++) {
+                const q = `q${i}`;
+                isRecording[q] = false;
+                const btn = document.getElementById(`btn-record-${q}`);
+                const status = document.getElementById(`voice-status-${q}`);
+                const textarea = document.getElementById(`response-${q}`);
+                if (btn) { btn.classList.remove('recording'); btn.innerHTML = '🎤 Grabar'; }
+                if (status) { status.innerHTML = '🎤 Listo para grabar'; status.classList.remove('active'); }
+                if (textarea) { textarea.classList.remove('recording'); }
+            }
+            if (recognition) {
+                try { recognition.stop(); } catch(e) {}
             }
         }
 
@@ -807,42 +869,50 @@
             const textarea = document.getElementById(`response-${questionId}`);
             
             if (isRecording[questionId]) {
+                // DETENER grabación
+                console.log('Deteniendo grabación para:', questionId);
                 isRecording[questionId] = false;
+                currentRecordingQuestion = null;
+                
                 btn.classList.remove('recording');
                 btn.innerHTML = '🎤 Grabar';
                 status.innerHTML = '🎤 Listo para grabar';
                 status.classList.remove('active');
                 textarea.classList.remove('recording');
                 
-                let anyRecording = false;
-                for (let q in isRecording) {
-                    if (isRecording[q]) anyRecording = true;
-                }
-                if (!anyRecording) recognition.stop();
+                try { recognition.stop(); } catch(e) {}
+                
             } else {
-                stopAllRecording();
-                isRecording[questionId] = true;
-                btn.classList.add('recording');
-                btn.innerHTML = '⏹️ Detener';
-                status.innerHTML = '<span class="recording-dot"></span> Grabando...';
-                status.classList.add('active');
-                textarea.classList.add('recording');
-                try { recognition.start(); } catch (e) {}
+                // INICIAR grabación
+                console.log('Iniciando grabación para:', questionId);
+                
+                // Primero detener cualquier otra grabación
+                stopRecordingCompletely();
+                
+                // Esperar un momento y luego iniciar
+                setTimeout(function() {
+                    isRecording[questionId] = true;
+                    currentRecordingQuestion = questionId;
+                    
+                    btn.classList.add('recording');
+                    btn.innerHTML = '⏹️ Detener';
+                    status.innerHTML = '<span class="recording-dot"></span> Iniciando...';
+                    status.classList.add('active');
+                    textarea.classList.add('recording');
+                    
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.error('Error al iniciar:', e);
+                        alert('Error al iniciar el micrófono. Intenta de nuevo.');
+                        stopRecordingCompletely();
+                    }
+                }, 200);
             }
         }
 
         function stopAllRecording() {
-            for (let i = 1; i <= 6; i++) {
-                const q = `q${i}`;
-                isRecording[q] = false;
-                const btn = document.getElementById(`btn-record-${q}`);
-                const status = document.getElementById(`voice-status-${q}`);
-                const textarea = document.getElementById(`response-${q}`);
-                if (btn) { btn.classList.remove('recording'); btn.innerHTML = '🎤 Grabar'; }
-                if (status) { status.innerHTML = '🎤 Listo para grabar'; status.classList.remove('active'); }
-                if (textarea) { textarea.classList.remove('recording'); }
-            }
-            if (recognition) { try { recognition.stop(); } catch(e) {} }
+            stopRecordingCompletely();
         }
 
         function clearText(questionId) {
@@ -1151,7 +1221,9 @@
 📍 *LUGAR:* ${selectedCandidato.sucursal}
 📌 *DIRECCIÓN:* ${direccion}
 
-⏱️ *Duración estimada:* 45 minutos
+⚠️ *IMPORTANTE - CONSIDERA TIEMPO ADICIONAL:*
+Si apruebas la entrevista panel, *ese mismo día* concluirías el proceso de contratación y realizarías los psicométricos. Por favor considera disponer de *1-2 horas* en total.
+
 🕘 *Llega 15 minutos antes*
 
 📄 *DOCUMENTOS A LLEVAR (en PDF legible):*
@@ -1189,7 +1261,9 @@ DETALLES DE TU CITA:
 📍 Lugar: ${selectedCandidato.sucursal}
 📌 Dirección: ${direccion}
 
-⏱️ Duración estimada: 45 minutos
+⚠️ IMPORTANTE - CONSIDERA TIEMPO ADICIONAL:
+Si apruebas la entrevista panel, ese mismo día concluirías el proceso de contratación y realizarías los psicométricos. Por favor considera disponer de 1-2 horas en total.
+
 🕘 Por favor llega 15 minutos antes
 
 DOCUMENTOS A LLEVAR (en PDF legible):
