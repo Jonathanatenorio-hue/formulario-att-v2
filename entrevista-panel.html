@@ -30,13 +30,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'IBM Plex Sans', sans-serif; background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%); min-height: 100vh; color: var(--gray-800); }
         .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, var(--att-blue-dark) 0%, var(--att-blue-deeper) 100%); padding: 30px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 10px 40px rgba(0, 87, 184, 0.3); position: relative; overflow: hidden; }
-        .header::before { content: ''; position: absolute; top: -50%; right: -20%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(0, 168, 225, 0.3) 0%, transparent 70%); }
-        .header-content { display: flex; align-items: center; gap: 20px; position: relative; z-index: 1; }
-        .logo-container { background: var(--white); padding: 12px 20px; border-radius: 12px; }
-        .logo-container img { height: 40px; display: block; }
-        .header-text h1 { color: var(--white); font-size: 28px; font-weight: 700; margin-bottom: 4px; }
-        .header-text p { color: rgba(255,255,255,0.8); font-size: 15px; }
+        .header { background: url('https://jonathanatenorio-hue.github.io/formulario-att-v2/logo-att.png') center center / cover no-repeat; padding: 30px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 10px 40px rgba(0, 87, 184, 0.3); position: relative; overflow: hidden; min-height: 160px; }
+        .header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to right, rgba(0, 58, 112, 0.9) 0%, rgba(0, 58, 112, 0.3) 50%, transparent 100%); }
+        .header-content { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; position: relative; z-index: 1; min-height: 100px; }
+        .header-text h1 { color: var(--white); font-size: 28px; font-weight: 700; margin-bottom: 4px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .header-text p { color: rgba(255,255,255,0.95); font-size: 15px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
         .card { background: var(--white); border-radius: 16px; padding: 28px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid var(--gray-200); }
         .card-title { font-size: 18px; font-weight: 600; color: var(--gray-800); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .card-title .icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 18px; }
@@ -50,6 +48,16 @@
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .btn-secondary { background: var(--gray-100); color: var(--gray-700); border: 2px solid var(--gray-200); }
         .btn-danger { background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%); color: var(--white); }
+        
+        /* Login Modal */
+        .login-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .login-modal { background: var(--white); border-radius: 20px; padding: 40px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .login-modal h2 { font-size: 24px; margin-bottom: 8px; color: var(--gray-800); }
+        .login-modal p { color: var(--gray-500); margin-bottom: 24px; font-size: 14px; }
+        .login-modal .form-group { text-align: left; }
+        .login-error { color: var(--danger); font-size: 13px; margin-top: 10px; display: none; }
+        .login-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; color: white; }
+        
         .evaluadores-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
         .evaluador-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--gray-50); border: 2px solid var(--gray-200); border-radius: 10px; cursor: pointer; transition: all 0.2s ease; }
         .evaluador-item:hover { border-color: var(--att-blue); background: rgba(0, 168, 225, 0.05); }
@@ -59,18 +67,20 @@
         .evaluador-name { font-size: 14px; font-weight: 500; color: var(--gray-700); }
         .aspirantes-list { display: flex; flex-direction: column; gap: 12px; }
         .aspirante-card { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; background: var(--gray-50); border: 2px solid var(--gray-200); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; }
-        .aspirante-card:hover:not(.no-show) { border-color: var(--att-blue); background: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        .aspirante-card:hover:not(.no-show):not(.cerrado) { border-color: var(--att-blue); background: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
         .aspirante-card.evaluated { border-color: var(--success); background: var(--success-light); }
         .aspirante-card.no-show { border-color: var(--danger); background: var(--danger-light); opacity: 0.7; cursor: not-allowed; }
+        .aspirante-card.cerrado { border-color: var(--gray-400); background: var(--gray-100); opacity: 0.6; cursor: not-allowed; }
         .aspirante-info { display: flex; align-items: center; gap: 15px; }
         .aspirante-avatar { width: 48px; height: 48px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 600; font-size: 18px; }
-        .aspirante-card.no-show .aspirante-avatar { background: linear-gradient(135deg, var(--gray-400) 0%, var(--gray-500) 100%); }
+        .aspirante-card.no-show .aspirante-avatar, .aspirante-card.cerrado .aspirante-avatar { background: linear-gradient(135deg, var(--gray-400) 0%, var(--gray-500) 100%); }
         .aspirante-details h4 { font-size: 16px; font-weight: 600; color: var(--gray-800); margin-bottom: 4px; }
         .aspirante-details p { font-size: 13px; color: var(--gray-500); }
         .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
         .status-pending { background: var(--warning-light); color: var(--warning); }
         .status-evaluated { background: var(--success-light); color: var(--success); }
         .status-noshow { background: var(--danger-light); color: var(--danger); }
+        .status-cerrado { background: var(--gray-200); color: var(--gray-600); }
         .section { display: none; }
         .section.active { display: block; }
         .eval-section { background: var(--gray-50); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
@@ -115,6 +125,7 @@
         .no-show-container h3 { font-size: 20px; color: var(--gray-700); margin-bottom: 10px; }
         .no-show-container p { color: var(--gray-500); margin-bottom: 24px; }
         .loading { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: var(--white); animation: spin 0.8s linear infinite; }
+        .loading-dark { border: 2px solid var(--gray-200); border-top-color: var(--att-blue); }
         @keyframes spin { to { transform: rotate(360deg); } }
         .fade-in { animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -128,6 +139,12 @@
         .guide-item.green .guide-item-score { color: var(--success); }
         .guide-item.yellow .guide-item-score { color: var(--warning); }
         .guide-item.red .guide-item-score { color: var(--danger); }
+        /* User badge */
+        .user-badge { position: fixed; top: 20px; right: 20px; background: var(--white); padding: 10px 16px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; z-index: 100; }
+        .user-badge-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600; }
+        .user-badge-name { font-size: 14px; font-weight: 600; color: var(--gray-700); }
+        .user-badge-logout { background: none; border: none; color: var(--gray-400); cursor: pointer; font-size: 16px; padding: 4px; }
+        .user-badge-logout:hover { color: var(--danger); }
         @media (max-width: 640px) {
             .container { padding: 12px; }
             .header { padding: 20px; }
@@ -141,16 +158,42 @@
             .option-btn { width: 100%; text-align: center; }
             .eval-aspirante-header { flex-direction: column; text-align: center; }
             .guide-box-content { grid-template-columns: 1fr; }
+            .user-badge { top: auto; bottom: 20px; right: 20px; }
         }
     </style>
 </head>
 <body>
+    <!-- Login Modal -->
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-modal fade-in">
+            <div class="login-avatar">🔐</div>
+            <h2>Acceso Panelistas</h2>
+            <p>Ingresa tu clave para acceder al sistema de evaluación</p>
+            <div class="form-group">
+                <label>Selecciona tu nombre</label>
+                <select id="login-nombre">
+                    <option value="">Selecciona...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Clave de acceso</label>
+                <input type="password" id="login-clave" placeholder="Ingresa tu clave">
+            </div>
+            <div class="login-error" id="login-error">Clave incorrecta. Intenta de nuevo.</div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="intentarLogin()">Ingresar →</button>
+        </div>
+    </div>
+
+    <!-- User Badge -->
+    <div class="user-badge" id="user-badge" style="display: none;">
+        <div class="user-badge-avatar" id="badge-avatar">XX</div>
+        <span class="user-badge-name" id="badge-name">Usuario</span>
+        <button class="user-badge-logout" onclick="cerrarSesion()" title="Cerrar sesión">✕</button>
+    </div>
+
     <div class="container">
         <div class="header">
             <div class="header-content">
-                <div class="logo-container">
-                    <img src="https://cdn.brandfetch.io/idMKNzJhCD/w/512/h/512/theme/dark/icon.png" alt="AT&T Logo">
-                </div>
                 <div class="header-text">
                     <h1>Entrevista Panel</h1>
                     <p>Sistema de Evaluación | ExpertCell</p>
@@ -177,14 +220,9 @@
                     </select>
                 </div>
             </div>
-            <div class="card fade-in" id="evaluadores-card" style="display: none;">
-                <div class="card-title"><span class="icon">👤</span>¿Quién eres?</div>
-                <p style="color: var(--gray-500); font-size: 14px; margin-bottom: 16px;">Selecciona tu nombre para registrar tu evaluación</p>
-                <div class="evaluadores-grid" id="evaluadores-list"></div>
-            </div>
             <div class="card fade-in" id="aspirantes-card" style="display: none;">
                 <div class="card-title"><span class="icon">📋</span>Aspirantes a Evaluar</div>
-                <p style="color: var(--gray-500); font-size: 14px; margin-bottom: 16px;">Selecciona un aspirante para comenzar</p>
+                <p style="color: var(--gray-500); font-size: 14px; margin-bottom: 16px;">Selecciona un aspirante para comenzar. <strong>⚠️ La evaluación se cierra cuando inicia el siguiente horario.</strong></p>
                 <div class="aspirantes-list" id="aspirantes-list"></div>
             </div>
         </div>
@@ -490,7 +528,7 @@
 
                 <div class="nav-buttons">
                     <button class="btn btn-secondary" onclick="volverALista()">← Volver</button>
-                    <button class="btn btn-primary" id="btn-enviar" onclick="enviarEvaluacion()">Enviar Evaluación →</button>
+                    <button class="btn btn-primary" id="btn-enviar" disabled onclick="enviarEvaluacion()">Enviar Evaluación →</button>
                 </div>
             </div>
         </div>
@@ -527,9 +565,25 @@
     <script>
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
 
-const EVALUADORES = {
-    'Torre JV Juárez': ['Luisa', 'Jorge', 'Fernanda', 'Karla', 'Mashiel', 'Pilar', 'Julio', 'Jonathan'],
-    'Edificio Inbursa Antequera': ['Mashiel', 'Pilar', 'Julio', 'Jonathan', 'Eduardo', 'Reyna', 'Alan', 'Alfredo', 'Carlos', 'Yessica', 'Jezabel']
+// Claves de panelistas (nombre: clave)
+const CLAVES_PANELISTAS = {
+    // Torre JV Juárez
+    'Luisa': 'Luisa@panel26!',
+    'Jorge': 'Jorge#panel26!',
+    'Fernanda': 'Fer$panel26!',
+    'Karla': 'Karla&panel26!',
+    'Mashiel': 'Mash*panel26!',
+    'Pilar': 'Pilar%panel26!',
+    'Julio': 'Julio+panel26!',
+    'Jonathan': 'Jona=panel26!',
+    // Edificio Inbursa Antequera
+    'Eduardo': 'Edu@panel26!',
+    'Reyna': 'Reyna#panel26!',
+    'Alan': 'Alan$panel26!',
+    'Alfredo': 'Alfre&panel26!',
+    'Carlos': 'Carlos*panel26!',
+    'Yessica': 'Yessi%panel26!',
+    'Jezabel': 'Jeza+panel26!'
 };
 
 // Evaluadores que ven la guía de rangos
@@ -540,8 +594,74 @@ let selectedGrupo = null;
 let selectedEvaluador = null;
 let selectedAspirante = null;
 let aspirantesList = [];
+let horariosAspirantes = [];
 let evaluaciones = {};
 let vetos = [];
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', () => {
+    // Cargar nombres en login
+    const selectLogin = document.getElementById('login-nombre');
+    Object.keys(CLAVES_PANELISTAS).sort().forEach(nombre => {
+        const opt = document.createElement('option');
+        opt.value = nombre;
+        opt.textContent = nombre;
+        selectLogin.appendChild(opt);
+    });
+    
+    // Verificar si ya hay sesión
+    const sesion = localStorage.getItem('panelista_sesion');
+    if (sesion) {
+        const data = JSON.parse(sesion);
+        if (data.nombre && data.expira > Date.now()) {
+            selectedEvaluador = data.nombre;
+            mostrarSesionActiva();
+        }
+    }
+    
+    // Enter en clave
+    document.getElementById('login-clave').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') intentarLogin();
+    });
+});
+
+function intentarLogin() {
+    const nombre = document.getElementById('login-nombre').value;
+    const clave = document.getElementById('login-clave').value;
+    
+    if (!nombre || !clave) {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-error').textContent = 'Completa todos los campos.';
+        return;
+    }
+    
+    if (CLAVES_PANELISTAS[nombre] === clave) {
+        selectedEvaluador = nombre;
+        // Guardar sesión (expira en 8 horas)
+        localStorage.setItem('panelista_sesion', JSON.stringify({
+            nombre: nombre,
+            expira: Date.now() + (8 * 60 * 60 * 1000)
+        }));
+        mostrarSesionActiva();
+    } else {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-error').textContent = 'Clave incorrecta. Intenta de nuevo.';
+        document.getElementById('login-clave').value = '';
+    }
+}
+
+function mostrarSesionActiva() {
+    document.getElementById('login-overlay').style.display = 'none';
+    document.getElementById('user-badge').style.display = 'flex';
+    const iniciales = selectedEvaluador.substring(0, 2).toUpperCase();
+    document.getElementById('badge-avatar').textContent = iniciales;
+    document.getElementById('badge-name').textContent = selectedEvaluador;
+}
+
+function cerrarSesion() {
+    localStorage.removeItem('panelista_sesion');
+    location.reload();
+}
 
 function showSection(id) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -554,10 +674,8 @@ function onSucursalChange() {
     if (selectedSucursal) {
         document.getElementById('grupo-container').style.display = 'block';
         cargarGrupos();
-        cargarEvaluadores();
     } else {
         document.getElementById('grupo-container').style.display = 'none';
-        document.getElementById('evaluadores-card').style.display = 'none';
         document.getElementById('aspirantes-card').style.display = 'none';
     }
 }
@@ -585,25 +703,6 @@ async function cargarGrupos() {
     }
 }
 
-function cargarEvaluadores() {
-    const lista = document.getElementById('evaluadores-list');
-    const evs = EVALUADORES[selectedSucursal] || [];
-    lista.innerHTML = '';
-    evs.forEach(nombre => {
-        const div = document.createElement('div');
-        div.className = 'evaluador-item';
-        div.innerHTML = '<span class="evaluador-check">✓</span><span class="evaluador-name">' + nombre + '</span>';
-        div.onclick = () => {
-            document.querySelectorAll('.evaluador-item').forEach(e => e.classList.remove('selected'));
-            div.classList.add('selected');
-            selectedEvaluador = nombre;
-            if (selectedGrupo) cargarAspirantes();
-        };
-        lista.appendChild(div);
-    });
-    document.getElementById('evaluadores-card').style.display = 'block';
-}
-
 function onGrupoChange() {
     selectedGrupo = document.getElementById('select-grupo').value;
     if (selectedGrupo && selectedEvaluador) cargarAspirantes();
@@ -612,27 +711,68 @@ function onGrupoChange() {
 async function cargarAspirantes() {
     if (!selectedSucursal || !selectedGrupo || !selectedEvaluador) return;
     const lista = document.getElementById('aspirantes-list');
-    lista.innerHTML = '<p style="text-align:center;color:var(--gray-500);">Cargando...</p>';
+    lista.innerHTML = '<p style="text-align:center;color:var(--gray-500);"><span class="loading loading-dark"></span> Cargando...</p>';
     document.getElementById('aspirantes-card').style.display = 'block';
     try {
         const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getAspirantesPanel&sucursal=' + encodeURIComponent(selectedSucursal) + '&fecha=' + encodeURIComponent(selectedGrupo) + '&evaluador=' + encodeURIComponent(selectedEvaluador));
         const data = await r.json();
         aspirantesList = data.aspirantes || [];
+        
+        // Guardar horarios para verificar cierre
+        horariosAspirantes = aspirantesList.map(a => a.hora).sort();
+        
         if (aspirantesList.length === 0) {
             lista.innerHTML = '<p style="text-align:center;color:var(--gray-500);">No hay aspirantes</p>';
             return;
         }
+        
+        const ahora = new Date();
+        const horaActual = ahora.getHours() * 60 + ahora.getMinutes();
+        
         lista.innerHTML = '';
-        aspirantesList.forEach(asp => {
+        aspirantesList.forEach((asp, idx) => {
             const iniciales = asp.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
             let statusClass = 'status-pending', statusText = 'Pendiente', cardClass = '';
-            if (asp.evaluadoPorMi) { statusClass = 'status-evaluated'; statusText = 'Evaluado'; cardClass = 'evaluated'; }
-            if (asp.noSePresento) { statusClass = 'status-noshow'; statusText = '🚫 No se presentó'; cardClass = 'no-show'; }
+            let puedeEvaluar = true;
+            
+            if (asp.evaluadoPorMi) { 
+                statusClass = 'status-evaluated'; 
+                statusText = 'Evaluado'; 
+                cardClass = 'evaluated'; 
+            }
+            if (asp.noSePresento) { 
+                statusClass = 'status-noshow'; 
+                statusText = '🚫 No se presentó'; 
+                cardClass = 'no-show'; 
+                puedeEvaluar = false;
+            }
+            
+            // Verificar si está cerrada la evaluación (pasó el horario del siguiente)
+            const [h, m] = asp.hora.split(':').map(Number);
+            const horaAspirante = h * 60 + m;
+            
+            // Buscar siguiente horario
+            const siguienteIdx = horariosAspirantes.findIndex(hora => {
+                const [sh, sm] = hora.split(':').map(Number);
+                return (sh * 60 + sm) > horaAspirante;
+            });
+            
+            if (siguienteIdx !== -1) {
+                const [sh, sm] = horariosAspirantes[siguienteIdx].split(':').map(Number);
+                const horaSiguiente = sh * 60 + sm;
+                if (horaActual >= horaSiguiente && !asp.evaluadoPorMi) {
+                    statusClass = 'status-cerrado';
+                    statusText = '🔒 Cerrado';
+                    cardClass = 'cerrado';
+                    puedeEvaluar = false;
+                }
+            }
+            
             const div = document.createElement('div');
             div.className = 'aspirante-card ' + cardClass;
-            div.innerHTML = '<div class="aspirante-info"><div class="aspirante-avatar">' + iniciales + '</div><div class="aspirante-details"><h4>' + asp.nombre + '</h4><p>' + asp.hora + ' • ' + asp.estado + '</p></div></div><span class="status-badge ' + statusClass + '">' + statusText + '</span>';
-            // Solo permitir click si NO es no-show
-            if (!asp.noSePresento) {
+            div.innerHTML = '<div class="aspirante-info"><div class="aspirante-avatar">' + iniciales + '</div><div class="aspirante-details"><h4>' + asp.nombre + '</h4><p>🕐 ' + asp.hora + ' • ' + asp.estado + '</p></div></div><span class="status-badge ' + statusClass + '">' + statusText + '</span>';
+            
+            if (puedeEvaluar && !asp.evaluadoPorMi) {
                 div.onclick = () => iniciarEvaluacion(asp);
             }
             lista.appendChild(div);
@@ -712,7 +852,6 @@ function actualizarProgreso() {
 
 function marcarNoSePresento() {
     document.getElementById('noshow-nombre').textContent = selectedAspirante.nombre;
-    // Resetear botón
     const btn = document.getElementById('btn-noshow');
     btn.disabled = false;
     btn.innerHTML = 'Confirmar No Show';
