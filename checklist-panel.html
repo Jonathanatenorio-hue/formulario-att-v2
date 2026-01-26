@@ -294,7 +294,7 @@ async function onSucursalChange() {
     } else if (selectedSucursal === 'Edificio Inbursa Antequera') {
         // Antequera tiene dos reclutadores, mostrar selector
         reclutadorGroup.style.display = 'block';
-        selectReclutador.innerHTML = '<option value="">Todos los reclutadores...</option><option value="Yessica">Yessica Huerta</option><option value="Jezabel">Jezabel Monterrosas</option>';
+        selectReclutador.innerHTML = '<option value="">Todos los reclutadores...</option><option value="Yessica Huerta">Yessica Huerta</option><option value="Jezabel">Jezabel Monterrosas</option>';
         selectedReclutador = '';
     }
     
@@ -340,11 +340,12 @@ async function cargarAspirantesAprobados() {
         if (selectedSucursal === 'Edificio Inbursa Antequera' && selectedReclutador) {
             console.log('Filtrando por reclutador:', selectedReclutador);
             console.log('Aspirantes antes del filtro:', aprobados.map(a => ({ nombre: a.nombre, reclutador: a.reclutador })));
+            const filtro = selectedReclutador.toLowerCase().trim();
             aprobados = aprobados.filter(a => {
                 if (!a.reclutador) return false;
-                const reclutadorNorm = a.reclutador.toLowerCase().trim();
-                const filtroNorm = selectedReclutador.toLowerCase().trim();
-                return reclutadorNorm.includes(filtroNorm) || filtroNorm.includes(reclutadorNorm.split(' ')[0]);
+                const reclutador = a.reclutador.toLowerCase().trim();
+                // Buscar si el filtro está contenido en el reclutador o viceversa
+                return reclutador.includes(filtro) || reclutador.startsWith(filtro.split(' ')[0]);
             });
             console.log('Aspirantes después del filtro:', aprobados.length);
         }
@@ -524,18 +525,24 @@ async function guardarChecklist() {
         return;
     }
     
-    // Validar reclutador solo para Antequera
+    // Validar reclutador - usar el del aspirante si no se seleccionó uno específico
+    let reclutadorFinal = selectedReclutador;
     if (selectedSucursal === 'Edificio Inbursa Antequera') {
-        selectedReclutador = document.getElementById('select-reclutador').value;
-        if (!selectedReclutador) {
+        const reclutadorSelect = document.getElementById('select-reclutador').value;
+        if (reclutadorSelect) {
+            reclutadorFinal = reclutadorSelect;
+        } else if (selectedAspirante.reclutador) {
+            // Usar el reclutador que ya tiene el aspirante desde Entrevistas Telefónicas
+            reclutadorFinal = selectedAspirante.reclutador;
+        } else {
             alert('⚠️ Debes seleccionar un reclutador');
             return;
         }
     }
-    // Para JV ya está asignado automáticamente
+    // Para JV ya está asignado automáticamente como 'Karla Flores'
     
     const btn = document.getElementById('btn-guardar'); btn.disabled = true; btn.innerHTML = '<span class="loading"></span> Guardando...';
-    const data = { tipo: 'checklist_panel', reclutador: selectedReclutador, sucursal: selectedSucursal, fecha: selectedFecha, aspirante_nombre: selectedAspirante.nombre, aspirante_telefono: selectedAspirante.telefono, aspirante_email: selectedAspirante.email || '', ine: checklistStatus.ine, domicilio: checklistStatus.domicilio, curp: checklistStatus.curp, rfc: checklistStatus.rfc, csf: checklistStatus.csf, acta: checklistStatus.acta, estudios: checklistStatus.estudios, laboral: checklistStatus.laboral, banco: checklistStatus.banco, nss: checklistStatus.nss, infonavit: checklistStatus.infonavit, fonacot: checklistStatus.fonacot, psico: checklistStatus.psico, emergencia_nombre: document.getElementById('emergencia-nombre').value, emergencia_parentesco: document.getElementById('emergencia-parentesco').value, emergencia_telefono: document.getElementById('emergencia-telefono').value, emergencia_fecha_nac: document.getElementById('emergencia-fecha-nac').value, observaciones: document.getElementById('observaciones').value, timestamp: new Date().toLocaleString('es-MX'), enviarFelicitacion: true };
+    const data = { tipo: 'checklist_panel', reclutador: reclutadorFinal, sucursal: selectedSucursal, fecha: selectedFecha, aspirante_nombre: selectedAspirante.nombre, aspirante_telefono: selectedAspirante.telefono, aspirante_email: selectedAspirante.email || '', ine: checklistStatus.ine, domicilio: checklistStatus.domicilio, curp: checklistStatus.curp, rfc: checklistStatus.rfc, csf: checklistStatus.csf, acta: checklistStatus.acta, estudios: checklistStatus.estudios, laboral: checklistStatus.laboral, banco: checklistStatus.banco, nss: checklistStatus.nss, infonavit: checklistStatus.infonavit, fonacot: checklistStatus.fonacot, psico: checklistStatus.psico, emergencia_nombre: document.getElementById('emergencia-nombre').value, emergencia_parentesco: document.getElementById('emergencia-parentesco').value, emergencia_telefono: document.getElementById('emergencia-telefono').value, emergencia_fecha_nac: document.getElementById('emergencia-fecha-nac').value, observaciones: document.getElementById('observaciones').value, timestamp: new Date().toLocaleString('es-MX'), enviarFelicitacion: true };
     
     console.log('Datos a enviar:', JSON.stringify(data, null, 2));
     console.log('checklistStatus:', checklistStatus);
