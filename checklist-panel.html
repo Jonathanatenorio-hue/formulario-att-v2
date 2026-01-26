@@ -153,6 +153,14 @@
             <div class="card">
                 <div class="card-title"><div class="icon">📍</div>Selecciona el Panel</div>
                 <div class="form-group">
+                    <label>Reclutador</label>
+                    <select id="select-reclutador">
+                        <option value="">Selecciona reclutador...</option>
+                        <option value="Karla Flores">Karla Flores</option>
+                        <option value="Yessica Huerta">Yessica Huerta</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Sucursal</label>
                     <select id="select-sucursal" onchange="onSucursalChange()">
                         <option value="">Selecciona sucursal...</option>
@@ -205,10 +213,10 @@
 
                 <div class="checklist-section">
                     <div class="checklist-section-title">📎 Documentos Opcionales <span class="opcional-badge">PUEDEN ENTREGARSE DESPUÉS</span></div>
-                    <div class="checklist-item" id="item-csf"><div class="checklist-item-left"><div class="checklist-item-icon">📋</div><div class="checklist-item-text"><h4>Constancia de Situación Fiscal</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('csf', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('csf', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('csf', 'na')">➖ N/A</button></div></div>
-                    <div class="checklist-item" id="item-estudios"><div class="checklist-item-left"><div class="checklist-item-icon">🎓</div><div class="checklist-item-text"><h4>Comprobante de estudios</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('estudios', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('estudios', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('estudios', 'na')">➖ N/A</button></div></div>
-                    <div class="checklist-item" id="item-laboral"><div class="checklist-item-left"><div class="checklist-item-icon">💼</div><div class="checklist-item-text"><h4>Constancia laboral</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('laboral', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('laboral', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('laboral', 'na')">➖ N/A</button></div></div>
-                    <div class="checklist-item" id="item-nss"><div class="checklist-item-left"><div class="checklist-item-icon">🏥</div><div class="checklist-item-text"><h4>NSS (Seguro Social)</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('nss', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('nss', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('nss', 'na')">➖ N/A</button></div></div>
+                    <div class="checklist-item" id="item-csf"><div class="checklist-item-left"><div class="checklist-item-icon">📋</div><div class="checklist-item-text"><h4>Constancia de Situación Fiscal</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('csf', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('csf', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-estudios"><div class="checklist-item-left"><div class="checklist-item-icon">🎓</div><div class="checklist-item-text"><h4>Comprobante de estudios</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('estudios', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('estudios', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-laboral"><div class="checklist-item-left"><div class="checklist-item-icon">💼</div><div class="checklist-item-text"><h4>Constancia laboral</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('laboral', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('laboral', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-nss"><div class="checklist-item-left"><div class="checklist-item-icon">🏥</div><div class="checklist-item-text"><h4>NSS (Seguro Social)</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('nss', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('nss', false)">❌ No</button></div></div>
                     <div class="checklist-item" id="item-infonavit"><div class="checklist-item-left"><div class="checklist-item-icon">🏡</div><div class="checklist-item-text"><h4>Infonavit</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('infonavit', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('infonavit', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('infonavit', 'na')">➖ N/A</button></div></div>
                     <div class="checklist-item" id="item-fonacot"><div class="checklist-item-left"><div class="checklist-item-icon">💰</div><div class="checklist-item-text"><h4>Fonacot</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('fonacot', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('fonacot', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('fonacot', 'na')">➖ N/A</button></div></div>
                 </div>
@@ -221,8 +229,8 @@
                             <div class="form-group"><label>Parentesco *</label><select id="emergencia-parentesco" required><option value="">Seleccionar...</option><option value="Padre">Padre</option><option value="Madre">Madre</option><option value="Esposo(a)">Esposo(a)</option><option value="Hermano(a)">Hermano(a)</option><option value="Hijo(a)">Hijo(a)</option><option value="Otro">Otro</option></select></div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group"><label>Teléfono *</label><input type="tel" id="emergencia-telefono" placeholder="10 dígitos" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
-                            <div class="form-group"><label>Fecha de nacimiento</label><input type="date" id="emergencia-fecha-nac" max="2008-01-01"></div>
+                            <div class="form-group"><label>Teléfono *</label><input type="tel" id="emergencia-telefono" placeholder="10 dígitos" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required></div>
+                            <div class="form-group"><label>Fecha de nacimiento *</label><input type="date" id="emergencia-fecha-nac" max="2008-01-01" required></div>
                         </div>
                     </div>
                 </div>
@@ -257,7 +265,7 @@
 
     <script>
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
-let selectedSucursal = '', selectedFecha = '', selectedAspirante = null, aspirantesList = [], recordatorioData = null;
+let selectedReclutador = '', selectedSucursal = '', selectedFecha = '', selectedAspirante = null, aspirantesList = [], recordatorioData = null;
 let checklistStatus = { ine: null, curp: null, domicilio: null, acta: null, rfc: null, banco: null, psico: null, csf: null, estudios: null, laboral: null, nss: null, infonavit: null, fonacot: null };
 
 function showSection(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
@@ -371,27 +379,44 @@ async function guardarChecklist() {
         return;
     }
     
-    if (emergTelefono && emergTelefono.replace(/\D/g, '').length !== 10) {
+    if (!emergTelefono) {
+        alert('⚠️ El teléfono del contacto de emergencia es obligatorio');
+        document.getElementById('emergencia-telefono').focus();
+        return;
+    }
+    
+    if (emergTelefono.replace(/\D/g, '').length !== 10) {
         alert('⚠️ El teléfono de emergencia debe tener exactamente 10 dígitos');
         document.getElementById('emergencia-telefono').focus();
         return;
     }
     
-    if (emergFechaNac) {
-        const fechaNac = new Date(emergFechaNac);
-        const hoy = new Date();
-        const edad = Math.floor((hoy - fechaNac) / (365.25 * 24 * 60 * 60 * 1000));
-        if (edad < 18) {
-            alert('⚠️ El contacto de emergencia debe ser mayor de 18 años');
-            document.getElementById('emergencia-fecha-nac').focus();
-            return;
-        }
+    if (!emergFechaNac) {
+        alert('⚠️ La fecha de nacimiento del contacto de emergencia es obligatoria');
+        document.getElementById('emergencia-fecha-nac').focus();
+        return;
+    }
+    
+    const fechaNac = new Date(emergFechaNac);
+    const hoy = new Date();
+    const edad = Math.floor((hoy - fechaNac) / (365.25 * 24 * 60 * 60 * 1000));
+    if (edad < 18) {
+        alert('⚠️ El contacto de emergencia debe ser mayor de 18 años');
+        document.getElementById('emergencia-fecha-nac').focus();
+        return;
+    }
+    
+    selectedReclutador = document.getElementById('select-reclutador').value;
+    if (!selectedReclutador) {
+        alert('⚠️ Debes seleccionar un reclutador');
+        return;
     }
     
     const btn = document.getElementById('btn-guardar'); btn.disabled = true; btn.innerHTML = '<span class="loading"></span> Guardando...';
-    const data = { tipo: 'checklist_panel', sucursal: selectedSucursal, fecha: selectedFecha, aspirante_nombre: selectedAspirante.nombre, aspirante_telefono: selectedAspirante.telefono, aspirante_email: selectedAspirante.email || '', ine: checklistStatus.ine, domicilio: checklistStatus.domicilio, curp: checklistStatus.curp, rfc: checklistStatus.rfc, csf: checklistStatus.csf, acta: checklistStatus.acta, estudios: checklistStatus.estudios, laboral: checklistStatus.laboral, banco: checklistStatus.banco, nss: checklistStatus.nss, infonavit: checklistStatus.infonavit, fonacot: checklistStatus.fonacot, psico: checklistStatus.psico, emergencia_nombre: document.getElementById('emergencia-nombre').value, emergencia_parentesco: document.getElementById('emergencia-parentesco').value, emergencia_telefono: document.getElementById('emergencia-telefono').value, emergencia_fecha_nac: document.getElementById('emergencia-fecha-nac').value, observaciones: document.getElementById('observaciones').value, timestamp: new Date().toLocaleString('es-MX'), enviarFelicitacion: true };
+    const data = { tipo: 'checklist_panel', reclutador: selectedReclutador, sucursal: selectedSucursal, fecha: selectedFecha, aspirante_nombre: selectedAspirante.nombre, aspirante_telefono: selectedAspirante.telefono, aspirante_email: selectedAspirante.email || '', ine: checklistStatus.ine, domicilio: checklistStatus.domicilio, curp: checklistStatus.curp, rfc: checklistStatus.rfc, csf: checklistStatus.csf, acta: checklistStatus.acta, estudios: checklistStatus.estudios, laboral: checklistStatus.laboral, banco: checklistStatus.banco, nss: checklistStatus.nss, infonavit: checklistStatus.infonavit, fonacot: checklistStatus.fonacot, psico: checklistStatus.psico, emergencia_nombre: document.getElementById('emergencia-nombre').value, emergencia_parentesco: document.getElementById('emergencia-parentesco').value, emergencia_telefono: document.getElementById('emergencia-telefono').value, emergencia_fecha_nac: document.getElementById('emergencia-fecha-nac').value, observaciones: document.getElementById('observaciones').value, timestamp: new Date().toLocaleString('es-MX'), enviarFelicitacion: true };
     try { const r = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) }); const result = await r.json(); mostrarConfirmacion(result); }
-    catch (e) { console.error(e); alert('Error al guardar'); btn.disabled = false; btn.innerHTML = '💾 Guardar'; }
+    catch (e) { console.error(e); alert('Error al guardar'); }
+    finally { btn.disabled = false; btn.innerHTML = '💾 Guardar'; }
 }
 
 function mostrarConfirmacion(result) {
