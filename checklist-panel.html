@@ -563,20 +563,44 @@ async function cargarAspirantesAprobados() {
     try {
         const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getAprobadosParaChecklist&fecha=' + encodeURIComponent(selectedFecha) + '&sucursal=' + encodeURIComponent(selectedSucursal));
         const data = await r.json();
-        aspirantesList = data.aprobados || [];
+        const todosAspirantes = data.aprobados || [];
         
-        if (aspirantesList.length === 0) {
-            lista.innerHTML = '<p style="text-align:center;color:var(--gray-500);">No hay aspirantes aprobados</p>';
+        // FILTRAR: solo mostrar los que NO tienen checklist completo
+        aspirantesList = todosAspirantes.filter(asp => !asp.checklistCompleto);
+        
+        // Contar completados para mostrar estadísticas
+        const completados = todosAspirantes.filter(asp => asp.checklistCompleto).length;
+        const pendientes = aspirantesList.length;
+        
+        if (todosAspirantes.length === 0) {
+            lista.innerHTML = '<p style="text-align:center;color:var(--gray-500);">No hay aspirantes aprobados para esta fecha</p>';
             return;
         }
         
-        lista.innerHTML = '';
+        if (aspirantesList.length === 0) {
+            lista.innerHTML = `
+                <div style="text-align:center;padding:30px;">
+                    <div style="font-size:48px;margin-bottom:15px;">🎉</div>
+                    <h3 style="color:var(--success);margin-bottom:10px;">¡Todos completados!</h3>
+                    <p style="color:var(--gray-500);">Los ${completados} aspirantes aprobados ya tienen su checklist completo.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Mostrar contador
+        lista.innerHTML = `
+            <div style="background:var(--gray-100);padding:12px 16px;border-radius:10px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:13px;color:var(--gray-600);">📋 Pendientes: <strong>${pendientes}</strong></span>
+                <span style="font-size:13px;color:var(--success);">✅ Completados: <strong>${completados}</strong></span>
+            </div>
+        `;
+        
         aspirantesList.forEach(asp => {
             const iniciales = asp.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
-            const isComplete = asp.checklistCompleto;
             
             const div = document.createElement('div');
-            div.className = 'aspirante-item' + (isComplete ? ' completed' : '');
+            div.className = 'aspirante-item';
             div.innerHTML = `
                 <div class="aspirante-item-left">
                     <div class="aspirante-item-avatar">${iniciales}</div>
@@ -585,9 +609,7 @@ async function cargarAspirantesAprobados() {
                         <p>${asp.puntaje}/80 pts • ${asp.resultado}</p>
                     </div>
                 </div>
-                <span class="aspirante-item-status ${isComplete ? 'status-complete' : 'status-pending'}">
-                    ${isComplete ? '✅ Completo' : '⏳ Pendiente'}
-                </span>
+                <span class="aspirante-item-status status-pending">⏳ Pendiente</span>
             `;
             div.onclick = () => abrirChecklist(asp);
             lista.appendChild(div);
@@ -756,6 +778,7 @@ async function guardarChecklist() {
         fecha: selectedFecha,
         aspirante_nombre: selectedAspirante.nombre,
         aspirante_telefono: selectedAspirante.telefono,
+        aspirante_email: selectedAspirante.email || '',
         // Documentos
         ine: checklistStatus.ine,
         domicilio: checklistStatus.domicilio,
@@ -778,7 +801,9 @@ async function guardarChecklist() {
         emergencia_fecha_nac: document.getElementById('emergencia-fecha-nac').value,
         // Observaciones
         observaciones: document.getElementById('observaciones').value,
-        timestamp: new Date().toLocaleString('es-MX')
+        timestamp: new Date().toLocaleString('es-MX'),
+        // Indicar que envíe felicitación
+        enviarFelicitacion: true
     };
     
     try {
@@ -789,8 +814,10 @@ async function guardarChecklist() {
             body: JSON.stringify(data)
         });
         
-        document.getElementById('confirmacion-mensaje').textContent = 
-            `El checklist de ${selectedAspirante.nombre} ha sido guardado correctamente.`;
+        document.getElementById('confirmacion-mensaje').innerHTML = `
+            <span style="display:block;margin-bottom:10px;">El checklist de <strong>${selectedAspirante.nombre}</strong> ha sido guardado correctamente.</span>
+            <span style="display:block;font-size:14px;color:var(--success);">✉️ Se ha enviado el email de felicitación con los datos de capacitación.</span>
+        `;
         showSection('section-confirmacion');
     } catch (e) {
         alert('Error al guardar. Intenta de nuevo.');
