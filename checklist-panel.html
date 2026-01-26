@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist Post-Panel | AT&T - ExpertCell</title>
+    <title>Checklist Post-Panel | ExpertCell</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -29,802 +29,345 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'IBM Plex Sans', sans-serif; background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%); min-height: 100vh; color: var(--gray-800); }
-        .container { max-width: 700px; margin: 0 auto; padding: 20px; }
-        .header { background: url('https://jonathanatenorio-hue.github.io/formulario-att-v2/logo-att.png') center center / cover no-repeat; padding: 30px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 10px 40px rgba(0, 87, 184, 0.3); position: relative; overflow: hidden; min-height: 140px; }
-        .header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to right, rgba(0, 58, 112, 0.9) 0%, rgba(0, 58, 112, 0.3) 50%, transparent 100%); }
-        .header-content { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; position: relative; z-index: 1; min-height: 80px; }
-        .header-text h1 { color: var(--white); font-size: 24px; font-weight: 700; margin-bottom: 4px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .header-text p { color: rgba(255,255,255,0.95); font-size: 14px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
-        .card { background: var(--white); border-radius: 16px; padding: 28px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid var(--gray-200); }
-        .card-title { font-size: 18px; font-weight: 600; color: var(--gray-800); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, var(--att-blue-dark) 0%, var(--att-blue-deeper) 100%); padding: 30px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 10px 40px rgba(0, 87, 184, 0.3); }
+        .header h1 { color: var(--white); font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+        .header p { color: rgba(255,255,255,0.9); font-size: 14px; }
+        .card { background: var(--white); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid var(--gray-200); }
+        .card-title { font-size: 18px; font-weight: 600; color: var(--gray-800); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
         .card-title .icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 18px; }
-        .form-group { margin-bottom: 20px; }
+        .stats-bar { display: flex; gap: 16px; margin-bottom: 20px; }
+        .stat-item { flex: 1; background: var(--gray-50); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid var(--gray-200); }
+        .stat-item.success { background: var(--success-light); border-color: var(--success); }
+        .stat-item.warning { background: var(--warning-light); border-color: var(--warning); }
+        .stat-item.neutral { background: var(--gray-100); border-color: var(--gray-300); }
+        .stat-number { font-size: 28px; font-weight: 700; }
+        .stat-item.success .stat-number { color: var(--success); }
+        .stat-item.warning .stat-number { color: var(--warning); }
+        .stat-item.neutral .stat-number { color: var(--gray-500); }
+        .stat-label { font-size: 12px; color: var(--gray-600); margin-top: 4px; }
+        .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-size: 14px; font-weight: 500; color: var(--gray-700); margin-bottom: 8px; }
-        .form-group select { width: 100%; padding: 14px 16px; border: 2px solid var(--gray-200); border-radius: 10px; font-size: 15px; font-family: inherit; transition: all 0.2s ease; background: var(--white); cursor: pointer; }
-        .form-group select:focus { outline: none; border-color: var(--att-blue); box-shadow: 0 0 0 4px rgba(0, 168, 225, 0.1); }
-        .btn { padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.2s ease; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-primary { background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); color: var(--white); box-shadow: 0 4px 15px rgba(0, 168, 225, 0.3); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 168, 225, 0.4); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        
-        /* Aspirante Card */
-        .aspirante-card { display: flex; align-items: center; gap: 16px; padding: 20px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 12px; color: white; margin-bottom: 24px; }
-        .aspirante-avatar { width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; }
-        .aspirante-details h3 { font-size: 20px; margin-bottom: 4px; }
-        .aspirante-details p { opacity: 0.9; font-size: 14px; }
-        .aspirante-badge { background: var(--success); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-left: auto; }
-        
-        /* Checklist */
-        .checklist-section { margin-bottom: 24px; }
-        .checklist-section-title { font-size: 14px; font-weight: 600; color: var(--gray-600); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .checklist-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--gray-50); border: 2px solid var(--gray-200); border-radius: 10px; margin-bottom: 10px; transition: all 0.2s; }
+        .form-group select { width: 100%; padding: 12px 16px; border: 2px solid var(--gray-200); border-radius: 10px; font-size: 15px; font-family: inherit; background: var(--white); cursor: pointer; }
+        .form-group select:focus { outline: none; border-color: var(--att-blue); }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; border: 2px solid var(--gray-200); border-radius: 10px; background: var(--white); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; }
+        .tab-btn:hover { border-color: var(--att-blue); }
+        .tab-btn.active { background: var(--att-blue); border-color: var(--att-blue); color: white; }
+        .tab-btn .badge { background: var(--gray-200); color: var(--gray-700); padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+        .tab-btn.active .badge { background: rgba(255,255,255,0.3); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .aspirante-list { display: flex; flex-direction: column; gap: 12px; }
+        .aspirante-card { display: flex; align-items: center; padding: 16px; background: var(--gray-50); border: 2px solid var(--gray-200); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+        .aspirante-card:hover { border-color: var(--att-blue); background: white; }
+        .aspirante-card.status-completo { border-color: var(--success); background: var(--success-light); }
+        .aspirante-card.status-pendiente { border-color: var(--warning); background: var(--warning-light); }
+        .aspirante-avatar { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: white; margin-right: 14px; }
+        .status-completo .aspirante-avatar { background: linear-gradient(135deg, var(--success) 0%, #059669 100%); }
+        .status-pendiente .aspirante-avatar { background: linear-gradient(135deg, var(--warning) 0%, #D97706 100%); }
+        .status-nuevo .aspirante-avatar { background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); }
+        .aspirante-info { flex: 1; }
+        .aspirante-info h4 { font-size: 15px; font-weight: 600; color: var(--gray-800); margin-bottom: 4px; }
+        .aspirante-info p { font-size: 13px; color: var(--gray-500); }
+        .aspirante-info .docs-pendientes { font-size: 12px; color: var(--warning); margin-top: 4px; font-weight: 500; }
+        .aspirante-status { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-badge.completo { background: var(--success); color: white; }
+        .status-badge.pendiente { background: var(--warning); color: white; }
+        .status-badge.nuevo { background: var(--gray-400); color: white; }
+        .btn-recordatorio { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; background: var(--att-blue); color: white; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; font-family: inherit; }
+        .btn-recordatorio:hover { background: var(--att-blue-dark); }
+        .checklist-section { margin-bottom: 20px; }
+        .checklist-section-title { font-size: 13px; font-weight: 600; color: var(--gray-600); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+        .obligatorio-badge { background: var(--danger-light); color: var(--danger); padding: 2px 8px; border-radius: 4px; font-size: 10px; }
+        .opcional-badge { background: var(--gray-100); color: var(--gray-500); padding: 2px 8px; border-radius: 4px; font-size: 10px; }
+        .checklist-item { display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--gray-50); border: 2px solid var(--gray-200); border-radius: 10px; margin-bottom: 8px; transition: all 0.2s; }
         .checklist-item:hover { border-color: var(--att-blue); }
         .checklist-item.checked { border-color: var(--success); background: var(--success-light); }
         .checklist-item.pending { border-color: var(--warning); background: var(--warning-light); }
         .checklist-item-left { display: flex; align-items: center; gap: 12px; }
-        .checklist-item-icon { width: 40px; height: 40px; background: var(--gray-200); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .checklist-item-icon { width: 36px; height: 36px; background: var(--gray-200); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         .checklist-item.checked .checklist-item-icon { background: var(--success); color: white; }
         .checklist-item.pending .checklist-item-icon { background: var(--warning); color: white; }
-        .checklist-item-text h4 { font-size: 15px; font-weight: 600; color: var(--gray-800); margin-bottom: 2px; }
-        .checklist-item-text p { font-size: 12px; color: var(--gray-500); }
-        .checklist-toggle { display: flex; gap: 8px; }
-        .toggle-btn { padding: 8px 16px; border: 2px solid var(--gray-200); border-radius: 8px; background: white; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+        .checklist-item-text h4 { font-size: 14px; font-weight: 600; color: var(--gray-800); }
+        .checklist-toggle { display: flex; gap: 6px; }
+        .toggle-btn { padding: 8px 14px; border: 2px solid var(--gray-200); border-radius: 8px; background: white; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
         .toggle-btn:hover { border-color: var(--att-blue); }
         .toggle-btn.active-yes { background: var(--success); border-color: var(--success); color: white; }
         .toggle-btn.active-no { background: var(--warning); border-color: var(--warning); color: white; }
         .toggle-btn.active-na { background: var(--gray-400); border-color: var(--gray-400); color: white; }
-        
-        /* Contact Form */
-        .contact-form { background: var(--gray-50); border-radius: 12px; padding: 20px; }
-        .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
+        .contact-form { background: var(--gray-50); border-radius: 12px; padding: 16px; }
+        .form-row { display: flex; gap: 12px; margin-bottom: 12px; }
         .form-row:last-child { margin-bottom: 0; }
-        .form-row .form-group { margin-bottom: 0; }
-        .form-row .form-group input,
-        .form-row .form-group select { 
-            width: 100%; 
-            padding: 12px 14px; 
-            border: 2px solid var(--gray-200); 
-            border-radius: 10px; 
-            font-size: 14px; 
-            font-family: inherit; 
-            transition: all 0.2s; 
-        }
-        .form-row .form-group input:focus,
-        .form-row .form-group select:focus { 
-            outline: none; 
-            border-color: var(--att-blue); 
-            box-shadow: 0 0 0 4px rgba(0, 168, 225, 0.1); 
-        }
-        
-        /* Observaciones */
-        .obs-textarea { width: 100%; padding: 14px; border: 2px solid var(--gray-200); border-radius: 10px; font-family: inherit; font-size: 14px; min-height: 80px; resize: vertical; }
+        .form-row .form-group { flex: 1; margin-bottom: 0; }
+        .form-row input, .form-row select { width: 100%; padding: 10px 12px; border: 2px solid var(--gray-200); border-radius: 8px; font-size: 14px; font-family: inherit; }
+        .form-row input:focus, .form-row select:focus { outline: none; border-color: var(--att-blue); }
+        .obs-textarea { width: 100%; padding: 12px; border: 2px solid var(--gray-200); border-radius: 10px; font-family: inherit; font-size: 14px; min-height: 70px; resize: vertical; }
         .obs-textarea:focus { outline: none; border-color: var(--att-blue); }
-        
-        /* Summary */
-        .summary-box { background: var(--gray-50); border-radius: 12px; padding: 20px; margin-top: 20px; }
-        .summary-title { font-size: 14px; font-weight: 600; color: var(--gray-600); margin-bottom: 12px; }
-        .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .summary-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
-        .summary-item.ok { color: var(--success); }
-        .summary-item.pending { color: var(--warning); }
-        
-        /* Loading */
-        .loading { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: var(--white); animation: spin 0.8s linear infinite; }
+        .btn { padding: 14px 24px; border-radius: 10px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); color: var(--white); box-shadow: 0 4px 15px rgba(0, 168, 225, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 168, 225, 0.4); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-secondary { background: var(--gray-100); color: var(--gray-700); border: 2px solid var(--gray-200); }
+        .btn-secondary:hover { border-color: var(--att-blue); }
+        .btn-row { display: flex; gap: 12px; margin-top: 20px; }
+        .btn-row .btn { flex: 1; }
+        .loading { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: var(--white); animation: spin 0.8s linear infinite; }
         .loading-dark { border: 2px solid var(--gray-200); border-top-color: var(--att-blue); }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
-        /* Section */
         .section { display: none; }
         .section.active { display: block; }
-        
-        /* Confirmation */
-        .confirmation-screen { text-align: center; padding: 60px 20px; }
-        .confirmation-icon { width: 100px; height: 100px; background: linear-gradient(135deg, var(--success) 0%, #059669 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 48px; color: var(--white); }
-        .confirmation-screen h2 { font-size: 24px; color: var(--gray-800); margin-bottom: 12px; }
-        .confirmation-screen p { color: var(--gray-500); margin-bottom: 24px; }
-        
-        /* Aspirantes List */
-        .aspirantes-list { display: flex; flex-direction: column; gap: 10px; }
-        .aspirante-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--gray-50); border: 2px solid var(--gray-200); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
-        .aspirante-item:hover { border-color: var(--att-blue); background: white; }
-        .aspirante-item.completed { border-color: var(--success); background: var(--success-light); }
-        .aspirante-item-left { display: flex; align-items: center; gap: 12px; }
-        .aspirante-item-avatar { width: 44px; height: 44px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
-        .aspirante-item.completed .aspirante-item-avatar { background: linear-gradient(135deg, var(--success) 0%, #059669 100%); }
-        .aspirante-item-info h4 { font-size: 15px; font-weight: 600; color: var(--gray-800); }
-        .aspirante-item-info p { font-size: 12px; color: var(--gray-500); }
-        .aspirante-item-status { font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 20px; }
-        .status-pending { background: var(--warning-light); color: var(--warning); }
-        .status-complete { background: var(--success-light); color: var(--success); }
-        
-        @media (max-width: 640px) {
-            .container { padding: 12px; }
-            .card { padding: 20px; }
-            .checklist-item { flex-direction: column; align-items: flex-start; gap: 12px; }
-            .checklist-toggle { width: 100%; }
-            .toggle-btn { flex: 1; }
-            .summary-grid { grid-template-columns: 1fr; }
-            .form-row { flex-direction: column; gap: 12px; }
-        }
+        .confirmation-screen { text-align: center; padding: 50px 20px; }
+        .confirmation-icon { width: 90px; height: 90px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 44px; color: var(--white); }
+        .confirmation-icon.success { background: linear-gradient(135deg, var(--success) 0%, #059669 100%); }
+        .confirmation-icon.pending { background: linear-gradient(135deg, var(--warning) 0%, #D97706 100%); }
+        .confirmation-screen h2 { font-size: 22px; color: var(--gray-800); margin-bottom: 10px; }
+        .confirmation-screen p { color: var(--gray-500); margin-bottom: 8px; font-size: 15px; }
+        .confirmation-screen .docs-list { background: var(--warning-light); border-radius: 10px; padding: 16px; margin: 20px 0; text-align: left; }
+        .confirmation-screen .docs-list h4 { color: var(--warning); font-size: 14px; margin-bottom: 8px; }
+        .confirmation-screen .docs-list ul { margin: 0; padding-left: 20px; color: var(--gray-700); font-size: 14px; }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--gray-500); }
+        .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+        .empty-state h3 { color: var(--gray-700); margin-bottom: 8px; }
+        .aspirante-header { display: flex; align-items: center; gap: 16px; padding: 20px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 12px; color: white; margin-bottom: 20px; }
+        .aspirante-header .avatar { width: 56px; height: 56px; background: rgba(255,255,255,0.2); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; }
+        .aspirante-header .info h3 { font-size: 18px; margin-bottom: 4px; }
+        .aspirante-header .info p { opacity: 0.9; font-size: 14px; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: white; border-radius: 16px; padding: 24px; max-width: 400px; width: 90%; }
+        .modal h3 { margin-bottom: 16px; }
+        .modal p { color: var(--gray-600); margin-bottom: 20px; font-size: 14px; }
+        .modal .btn-row { margin-top: 0; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="header-content">
-                <div class="header-text">
-                    <h1>📋 Checklist Post-Panel</h1>
-                    <p>Documentación y Psicométricos</p>
-                </div>
-            </div>
+            <h1>📋 Checklist Post-Panel</h1>
+            <p>Documentación y Psicométricos | ExpertCell</p>
         </div>
 
-        <!-- Sección: Selección -->
         <div class="section active" id="section-seleccion">
             <div class="card">
-                <div class="card-title"><span class="icon">📍</span>Selecciona el Panel</div>
+                <div class="card-title"><div class="icon">📍</div>Selecciona el Panel</div>
                 <div class="form-group">
                     <label>Sucursal</label>
                     <select id="select-sucursal" onchange="onSucursalChange()">
-                        <option value="">Selecciona una sucursal</option>
-                        <option value="Torre JV Juárez">Torre JV Juárez</option>
-                        <option value="Edificio Inbursa Antequera">Edificio Inbursa Antequera</option>
+                        <option value="">Selecciona sucursal...</option>
+                        <option value="Torre JV Juárez">🏢 Torre JV Juárez</option>
+                        <option value="Edificio Inbursa Antequera">🏛️ Edificio Inbursa Antequera</option>
                     </select>
                 </div>
-                <div class="form-group" id="grupo-container" style="display: none;">
+                <div class="form-group">
                     <label>Fecha del Panel</label>
-                    <select id="select-fecha" onchange="onFechaChange()">
-                        <option value="">Selecciona fecha</option>
+                    <select id="select-fecha" onchange="onFechaChange()" disabled>
+                        <option value="">Primero selecciona sucursal...</option>
                     </select>
                 </div>
             </div>
-            
+
+            <div class="stats-bar" id="stats-bar" style="display: none;">
+                <div class="stat-item success"><div class="stat-number" id="stat-completos">0</div><div class="stat-label">✅ Completos</div></div>
+                <div class="stat-item warning"><div class="stat-number" id="stat-pendientes">0</div><div class="stat-label">⏳ Pendientes</div></div>
+                <div class="stat-item neutral"><div class="stat-number" id="stat-sin-iniciar">0</div><div class="stat-label">📝 Sin iniciar</div></div>
+            </div>
+
             <div class="card" id="aspirantes-card" style="display: none;">
-                <div class="card-title"><span class="icon">👥</span>Aspirantes Aprobados</div>
-                <p style="color: var(--gray-500); font-size: 14px; margin-bottom: 16px;">Selecciona un aspirante para completar su checklist</p>
-                <div class="aspirantes-list" id="aspirantes-list"></div>
+                <div class="card-title"><div class="icon">👥</div>Aspirantes Aprobados</div>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="showTab('pendientes')">⏳ Pendientes <span class="badge" id="tab-pendientes-count">0</span></button>
+                    <button class="tab-btn" onclick="showTab('completos')">✅ Completos <span class="badge" id="tab-completos-count">0</span></button>
+                </div>
+                <div class="tab-content active" id="tab-pendientes"><div class="aspirante-list" id="lista-pendientes"></div></div>
+                <div class="tab-content" id="tab-completos"><div class="aspirante-list" id="lista-completos"></div></div>
             </div>
         </div>
 
-        <!-- Sección: Checklist -->
         <div class="section" id="section-checklist">
             <div class="card">
-                <div class="aspirante-card">
-                    <div class="aspirante-avatar" id="checklist-avatar">LM</div>
-                    <div class="aspirante-details">
-                        <h3 id="checklist-nombre">Luisa Meza</h3>
-                        <p id="checklist-info">Torre JV Juárez • 68/80 pts</p>
-                    </div>
-                    <span class="aspirante-badge">✅ Aprobado</span>
+                <div class="aspirante-header" id="aspirante-header">
+                    <div class="avatar" id="aspirante-iniciales">JS</div>
+                    <div class="info"><h3 id="aspirante-nombre">Nombre del Aspirante</h3><p id="aspirante-detalles">76/80 pts • Aprobado (muy bien)</p></div>
                 </div>
 
-                <!-- Documentos -->
                 <div class="checklist-section">
-                    <div class="checklist-section-title">📄 Documentación</div>
-                    
-                    <div class="checklist-item" id="item-ine">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">🪪</div>
-                            <div class="checklist-item-text">
-                                <h4>INE / Identificación oficial</h4>
-                                <p>Vigente y legible</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('ine', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('ine', false)">❌ No</button>
-                        </div>
-                    </div>
-                    
-                    <div class="checklist-item" id="item-domicilio">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">🏠</div>
-                            <div class="checklist-item-text">
-                                <h4>Comprobante de domicilio</h4>
-                                <p>No mayor a 3 meses</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('domicilio', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('domicilio', false)">❌ No</button>
-                        </div>
-                    </div>
-                    
-                    <div class="checklist-item" id="item-curp">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">📄</div>
-                            <div class="checklist-item-text">
-                                <h4>CURP</h4>
-                                <p>Documento o constancia</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('curp', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('curp', false)">❌ No</button>
-                        </div>
-                    </div>
-                    
-                    <div class="checklist-item" id="item-rfc">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">📋</div>
-                            <div class="checklist-item-text">
-                                <h4>RFC</h4>
-                                <p>Cédula de identificación fiscal</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('rfc', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('rfc', false)">❌ No</button>
-                        </div>
-                    </div>
-                    
-                    <div class="checklist-item" id="item-csf">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">🏛️</div>
-                            <div class="checklist-item-text">
-                                <h4>Constancia de Situación Fiscal</h4>
-                                <p>Emitida por el SAT</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('csf', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('csf', false)">❌ No</button>
-                        </div>
-                    </div>
-                    
-                    <div class="checklist-item" id="item-acta">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">📜</div>
-                            <div class="checklist-item-text">
-                                <h4>Acta de nacimiento</h4>
-                                <p>Original o copia certificada</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('acta', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('acta', false)">❌ No</button>
-                        </div>
-                    </div>
-                    
-                    <div class="checklist-item" id="item-estudios">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">🎓</div>
-                            <div class="checklist-item-text">
-                                <h4>Certificado de estudios</h4>
-                                <p>Último grado de estudios</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('estudios', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('estudios', false)">❌ No</button>
-                        </div>
-                    </div>
-                    
-                    <div class="checklist-item" id="item-laboral">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">💼</div>
-                            <div class="checklist-item-text">
-                                <h4>Constancia laboral</h4>
-                                <p>Empleos anteriores (si aplica)</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('laboral', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('laboral', false)">❌ No</button>
-                            <button class="toggle-btn" onclick="setDocStatus('laboral', 'na')">N/A</button>
-                        </div>
-                    </div>
-                    
-                    <div class="checklist-item" id="item-banco">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">🏦</div>
-                            <div class="checklist-item-text">
-                                <h4>Datos bancarios</h4>
-                                <p>Cuenta y CLABE para nómina</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('banco', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('banco', false)">❌ No</button>
-                        </div>
-                    </div>
-                    
-                    <div class="checklist-item" id="item-nss">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">🏥</div>
-                            <div class="checklist-item-text">
-                                <h4>NSS (Número de Seguro Social)</h4>
-                                <p>Si cuenta con él</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('nss', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('nss', false)">❌ No</button>
-                            <button class="toggle-btn" onclick="setDocStatus('nss', 'na')">N/A</button>
-                        </div>
-                    </div>
-                    
-                    <div class="checklist-item" id="item-infonavit">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">🏡</div>
-                            <div class="checklist-item-text">
-                                <h4>Hoja de Infonavit</h4>
-                                <p>Estado de cuenta o constancia</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('infonavit', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('infonavit', false)">❌ No</button>
-                            <button class="toggle-btn" onclick="setDocStatus('infonavit', 'na')">N/A</button>
-                        </div>
-                    </div>
-                    
-                    <div class="checklist-item" id="item-fonacot">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">💳</div>
-                            <div class="checklist-item-text">
-                                <h4>Hoja de Fonacot</h4>
-                                <p>Estado de cuenta o constancia</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('fonacot', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('fonacot', false)">❌ No</button>
-                            <button class="toggle-btn" onclick="setDocStatus('fonacot', 'na')">N/A</button>
-                        </div>
-                    </div>
+                    <div class="checklist-section-title">📌 Documentos Obligatorios <span class="obligatorio-badge">REQUERIDOS</span></div>
+                    <div class="checklist-item" id="item-ine"><div class="checklist-item-left"><div class="checklist-item-icon">🪪</div><div class="checklist-item-text"><h4>INE</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('ine', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('ine', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-curp"><div class="checklist-item-left"><div class="checklist-item-icon">📄</div><div class="checklist-item-text"><h4>CURP</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('curp', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('curp', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-domicilio"><div class="checklist-item-left"><div class="checklist-item-icon">🏠</div><div class="checklist-item-text"><h4>Comprobante de domicilio</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('domicilio', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('domicilio', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-acta"><div class="checklist-item-left"><div class="checklist-item-icon">📜</div><div class="checklist-item-text"><h4>Acta de nacimiento</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('acta', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('acta', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-rfc"><div class="checklist-item-left"><div class="checklist-item-icon">🏛️</div><div class="checklist-item-text"><h4>RFC</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('rfc', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('rfc', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-banco"><div class="checklist-item-left"><div class="checklist-item-icon">💳</div><div class="checklist-item-text"><h4>Datos bancarios</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('banco', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('banco', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-psico"><div class="checklist-item-left"><div class="checklist-item-icon">🧠</div><div class="checklist-item-text"><h4>Psicométricos</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('psico', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('psico', false)">❌ No</button></div></div>
                 </div>
 
-                <!-- Contacto de Emergencia -->
+                <div class="checklist-section">
+                    <div class="checklist-section-title">📎 Documentos Opcionales <span class="opcional-badge">PUEDEN ENTREGARSE DESPUÉS</span></div>
+                    <div class="checklist-item" id="item-csf"><div class="checklist-item-left"><div class="checklist-item-icon">📋</div><div class="checklist-item-text"><h4>Constancia de Situación Fiscal</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('csf', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('csf', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('csf', 'na')">➖ N/A</button></div></div>
+                    <div class="checklist-item" id="item-estudios"><div class="checklist-item-left"><div class="checklist-item-icon">🎓</div><div class="checklist-item-text"><h4>Comprobante de estudios</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('estudios', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('estudios', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('estudios', 'na')">➖ N/A</button></div></div>
+                    <div class="checklist-item" id="item-laboral"><div class="checklist-item-left"><div class="checklist-item-icon">💼</div><div class="checklist-item-text"><h4>Constancia laboral</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('laboral', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('laboral', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('laboral', 'na')">➖ N/A</button></div></div>
+                    <div class="checklist-item" id="item-nss"><div class="checklist-item-left"><div class="checklist-item-icon">🏥</div><div class="checklist-item-text"><h4>NSS (Seguro Social)</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('nss', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('nss', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('nss', 'na')">➖ N/A</button></div></div>
+                    <div class="checklist-item" id="item-infonavit"><div class="checklist-item-left"><div class="checklist-item-icon">🏡</div><div class="checklist-item-text"><h4>Infonavit</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('infonavit', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('infonavit', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('infonavit', 'na')">➖ N/A</button></div></div>
+                    <div class="checklist-item" id="item-fonacot"><div class="checklist-item-left"><div class="checklist-item-icon">💰</div><div class="checklist-item-text"><h4>Fonacot</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('fonacot', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('fonacot', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('fonacot', 'na')">➖ N/A</button></div></div>
+                </div>
+
                 <div class="checklist-section">
                     <div class="checklist-section-title">🚨 Contacto de Emergencia</div>
-                    
                     <div class="contact-form">
                         <div class="form-row">
-                            <div class="form-group" style="flex: 2;">
-                                <label>Nombre completo del contacto</label>
-                                <input type="text" id="emergencia-nombre" placeholder="Nombre del familiar o contacto">
-                            </div>
-                            <div class="form-group" style="flex: 1;">
-                                <label>Parentesco</label>
-                                <select id="emergencia-parentesco">
-                                    <option value="">Selecciona...</option>
-                                    <option value="Madre">Madre</option>
-                                    <option value="Padre">Padre</option>
-                                    <option value="Esposo(a)">Esposo(a)</option>
-                                    <option value="Hermano(a)">Hermano(a)</option>
-                                    <option value="Hijo(a)">Hijo(a)</option>
-                                    <option value="Tío(a)">Tío(a)</option>
-                                    <option value="Abuelo(a)">Abuelo(a)</option>
-                                    <option value="Primo(a)">Primo(a)</option>
-                                    <option value="Amigo(a)">Amigo(a)</option>
-                                    <option value="Otro">Otro</option>
-                                </select>
-                            </div>
+                            <div class="form-group"><label>Nombre completo</label><input type="text" id="emergencia-nombre" placeholder="Nombre del contacto"></div>
+                            <div class="form-group"><label>Parentesco</label><select id="emergencia-parentesco"><option value="">Seleccionar...</option><option value="Padre">Padre</option><option value="Madre">Madre</option><option value="Esposo(a)">Esposo(a)</option><option value="Hermano(a)">Hermano(a)</option><option value="Hijo(a)">Hijo(a)</option><option value="Otro">Otro</option></select></div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group" style="flex: 1;">
-                                <label>Teléfono del contacto</label>
-                                <input type="tel" id="emergencia-telefono" placeholder="10 dígitos">
-                            </div>
-                            <div class="form-group" style="flex: 1;">
-                                <label>Fecha de nacimiento del beneficiario</label>
-                                <input type="date" id="emergencia-fecha-nac">
-                            </div>
+                            <div class="form-group"><label>Teléfono</label><input type="tel" id="emergencia-telefono" placeholder="10 dígitos"></div>
+                            <div class="form-group"><label>Fecha de nacimiento</label><input type="date" id="emergencia-fecha-nac"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Psicométricos -->
-                <div class="checklist-section">
-                    <div class="checklist-section-title">🧠 Psicométricos</div>
-                    
-                    <div class="checklist-item" id="item-psico">
-                        <div class="checklist-item-left">
-                            <div class="checklist-item-icon">🧠</div>
-                            <div class="checklist-item-text">
-                                <h4>Psicométricos realizados</h4>
-                                <p>Evaluación completada</p>
-                            </div>
-                        </div>
-                        <div class="checklist-toggle">
-                            <button class="toggle-btn" onclick="setDocStatus('psico', true)">✅ Sí</button>
-                            <button class="toggle-btn" onclick="setDocStatus('psico', false)">❌ No</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Observaciones -->
                 <div class="checklist-section">
                     <div class="checklist-section-title">📝 Observaciones</div>
-                    <textarea class="obs-textarea" id="observaciones" placeholder="Notas adicionales sobre el aspirante o documentos..."></textarea>
+                    <textarea class="obs-textarea" id="observaciones" placeholder="Notas adicionales..."></textarea>
                 </div>
 
-                <!-- Resumen -->
-                <div class="summary-box">
-                    <div class="summary-title">RESUMEN</div>
-                    <div class="summary-grid" id="summary-grid">
-                        <div class="summary-item pending"><span>⏳</span> INE: Pendiente</div>
-                        <div class="summary-item pending"><span>⏳</span> Domicilio: Pendiente</div>
-                        <div class="summary-item pending"><span>⏳</span> CURP: Pendiente</div>
-                        <div class="summary-item pending"><span>⏳</span> RFC: Pendiente</div>
-                        <div class="summary-item pending"><span>⏳</span> Banco: Pendiente</div>
-                        <div class="summary-item pending"><span>⏳</span> NSS: Pendiente</div>
-                        <div class="summary-item pending"><span>⏳</span> Psicométricos: Pendiente</div>
-                    </div>
-                </div>
-
-                <!-- Botones -->
-                <div style="display: flex; gap: 12px; margin-top: 24px;">
-                    <button class="btn" style="flex: 1; background: var(--gray-100); color: var(--gray-700); border: 2px solid var(--gray-200);" onclick="volverALista()">← Volver</button>
-                    <button class="btn btn-primary" style="flex: 2;" id="btn-guardar" onclick="guardarChecklist()">💾 Guardar Checklist</button>
+                <div class="btn-row">
+                    <button class="btn btn-secondary" onclick="volverALista()">← Volver</button>
+                    <button class="btn btn-primary" id="btn-guardar" onclick="guardarChecklist()">💾 Guardar</button>
                 </div>
             </div>
         </div>
 
-        <!-- Sección: Confirmación -->
         <div class="section" id="section-confirmacion">
-            <div class="card">
-                <div class="confirmation-screen">
-                    <div class="confirmation-icon">✓</div>
-                    <h2>¡Checklist Guardado!</h2>
-                    <p id="confirmacion-mensaje">El checklist de Luisa Meza ha sido registrado correctamente.</p>
-                    <button class="btn btn-primary" onclick="volverALista()">← Continuar con otro aspirante</button>
-                </div>
+            <div class="card"><div class="confirmation-screen" id="confirmacion-content"></div></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-recordatorio">
+        <div class="modal">
+            <h3>📩 Enviar Recordatorio</h3>
+            <p id="modal-mensaje">¿Deseas enviar un recordatorio de documentos pendientes?</p>
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="confirmarRecordatorio()">📩 Enviar</button>
             </div>
         </div>
     </div>
 
     <script>
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
+let selectedSucursal = '', selectedFecha = '', selectedAspirante = null, aspirantesList = [], recordatorioData = null;
+let checklistStatus = { ine: null, curp: null, domicilio: null, acta: null, rfc: null, banco: null, psico: null, csf: null, estudios: null, laboral: null, nss: null, infonavit: null, fonacot: null };
 
-let selectedSucursal = '';
-let selectedFecha = '';
-let selectedAspirante = null;
-let aspirantesList = [];
+function showSection(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function showTab(tab) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active'); document.getElementById('tab-' + tab).classList.add('active'); }
 
-// Estado del checklist
-let checklistStatus = {
-    ine: null,
-    domicilio: null,
-    curp: null,
-    rfc: null,
-    csf: null,
-    acta: null,
-    estudios: null,
-    laboral: null,
-    banco: null,
-    nss: null,
-    infonavit: null,
-    fonacot: null,
-    psico: null
-};
-
-// Contacto de emergencia
-let contactoEmergencia = {
-    nombre: '',
-    parentesco: '',
-    telefono: '',
-    fechaNac: ''
-};
-
-function showSection(id) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    window.scrollTo(0, 0);
-}
-
-function onSucursalChange() {
+async function onSucursalChange() {
     selectedSucursal = document.getElementById('select-sucursal').value;
-    if (selectedSucursal) {
-        document.getElementById('grupo-container').style.display = 'block';
-        cargarFechas();
-    } else {
-        document.getElementById('grupo-container').style.display = 'none';
-        document.getElementById('aspirantes-card').style.display = 'none';
-    }
-}
-
-async function cargarFechas() {
-    const select = document.getElementById('select-fecha');
-    select.innerHTML = '<option value="">Cargando...</option>';
+    const selectFecha = document.getElementById('select-fecha');
+    if (!selectedSucursal) { selectFecha.disabled = true; selectFecha.innerHTML = '<option value="">Primero selecciona sucursal...</option>'; document.getElementById('aspirantes-card').style.display = 'none'; document.getElementById('stats-bar').style.display = 'none'; return; }
+    selectFecha.disabled = false; selectFecha.innerHTML = '<option value="">Cargando fechas...</option>';
     try {
-        const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getFechasPanel');
+        const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getFechasPanel&sucursal=' + encodeURIComponent(selectedSucursal));
         const data = await r.json();
-        select.innerHTML = '<option value="">Selecciona fecha</option>';
-        if (data.fechas && data.fechas.length > 0) {
-            data.fechas.forEach(f => {
-                const opt = document.createElement('option');
-                opt.value = f.fecha;
-                opt.textContent = f.fechaLegible;
-                select.appendChild(opt);
-            });
-        } else {
-            select.innerHTML = '<option value="">No hay fechas</option>';
-        }
-    } catch (e) {
-        console.error(e);
-        select.innerHTML = '<option value="">Error al cargar</option>';
-    }
+        if (data.fechas && data.fechas.length > 0) { selectFecha.innerHTML = '<option value="">Selecciona fecha...</option>'; data.fechas.forEach(f => { const opt = document.createElement('option'); opt.value = f.valor; opt.textContent = f.texto; selectFecha.appendChild(opt); }); }
+        else { selectFecha.innerHTML = '<option value="">No hay fechas disponibles</option>'; }
+    } catch (e) { console.error(e); selectFecha.innerHTML = '<option value="">Error al cargar</option>'; }
 }
 
-async function onFechaChange() {
-    selectedFecha = document.getElementById('select-fecha').value;
-    if (selectedFecha) {
-        cargarAspirantesAprobados();
-    }
-}
+async function onFechaChange() { selectedFecha = document.getElementById('select-fecha').value; if (selectedFecha) { cargarAspirantesAprobados(); } }
 
 async function cargarAspirantesAprobados() {
-    const lista = document.getElementById('aspirantes-list');
-    lista.innerHTML = '<p style="text-align:center;color:var(--gray-500);"><span class="loading loading-dark"></span> Cargando...</p>';
-    document.getElementById('aspirantes-card').style.display = 'block';
-    
+    document.getElementById('aspirantes-card').style.display = 'block'; document.getElementById('stats-bar').style.display = 'flex';
+    document.getElementById('lista-pendientes').innerHTML = '<p style="text-align:center;padding:20px;"><span class="loading loading-dark"></span></p>'; document.getElementById('lista-completos').innerHTML = '';
     try {
         const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getAprobadosParaChecklist&fecha=' + encodeURIComponent(selectedFecha) + '&sucursal=' + encodeURIComponent(selectedSucursal));
-        const data = await r.json();
-        const todosAspirantes = data.aprobados || [];
-        
-        // FILTRAR: solo mostrar los que NO tienen checklist completo
-        aspirantesList = todosAspirantes.filter(asp => !asp.checklistCompleto);
-        
-        // Contar completados para mostrar estadísticas
-        const completados = todosAspirantes.filter(asp => asp.checklistCompleto).length;
-        const pendientes = aspirantesList.length;
-        
-        if (todosAspirantes.length === 0) {
-            lista.innerHTML = '<p style="text-align:center;color:var(--gray-500);">No hay aspirantes aprobados para esta fecha</p>';
-            return;
-        }
-        
-        if (aspirantesList.length === 0) {
-            lista.innerHTML = `
-                <div style="text-align:center;padding:30px;">
-                    <div style="font-size:48px;margin-bottom:15px;">🎉</div>
-                    <h3 style="color:var(--success);margin-bottom:10px;">¡Todos completados!</h3>
-                    <p style="color:var(--gray-500);">Los ${completados} aspirantes aprobados ya tienen su checklist completo.</p>
-                </div>
-            `;
-            return;
-        }
-        
-        // Mostrar contador
-        lista.innerHTML = `
-            <div style="background:var(--gray-100);padding:12px 16px;border-radius:10px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-size:13px;color:var(--gray-600);">📋 Pendientes: <strong>${pendientes}</strong></span>
-                <span style="font-size:13px;color:var(--success);">✅ Completados: <strong>${completados}</strong></span>
-            </div>
-        `;
-        
-        aspirantesList.forEach(asp => {
-            const iniciales = asp.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
-            
-            const div = document.createElement('div');
-            div.className = 'aspirante-item';
-            div.innerHTML = `
-                <div class="aspirante-item-left">
-                    <div class="aspirante-item-avatar">${iniciales}</div>
-                    <div class="aspirante-item-info">
-                        <h4>${asp.nombre}</h4>
-                        <p>${asp.puntaje}/80 pts • ${asp.resultado}</p>
-                    </div>
-                </div>
-                <span class="aspirante-item-status status-pending">⏳ Pendiente</span>
-            `;
-            div.onclick = () => abrirChecklist(asp);
-            lista.appendChild(div);
-        });
-    } catch (e) {
-        console.error(e);
-        lista.innerHTML = '<p style="text-align:center;color:var(--danger);">Error al cargar</p>';
-    }
+        const data = await r.json(); aspirantesList = data.aprobados || [];
+        const completos = aspirantesList.filter(a => a.estadoChecklist === 'Completo');
+        const pendientes = aspirantesList.filter(a => a.estadoChecklist === 'Pendiente');
+        const sinIniciar = aspirantesList.filter(a => a.estadoChecklist === 'Sin iniciar');
+        document.getElementById('stat-completos').textContent = completos.length;
+        document.getElementById('stat-pendientes').textContent = pendientes.length;
+        document.getElementById('stat-sin-iniciar').textContent = sinIniciar.length;
+        document.getElementById('tab-pendientes-count').textContent = pendientes.length + sinIniciar.length;
+        document.getElementById('tab-completos-count').textContent = completos.length;
+        renderizarLista('lista-pendientes', [...pendientes, ...sinIniciar]);
+        renderizarLista('lista-completos', completos);
+    } catch (e) { console.error(e); document.getElementById('lista-pendientes').innerHTML = '<p style="text-align:center;color:var(--danger);">Error al cargar</p>'; }
 }
 
-function abrirChecklist(asp) {
+function renderizarLista(containerId, lista) {
+    const container = document.getElementById(containerId);
+    if (lista.length === 0) { container.innerHTML = `<div class="empty-state"><div class="icon">${containerId === 'lista-completos' ? '📭' : '🎉'}</div><h3>${containerId === 'lista-completos' ? 'Sin completos aún' : '¡Todos listos!'}</h3><p>${containerId === 'lista-completos' ? 'Los aspirantes completados aparecerán aquí' : 'No hay aspirantes pendientes'}</p></div>`; return; }
+    container.innerHTML = '';
+    lista.forEach(asp => {
+        const iniciales = asp.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+        const statusClass = asp.estadoChecklist === 'Completo' ? 'status-completo' : asp.estadoChecklist === 'Pendiente' ? 'status-pendiente' : 'status-nuevo';
+        const statusText = asp.estadoChecklist === 'Completo' ? 'Completo' : asp.estadoChecklist === 'Pendiente' ? 'Pendiente' : 'Sin iniciar';
+        const badgeClass = asp.estadoChecklist === 'Completo' ? 'completo' : asp.estadoChecklist === 'Pendiente' ? 'pendiente' : 'nuevo';
+        const div = document.createElement('div'); div.className = 'aspirante-card ' + statusClass;
+        div.innerHTML = `<div class="aspirante-avatar">${iniciales}</div><div class="aspirante-info"><h4>${asp.nombre}</h4><p>${asp.puntaje}/80 pts • ${asp.resultado}</p>${asp.docsPendientes ? `<div class="docs-pendientes">📋 Falta: ${asp.docsPendientes}</div>` : ''}</div><div class="aspirante-status"><span class="status-badge ${badgeClass}">${statusText}</span>${asp.estadoChecklist === 'Pendiente' && asp.docsPendientes ? `<button class="btn-recordatorio" onclick="event.stopPropagation(); abrirModalRecordatorio('${asp.nombre}', '${asp.telefono}', '${asp.email || ''}', '${asp.docsPendientes}')">📩 Recordatorio</button>` : ''}</div>`;
+        div.onclick = () => seleccionarAspirante(asp); container.appendChild(div);
+    });
+}
+
+function abrirModalRecordatorio(nombre, telefono, email, docsPendientes) { recordatorioData = { nombre, telefono, email, docsPendientes: docsPendientes.split(', '), sucursal: selectedSucursal }; document.getElementById('modal-mensaje').innerHTML = `¿Enviar recordatorio a <strong>${nombre}</strong> sobre los documentos pendientes?<br><br><small>📋 ${docsPendientes}</small>`; document.getElementById('modal-recordatorio').classList.add('active'); }
+function cerrarModal() { document.getElementById('modal-recordatorio').classList.remove('active'); recordatorioData = null; }
+
+async function confirmarRecordatorio() {
+    if (!recordatorioData) return;
+    const btn = document.querySelector('#modal-recordatorio .btn-primary'); btn.disabled = true; btn.innerHTML = '<span class="loading"></span>';
+    try {
+        const params = new URLSearchParams({ action: 'enviarRecordatorio', nombre: recordatorioData.nombre, telefono: recordatorioData.telefono, email: recordatorioData.email, docsPendientes: recordatorioData.docsPendientes.join(','), sucursal: recordatorioData.sucursal });
+        const r = await fetch(GOOGLE_SCRIPT_URL + '?' + params.toString()); const data = await r.json(); cerrarModal();
+        if (data.urlWhatsApp) { window.open(data.urlWhatsApp, '_blank'); }
+        alert(data.emailEnviado ? '✅ Recordatorio enviado por email y WhatsApp abierto' : '✅ WhatsApp abierto (sin email registrado)');
+    } catch (e) { console.error(e); alert('Error al enviar recordatorio'); } finally { btn.disabled = false; btn.innerHTML = '📩 Enviar'; }
+}
+
+function seleccionarAspirante(asp) {
     selectedAspirante = asp;
-    
-    // Resetear checklist
-    checklistStatus = {
-        ine: asp.docs?.ine ?? null,
-        domicilio: asp.docs?.domicilio ?? null,
-        curp: asp.docs?.curp ?? null,
-        rfc: asp.docs?.rfc ?? null,
-        csf: asp.docs?.csf ?? null,
-        acta: asp.docs?.acta ?? null,
-        estudios: asp.docs?.estudios ?? null,
-        laboral: asp.docs?.laboral ?? null,
-        banco: asp.docs?.banco ?? null,
-        nss: asp.docs?.nss ?? null,
-        infonavit: asp.docs?.infonavit ?? null,
-        fonacot: asp.docs?.fonacot ?? null,
-        psico: asp.docs?.psico ?? null
-    };
-    
-    // Cargar contacto de emergencia
-    contactoEmergencia = {
-        nombre: asp.emergencia?.nombre || '',
-        parentesco: asp.emergencia?.parentesco || '',
-        telefono: asp.emergencia?.telefono || '',
-        fechaNac: asp.emergencia?.fechaNac || ''
-    };
-    
-    // Actualizar UI
     const iniciales = asp.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
-    document.getElementById('checklist-avatar').textContent = iniciales;
-    document.getElementById('checklist-nombre').textContent = asp.nombre;
-    document.getElementById('checklist-info').textContent = `${selectedSucursal} • ${asp.puntaje}/80 pts`;
+    document.getElementById('aspirante-iniciales').textContent = iniciales;
+    document.getElementById('aspirante-nombre').textContent = asp.nombre;
+    document.getElementById('aspirante-detalles').textContent = `${asp.puntaje}/80 pts • ${asp.resultado}`;
+    checklistStatus = { ine: null, curp: null, domicilio: null, acta: null, rfc: null, banco: null, psico: null, csf: null, estudios: null, laboral: null, nss: null, infonavit: null, fonacot: null };
+    if (asp.docs) { Object.keys(asp.docs).forEach(key => { if (asp.docs[key] !== null) { checklistStatus[key] = asp.docs[key]; updateItemUI(key, asp.docs[key]); } }); }
+    if (asp.emergencia) { document.getElementById('emergencia-nombre').value = asp.emergencia.nombre || ''; document.getElementById('emergencia-parentesco').value = asp.emergencia.parentesco || ''; document.getElementById('emergencia-telefono').value = asp.emergencia.telefono || ''; document.getElementById('emergencia-fecha-nac').value = asp.emergencia.fechaNac || ''; }
+    else { document.getElementById('emergencia-nombre').value = ''; document.getElementById('emergencia-parentesco').value = ''; document.getElementById('emergencia-telefono').value = ''; document.getElementById('emergencia-fecha-nac').value = ''; }
     document.getElementById('observaciones').value = asp.observaciones || '';
-    
-    // Cargar contacto de emergencia
-    document.getElementById('emergencia-nombre').value = contactoEmergencia.nombre;
-    document.getElementById('emergencia-parentesco').value = contactoEmergencia.parentesco;
-    document.getElementById('emergencia-telefono').value = contactoEmergencia.telefono;
-    document.getElementById('emergencia-fecha-nac').value = contactoEmergencia.fechaNac;
-    
-    // Resetear botones
-    document.querySelectorAll('.checklist-item').forEach(item => {
-        item.classList.remove('checked', 'pending');
-    });
-    document.querySelectorAll('.toggle-btn').forEach(btn => {
-        btn.classList.remove('active-yes', 'active-no', 'active-na');
-    });
-    
-    // Cargar estado guardado
-    Object.keys(checklistStatus).forEach(key => {
-        if (checklistStatus[key] !== null) {
-            updateItemUI(key, checklistStatus[key]);
-        }
-    });
-    
-    actualizarResumen();
     showSection('section-checklist');
 }
 
-function setDocStatus(doc, status) {
-    checklistStatus[doc] = status;
-    updateItemUI(doc, status);
-    actualizarResumen();
-}
+function setDocStatus(doc, status) { checklistStatus[doc] = status; updateItemUI(doc, status); }
 
 function updateItemUI(doc, status) {
-    const item = document.getElementById('item-' + doc);
-    if (!item) return;
-    
-    const btns = item.querySelectorAll('.toggle-btn');
-    
+    const item = document.getElementById('item-' + doc); if (!item) return;
     item.classList.remove('checked', 'pending');
-    btns.forEach(b => b.classList.remove('active-yes', 'active-no', 'active-na'));
-    
-    if (status === true) {
-        item.classList.add('checked');
-        btns[0].classList.add('active-yes');
-    } else if (status === false) {
-        item.classList.add('pending');
-        btns[1].classList.add('active-no');
-    } else if (status === 'na') {
-        item.classList.add('checked');
-        if (btns[2]) btns[2].classList.add('active-na');
-    }
+    if (status === true) { item.classList.add('checked'); } else if (status === false) { item.classList.add('pending'); }
+    const buttons = item.querySelectorAll('.toggle-btn');
+    buttons.forEach(btn => { btn.classList.remove('active-yes', 'active-no', 'active-na'); if (status === true && btn.textContent.includes('Sí')) { btn.classList.add('active-yes'); } else if (status === false && btn.textContent.includes('No')) { btn.classList.add('active-no'); } else if (status === 'na' && btn.textContent.includes('N/A')) { btn.classList.add('active-na'); } });
 }
 
-function actualizarResumen() {
-    const grid = document.getElementById('summary-grid');
-    const labels = {
-        ine: 'INE',
-        domicilio: 'Domicilio',
-        curp: 'CURP',
-        rfc: 'RFC',
-        csf: 'Const. Fiscal',
-        acta: 'Acta Nac.',
-        estudios: 'Estudios',
-        laboral: 'Const. Laboral',
-        banco: 'Datos Banco',
-        nss: 'NSS',
-        infonavit: 'Infonavit',
-        fonacot: 'Fonacot',
-        psico: 'Psicométricos'
-    };
-    
-    let html = '';
-    Object.keys(checklistStatus).forEach(key => {
-        const status = checklistStatus[key];
-        if (status === true) {
-            html += `<div class="summary-item ok"><span>✅</span> ${labels[key]}: OK</div>`;
-        } else if (status === false) {
-            html += `<div class="summary-item pending"><span>❌</span> ${labels[key]}: Pendiente</div>`;
-        } else if (status === 'na') {
-            html += `<div class="summary-item" style="color: var(--gray-500);"><span>➖</span> ${labels[key]}: N/A</div>`;
-        } else {
-            html += `<div class="summary-item" style="color: var(--gray-400);"><span>⏳</span> ${labels[key]}: Sin marcar</div>`;
-        }
-    });
-    
-    // Agregar estado del contacto de emergencia
-    const emNombre = document.getElementById('emergencia-nombre')?.value || '';
-    const emTel = document.getElementById('emergencia-telefono')?.value || '';
-    if (emNombre && emTel) {
-        html += `<div class="summary-item ok"><span>✅</span> Contacto Emerg.: OK</div>`;
-    } else {
-        html += `<div class="summary-item pending"><span>❌</span> Contacto Emerg.: Incompleto</div>`;
-    }
-    
-    grid.innerHTML = html;
-}
-
-// Listeners para actualizar resumen cuando cambie contacto de emergencia
-document.addEventListener('DOMContentLoaded', () => {
-    ['emergencia-nombre', 'emergencia-parentesco', 'emergencia-telefono', 'emergencia-fecha-nac'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('input', actualizarResumen);
-            el.addEventListener('change', actualizarResumen);
-        }
-    });
-});
-
-function volverALista() {
-    showSection('section-seleccion');
-    cargarAspirantesAprobados();
-}
+function volverALista() { showSection('section-seleccion'); cargarAspirantesAprobados(); }
 
 async function guardarChecklist() {
-    const btn = document.getElementById('btn-guardar');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="loading"></span> Guardando...';
-    
-    const data = {
-        tipo: 'checklist_panel',
-        sucursal: selectedSucursal,
-        fecha: selectedFecha,
-        aspirante_nombre: selectedAspirante.nombre,
-        aspirante_telefono: selectedAspirante.telefono,
-        aspirante_email: selectedAspirante.email || '',
-        // Documentos
-        ine: checklistStatus.ine,
-        domicilio: checklistStatus.domicilio,
-        curp: checklistStatus.curp,
-        rfc: checklistStatus.rfc,
-        csf: checklistStatus.csf,
-        acta: checklistStatus.acta,
-        estudios: checklistStatus.estudios,
-        laboral: checklistStatus.laboral,
-        banco: checklistStatus.banco,
-        nss: checklistStatus.nss,
-        infonavit: checklistStatus.infonavit,
-        fonacot: checklistStatus.fonacot,
-        // Psicométricos
-        psico: checklistStatus.psico,
-        // Contacto de emergencia
-        emergencia_nombre: document.getElementById('emergencia-nombre').value,
-        emergencia_parentesco: document.getElementById('emergencia-parentesco').value,
-        emergencia_telefono: document.getElementById('emergencia-telefono').value,
-        emergencia_fecha_nac: document.getElementById('emergencia-fecha-nac').value,
-        // Observaciones
-        observaciones: document.getElementById('observaciones').value,
-        timestamp: new Date().toLocaleString('es-MX'),
-        // Indicar que envíe felicitación
-        enviarFelicitacion: true
-    };
-    
-    try {
-        await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        
-        document.getElementById('confirmacion-mensaje').innerHTML = `
-            <span style="display:block;margin-bottom:10px;">El checklist de <strong>${selectedAspirante.nombre}</strong> ha sido guardado correctamente.</span>
-            <span style="display:block;font-size:14px;color:var(--success);">✉️ Se ha enviado el email de felicitación con los datos de capacitación.</span>
-        `;
-        showSection('section-confirmacion');
-    } catch (e) {
-        alert('Error al guardar. Intenta de nuevo.');
+    const btn = document.getElementById('btn-guardar'); btn.disabled = true; btn.innerHTML = '<span class="loading"></span> Guardando...';
+    const data = { tipo: 'checklist_panel', sucursal: selectedSucursal, fecha: selectedFecha, aspirante_nombre: selectedAspirante.nombre, aspirante_telefono: selectedAspirante.telefono, aspirante_email: selectedAspirante.email || '', ine: checklistStatus.ine, domicilio: checklistStatus.domicilio, curp: checklistStatus.curp, rfc: checklistStatus.rfc, csf: checklistStatus.csf, acta: checklistStatus.acta, estudios: checklistStatus.estudios, laboral: checklistStatus.laboral, banco: checklistStatus.banco, nss: checklistStatus.nss, infonavit: checklistStatus.infonavit, fonacot: checklistStatus.fonacot, psico: checklistStatus.psico, emergencia_nombre: document.getElementById('emergencia-nombre').value, emergencia_parentesco: document.getElementById('emergencia-parentesco').value, emergencia_telefono: document.getElementById('emergencia-telefono').value, emergencia_fecha_nac: document.getElementById('emergencia-fecha-nac').value, observaciones: document.getElementById('observaciones').value, timestamp: new Date().toLocaleString('es-MX'), enviarFelicitacion: true };
+    try { const r = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) }); const result = await r.json(); mostrarConfirmacion(result); }
+    catch (e) { console.error(e); alert('Error al guardar'); btn.disabled = false; btn.innerHTML = '💾 Guardar'; }
+}
+
+function mostrarConfirmacion(result) {
+    const container = document.getElementById('confirmacion-content');
+    if (result.estadoChecklist === 'Completo') {
+        container.innerHTML = `<div class="confirmation-icon success">✅</div><h2>¡Checklist Completo!</h2><p><strong>${selectedAspirante.nombre}</strong></p><p>Todos los documentos obligatorios fueron registrados.</p>${result.felicitacionEnviada ? '<p style="color: var(--success); font-weight: 600;">✉️ Email de felicitación enviado</p>' : '<p style="color: var(--warning);">⚠️ No se envió email (ya fue enviado anteriormente o sin correo)</p>'}<div class="btn-row" style="margin-top: 30px;"><button class="btn btn-primary" onclick="volverALista()">← Volver a la lista</button></div>`;
+    } else {
+        const docsList = result.docsPendientes && result.docsPendientes.length > 0 ? result.docsPendientes.map(d => `<li>${d}</li>`).join('') : '<li>Ninguno especificado</li>';
+        container.innerHTML = `<div class="confirmation-icon pending">⏳</div><h2>Checklist Guardado</h2><p><strong>${selectedAspirante.nombre}</strong></p><p>El checklist quedó en estado <strong>Pendiente</strong></p><div class="docs-list"><h4>📋 Documentos faltantes:</h4><ul>${docsList}</ul></div><p style="font-size: 13px; color: var(--gray-500);">El email de felicitación se enviará cuando todos los documentos obligatorios estén completos.</p><div class="btn-row" style="margin-top: 30px;"><button class="btn btn-primary" onclick="volverALista()">← Volver a la lista</button></div>`;
     }
-    
-    btn.disabled = false;
-    btn.innerHTML = '💾 Guardar Checklist';
+    showSection('section-confirmacion');
 }
     </script>
 </body>
