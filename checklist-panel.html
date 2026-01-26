@@ -271,7 +271,7 @@ async function onSucursalChange() {
     try {
         const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getFechasPanel&sucursal=' + encodeURIComponent(selectedSucursal));
         const data = await r.json();
-        if (data.fechas && data.fechas.length > 0) { selectFecha.innerHTML = '<option value="">Selecciona fecha...</option>'; data.fechas.forEach(f => { const opt = document.createElement('option'); opt.value = f.valor; opt.textContent = f.texto; selectFecha.appendChild(opt); }); }
+        if (data.fechas && data.fechas.length > 0) { selectFecha.innerHTML = '<option value="">Selecciona fecha...</option>'; data.fechas.forEach(f => { const opt = document.createElement('option'); opt.value = f.fecha || f.valor; opt.textContent = f.fechaLegible || f.texto; selectFecha.appendChild(opt); }); }
         else { selectFecha.innerHTML = '<option value="">No hay fechas disponibles</option>'; }
     } catch (e) { console.error(e); selectFecha.innerHTML = '<option value="">Error al cargar</option>'; }
 }
