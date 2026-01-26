@@ -217,12 +217,12 @@
                     <div class="checklist-section-title">🚨 Contacto de Emergencia</div>
                     <div class="contact-form">
                         <div class="form-row">
-                            <div class="form-group"><label>Nombre completo</label><input type="text" id="emergencia-nombre" placeholder="Nombre del contacto"></div>
-                            <div class="form-group"><label>Parentesco</label><select id="emergencia-parentesco"><option value="">Seleccionar...</option><option value="Padre">Padre</option><option value="Madre">Madre</option><option value="Esposo(a)">Esposo(a)</option><option value="Hermano(a)">Hermano(a)</option><option value="Hijo(a)">Hijo(a)</option><option value="Otro">Otro</option></select></div>
+                            <div class="form-group"><label>Nombre completo *</label><input type="text" id="emergencia-nombre" placeholder="Nombre del contacto" required></div>
+                            <div class="form-group"><label>Parentesco *</label><select id="emergencia-parentesco" required><option value="">Seleccionar...</option><option value="Padre">Padre</option><option value="Madre">Madre</option><option value="Esposo(a)">Esposo(a)</option><option value="Hermano(a)">Hermano(a)</option><option value="Hijo(a)">Hijo(a)</option><option value="Otro">Otro</option></select></div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group"><label>Teléfono</label><input type="tel" id="emergencia-telefono" placeholder="10 dígitos"></div>
-                            <div class="form-group"><label>Fecha de nacimiento</label><input type="date" id="emergencia-fecha-nac"></div>
+                            <div class="form-group"><label>Teléfono *</label><input type="tel" id="emergencia-telefono" placeholder="10 dígitos" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                            <div class="form-group"><label>Fecha de nacimiento</label><input type="date" id="emergencia-fecha-nac" max="2008-01-01"></div>
                         </div>
                     </div>
                 </div>
@@ -353,6 +353,41 @@ function updateItemUI(doc, status) {
 function volverALista() { showSection('section-seleccion'); cargarAspirantesAprobados(); }
 
 async function guardarChecklist() {
+    // Validaciones de contacto de emergencia
+    const emergNombre = document.getElementById('emergencia-nombre').value.trim();
+    const emergParentesco = document.getElementById('emergencia-parentesco').value;
+    const emergTelefono = document.getElementById('emergencia-telefono').value.trim();
+    const emergFechaNac = document.getElementById('emergencia-fecha-nac').value;
+    
+    if (!emergNombre) {
+        alert('⚠️ El nombre del contacto de emergencia es obligatorio');
+        document.getElementById('emergencia-nombre').focus();
+        return;
+    }
+    
+    if (!emergParentesco) {
+        alert('⚠️ El parentesco del contacto de emergencia es obligatorio');
+        document.getElementById('emergencia-parentesco').focus();
+        return;
+    }
+    
+    if (emergTelefono && emergTelefono.replace(/\D/g, '').length !== 10) {
+        alert('⚠️ El teléfono de emergencia debe tener exactamente 10 dígitos');
+        document.getElementById('emergencia-telefono').focus();
+        return;
+    }
+    
+    if (emergFechaNac) {
+        const fechaNac = new Date(emergFechaNac);
+        const hoy = new Date();
+        const edad = Math.floor((hoy - fechaNac) / (365.25 * 24 * 60 * 60 * 1000));
+        if (edad < 18) {
+            alert('⚠️ El contacto de emergencia debe ser mayor de 18 años');
+            document.getElementById('emergencia-fecha-nac').focus();
+            return;
+        }
+    }
+    
     const btn = document.getElementById('btn-guardar'); btn.disabled = true; btn.innerHTML = '<span class="loading"></span> Guardando...';
     const data = { tipo: 'checklist_panel', sucursal: selectedSucursal, fecha: selectedFecha, aspirante_nombre: selectedAspirante.nombre, aspirante_telefono: selectedAspirante.telefono, aspirante_email: selectedAspirante.email || '', ine: checklistStatus.ine, domicilio: checklistStatus.domicilio, curp: checklistStatus.curp, rfc: checklistStatus.rfc, csf: checklistStatus.csf, acta: checklistStatus.acta, estudios: checklistStatus.estudios, laboral: checklistStatus.laboral, banco: checklistStatus.banco, nss: checklistStatus.nss, infonavit: checklistStatus.infonavit, fonacot: checklistStatus.fonacot, psico: checklistStatus.psico, emergencia_nombre: document.getElementById('emergencia-nombre').value, emergencia_parentesco: document.getElementById('emergencia-parentesco').value, emergencia_telefono: document.getElementById('emergencia-telefono').value, emergencia_fecha_nac: document.getElementById('emergencia-fecha-nac').value, observaciones: document.getElementById('observaciones').value, timestamp: new Date().toLocaleString('es-MX'), enviarFelicitacion: true };
     try { const r = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) }); const result = await r.json(); mostrarConfirmacion(result); }
