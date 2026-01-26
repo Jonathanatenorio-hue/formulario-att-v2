@@ -162,7 +162,7 @@
                 </div>
                 <div class="form-group" id="reclutador-group" style="display: none;">
                     <label>Reclutador</label>
-                    <select id="select-reclutador">
+                    <select id="select-reclutador" onchange="onReclutadorChange()">
                         <option value="">Selecciona reclutador...</option>
                     </select>
                 </div>
@@ -172,6 +172,7 @@
                         <option value="">Primero selecciona sucursal...</option>
                     </select>
                 </div>
+                <button class="btn btn-primary" id="btn-actualizar" style="display: none; margin-top: 10px;" onclick="actualizarLista()">🔄 Actualizar Lista</button>
             </div>
 
             <div class="stats-bar" id="stats-bar" style="display: none;">
@@ -262,7 +263,7 @@
     </div>
 
     <script>
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzm9jEI7Yt-bPT0-VHnc4gNDtr-Io5kr4--J1M2k60pgKao-5yB5OtSY97-EZlZUx7JvA/exec';
 let selectedReclutador = '', selectedSucursal = '', selectedFecha = '', selectedAspirante = null, aspirantesList = [], recordatorioData = null;
 let checklistStatus = { ine: null, curp: null, domicilio: null, acta: null, rfc: null, banco: null, psico: null, csf: null, estudios: null, laboral: null, nss: null, infonavit: null, fonacot: null };
 
@@ -293,7 +294,7 @@ async function onSucursalChange() {
     } else if (selectedSucursal === 'Edificio Inbursa Antequera') {
         // Antequera tiene dos reclutadores, mostrar selector
         reclutadorGroup.style.display = 'block';
-        selectReclutador.innerHTML = '<option value="">Selecciona reclutador...</option><option value="Yessica Huerta">Yessica Huerta</option><option value="Jezabel">Jezabel</option>';
+        selectReclutador.innerHTML = '<option value="">Todos los reclutadores...</option><option value="Yessica">Yessica Huerta</option><option value="Jezabel">Jezabel Monterrosas</option>';
         selectedReclutador = '';
     }
     
@@ -306,14 +307,41 @@ async function onSucursalChange() {
     } catch (e) { console.error(e); selectFecha.innerHTML = '<option value="">Error al cargar</option>'; }
 }
 
-async function onFechaChange() { selectedFecha = document.getElementById('select-fecha').value; if (selectedFecha) { cargarAspirantesAprobados(); } }
+async function onFechaChange() { 
+    selectedFecha = document.getElementById('select-fecha').value; 
+    if (selectedFecha) { 
+        cargarAspirantesAprobados(); 
+        document.getElementById('btn-actualizar').style.display = 'block';
+    } 
+}
+
+function onReclutadorChange() {
+    selectedReclutador = document.getElementById('select-reclutador').value;
+    if (selectedFecha) {
+        cargarAspirantesAprobados();
+    }
+}
+
+function actualizarLista() {
+    if (selectedFecha) {
+        cargarAspirantesAprobados();
+    }
+}
 
 async function cargarAspirantesAprobados() {
     document.getElementById('aspirantes-card').style.display = 'block'; document.getElementById('stats-bar').style.display = 'flex';
     document.getElementById('lista-pendientes').innerHTML = '<p style="text-align:center;padding:20px;"><span class="loading loading-dark"></span></p>'; document.getElementById('lista-completos').innerHTML = '';
     try {
         const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getAprobadosParaChecklist&fecha=' + encodeURIComponent(selectedFecha) + '&sucursal=' + encodeURIComponent(selectedSucursal));
-        const data = await r.json(); aspirantesList = data.aprobados || [];
+        const data = await r.json(); 
+        let aprobados = data.aprobados || [];
+        
+        // Filtrar por reclutador si hay uno seleccionado
+        if (selectedReclutador) {
+            aprobados = aprobados.filter(a => a.reclutador && a.reclutador.includes(selectedReclutador.split(' ')[0]));
+        }
+        
+        aspirantesList = aprobados;
         const completos = aspirantesList.filter(a => a.estadoChecklist === 'Completo');
         const pendientes = aspirantesList.filter(a => a.estadoChecklist === 'Pendiente');
         const sinIniciar = aspirantesList.filter(a => a.estadoChecklist === 'Sin iniciar');
@@ -348,12 +376,28 @@ function cerrarModal() { document.getElementById('modal-recordatorio').classList
 async function confirmarRecordatorio() {
     if (!recordatorioData) return;
     const btn = document.querySelector('#modal-recordatorio .btn-primary'); btn.disabled = true; btn.innerHTML = '<span class="loading"></span>';
+    
+    // Generar mensaje de WhatsApp
+    const primerNombre = recordatorioData.nombre.split(' ')[0];
+    const docsLista = recordatorioData.docsPendientes.map(d => '📄 ' + d).join('\n');
+    const mensaje = `¡Hola ${primerNombre}! 👋\n\nTe recordamos que para continuar con tu proceso de ingreso a *ExpertCell* necesitamos los siguientes documentos:\n\n${docsLista}\n\nPor favor tráelos a la brevedad a nuestra sucursal *${recordatorioData.sucursal}*.\n\n¡Gracias! 🙌`;
+    
+    // Formatear teléfono (agregar 52 si no lo tiene)
+    let telefono = recordatorioData.telefono.replace(/\D/g, '');
+    if (telefono.length === 10) telefono = '52' + telefono;
+    
+    const urlWhatsApp = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+    
+    // Intentar enviar email también
     try {
         const params = new URLSearchParams({ action: 'enviarRecordatorio', nombre: recordatorioData.nombre, telefono: recordatorioData.telefono, email: recordatorioData.email, docsPendientes: recordatorioData.docsPendientes.join(','), sucursal: recordatorioData.sucursal });
-        const r = await fetch(GOOGLE_SCRIPT_URL + '?' + params.toString()); const data = await r.json(); cerrarModal();
-        if (data.urlWhatsApp) { window.open(data.urlWhatsApp, '_blank'); }
-        alert(data.emailEnviado ? '✅ Recordatorio enviado por email y WhatsApp abierto' : '✅ WhatsApp abierto (sin email registrado)');
-    } catch (e) { console.error(e); alert('Error al enviar recordatorio'); } finally { btn.disabled = false; btn.innerHTML = '📩 Enviar'; }
+        await fetch(GOOGLE_SCRIPT_URL + '?' + params.toString());
+    } catch (e) { console.log('Email no enviado:', e); }
+    
+    cerrarModal();
+    window.open(urlWhatsApp, '_blank');
+    alert(recordatorioData.email ? '✅ Recordatorio enviado por email y WhatsApp abierto' : '✅ WhatsApp abierto (sin email registrado)');
+    btn.disabled = false; btn.innerHTML = '📩 Enviar';
 }
 
 function seleccionarAspirante(asp) {
@@ -484,8 +528,17 @@ async function guardarChecklist() {
     
     const btn = document.getElementById('btn-guardar'); btn.disabled = true; btn.innerHTML = '<span class="loading"></span> Guardando...';
     const data = { tipo: 'checklist_panel', reclutador: selectedReclutador, sucursal: selectedSucursal, fecha: selectedFecha, aspirante_nombre: selectedAspirante.nombre, aspirante_telefono: selectedAspirante.telefono, aspirante_email: selectedAspirante.email || '', ine: checklistStatus.ine, domicilio: checklistStatus.domicilio, curp: checklistStatus.curp, rfc: checklistStatus.rfc, csf: checklistStatus.csf, acta: checklistStatus.acta, estudios: checklistStatus.estudios, laboral: checklistStatus.laboral, banco: checklistStatus.banco, nss: checklistStatus.nss, infonavit: checklistStatus.infonavit, fonacot: checklistStatus.fonacot, psico: checklistStatus.psico, emergencia_nombre: document.getElementById('emergencia-nombre').value, emergencia_parentesco: document.getElementById('emergencia-parentesco').value, emergencia_telefono: document.getElementById('emergencia-telefono').value, emergencia_fecha_nac: document.getElementById('emergencia-fecha-nac').value, observaciones: document.getElementById('observaciones').value, timestamp: new Date().toLocaleString('es-MX'), enviarFelicitacion: true };
-    try { const r = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) }); const result = await r.json(); mostrarConfirmacion(result); }
-    catch (e) { console.error(e); alert('Error al guardar'); }
+    
+    console.log('Datos a enviar:', JSON.stringify(data, null, 2));
+    console.log('checklistStatus:', checklistStatus);
+    
+    try { 
+        const r = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) }); 
+        const result = await r.json(); 
+        console.log('Respuesta del servidor:', result);
+        mostrarConfirmacion(result); 
+    }
+    catch (e) { console.error('Error:', e); alert('Error al guardar: ' + e.message); }
     finally { btn.disabled = false; btn.innerHTML = '💾 Guardar'; }
 }
 
