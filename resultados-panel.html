@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados Panel | AT&T - ExpertCell</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --att-blue: #00A8E1;
+            --att-blue-dark: #0057B8;
+            --att-blue-deeper: #003A70;
+            --white: #FFFFFF;
+            --gray-50: #F8FAFC;
+            --gray-100: #F1F5F9;
+            --gray-200: #E2E8F0;
+            --gray-300: #CBD5E1;
+            --gray-400: #94A3B8;
+            --gray-500: #64748B;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1E293B;
+            --success: #10B981;
+            --success-light: #D1FAE5;
+            --warning: #F59E0B;
+            --warning-light: #FEF3C7;
+            --danger: #EF4444;
+            --danger-light: #FEE2E2;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'IBM Plex Sans', sans-serif; background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%); min-height: 100vh; color: var(--gray-800); }
+        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+        .header { background: url('https://jonathanatenorio-hue.github.io/formulario-att-v2/logo-att.png') center center / cover no-repeat; padding: 30px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 10px 40px rgba(0, 87, 184, 0.3); position: relative; overflow: hidden; min-height: 140px; }
+        .header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to right, rgba(0, 58, 112, 0.9) 0%, rgba(0, 58, 112, 0.3) 50%, transparent 100%); }
+        .header-content { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; position: relative; z-index: 1; min-height: 80px; }
+        .header-text h1 { color: var(--white); font-size: 26px; font-weight: 700; margin-bottom: 4px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .header-text p { color: rgba(255,255,255,0.95); font-size: 14px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .card { background: var(--white); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid var(--gray-200); }
+        .card-title { font-size: 18px; font-weight: 600; color: var(--gray-800); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .card-title .icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 18px; }
+        .filters { display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; }
+        .form-group { flex: 1; min-width: 180px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 500; color: var(--gray-700); margin-bottom: 8px; }
+        .form-group select { width: 100%; padding: 12px 16px; border: 2px solid var(--gray-200); border-radius: 10px; font-size: 15px; font-family: inherit; background: var(--white); cursor: pointer; }
+        .form-group select:focus { outline: none; border-color: var(--att-blue); }
+        .btn { padding: 12px 24px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: inherit; }
+        .btn-primary { background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); color: var(--white); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 168, 225, 0.3); }
+        .btn-secondary { background: var(--gray-100); color: var(--gray-700); border: 2px solid var(--gray-200); }
+        .btn-success { background: linear-gradient(135deg, var(--success) 0%, #059669 100%); color: var(--white); }
+        
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 24px; }
+        .stat-card { background: var(--white); border-radius: 12px; padding: 20px; text-align: center; border: 2px solid var(--gray-200); }
+        .stat-card.total { border-color: var(--att-blue); background: linear-gradient(135deg, rgba(0,168,225,0.1) 0%, rgba(0,87,184,0.1) 100%); }
+        .stat-card.aprobados { border-color: var(--success); background: var(--success-light); }
+        .stat-card.regulares { border-color: var(--warning); background: var(--warning-light); }
+        .stat-card.rechazados { border-color: var(--danger); background: var(--danger-light); }
+        .stat-card.pendientes { border-color: var(--gray-400); background: var(--gray-100); }
+        .stat-number { font-size: 32px; font-weight: 700; margin-bottom: 4px; }
+        .stat-card.total .stat-number { color: var(--att-blue-dark); }
+        .stat-card.aprobados .stat-number { color: var(--success); }
+        .stat-card.regulares .stat-number { color: var(--warning); }
+        .stat-card.rechazados .stat-number { color: var(--danger); }
+        .stat-card.pendientes .stat-number { color: var(--gray-500); }
+        .stat-label { font-size: 12px; color: var(--gray-600); font-weight: 500; }
+        
+        /* Results Table */
+        .results-table { width: 100%; border-collapse: collapse; }
+        .results-table th { background: var(--gray-100); padding: 14px 12px; text-align: left; font-size: 13px; font-weight: 600; color: var(--gray-600); border-bottom: 2px solid var(--gray-200); }
+        .results-table td { padding: 16px 12px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+        .results-table tr:hover { background: var(--gray-50); }
+        .aspirante-cell { display: flex; align-items: center; gap: 12px; }
+        .aspirante-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 600; font-size: 14px; }
+        .aspirante-name { font-weight: 600; color: var(--gray-800); }
+        .aspirante-time { font-size: 12px; color: var(--gray-500); }
+        .score-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 50px; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 16px; }
+        .score-high { background: var(--success-light); color: var(--success); }
+        .score-medium { background: var(--warning-light); color: var(--warning); }
+        .score-low { background: var(--danger-light); color: var(--danger); }
+        .result-badge { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .result-aprobado { background: var(--success-light); color: var(--success); }
+        .result-regular { background: var(--warning-light); color: #B45309; }
+        .result-rechazado { background: var(--danger-light); color: var(--danger); }
+        .result-noshow { background: var(--gray-200); color: var(--gray-600); }
+        .result-pendiente { background: var(--gray-100); color: var(--gray-500); border: 1px dashed var(--gray-300); }
+        .evaluadores-list { font-size: 12px; color: var(--gray-600); max-width: 200px; }
+        .evaluadores-count { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: var(--att-blue); color: white; border-radius: 50%; font-size: 11px; font-weight: 600; margin-right: 6px; }
+        
+        /* Empty State */
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--gray-500); }
+        .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+        .empty-state h3 { font-size: 18px; color: var(--gray-700); margin-bottom: 8px; }
+        
+        /* Loading */
+        .loading { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--gray-200); border-radius: 50%; border-top-color: var(--att-blue); animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Auto refresh indicator */
+        .refresh-indicator { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--gray-500); }
+        .refresh-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .filters { flex-direction: column; }
+            .form-group { min-width: 100%; }
+            .results-table { font-size: 14px; }
+            .results-table th, .results-table td { padding: 10px 8px; }
+            .evaluadores-list { display: none; }
+            .hide-mobile { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>📊 Resultados del Panel</h1>
+                    <p>Resumen de evaluaciones en tiempo real</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card">
+            <div class="filters">
+                <div class="form-group">
+                    <label>Sucursal</label>
+                    <select id="select-sucursal" onchange="onFiltroChange()">
+                        <option value="">Todas las sucursales</option>
+                        <option value="Torre JV Juárez">Torre JV Juárez</option>
+                        <option value="Edificio Inbursa Antequera">Edificio Inbursa Antequera</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fecha del Panel</label>
+                    <select id="select-fecha" onchange="onFiltroChange()">
+                        <option value="">Cargando...</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="cargarResultados()">🔄 Actualizar</button>
+            </div>
+            <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <div class="refresh-indicator">
+                    <span class="refresh-dot"></span>
+                    <span>Actualización automática cada 30 seg</span>
+                </div>
+                <span id="ultima-actualizacion" style="font-size: 12px; color: var(--gray-500);"></span>
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <div class="stat-number" id="stat-total">0</div>
+                <div class="stat-label">TOTAL</div>
+            </div>
+            <div class="stat-card aprobados">
+                <div class="stat-number" id="stat-aprobados">0</div>
+                <div class="stat-label">✅ APROBADOS</div>
+            </div>
+            <div class="stat-card regulares">
+                <div class="stat-number" id="stat-regulares">0</div>
+                <div class="stat-label">⚠️ REGULARES</div>
+            </div>
+            <div class="stat-card rechazados">
+                <div class="stat-number" id="stat-rechazados">0</div>
+                <div class="stat-label">❌ RECHAZADOS</div>
+            </div>
+            <div class="stat-card pendientes">
+                <div class="stat-number" id="stat-pendientes">0</div>
+                <div class="stat-label">⏳ PENDIENTES</div>
+            </div>
+        </div>
+
+        <!-- Tabla de Resultados -->
+        <div class="card">
+            <div class="card-title">
+                <span class="icon">📋</span>
+                Resultados de Aspirantes
+            </div>
+            <div id="results-container">
+                <div class="empty-state">
+                    <div class="icon">📊</div>
+                    <h3>Selecciona los filtros</h3>
+                    <p>Elige una sucursal y fecha para ver los resultados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
+
+let autoRefreshInterval = null;
+
+// Cargar fechas al inicio
+document.addEventListener('DOMContentLoaded', () => {
+    cargarFechas();
+    // Auto refresh cada 30 segundos
+    autoRefreshInterval = setInterval(() => {
+        if (document.getElementById('select-fecha').value) {
+            cargarResultados(true);
+        }
+    }, 30000);
+});
+
+async function cargarFechas() {
+    const select = document.getElementById('select-fecha');
+    try {
+        const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getFechasPanel');
+        const data = await r.json();
+        select.innerHTML = '<option value="">Selecciona fecha</option>';
+        if (data.fechas && data.fechas.length > 0) {
+            data.fechas.forEach(f => {
+                const opt = document.createElement('option');
+                opt.value = f.fecha;
+                opt.textContent = f.fechaLegible;
+                // Seleccionar hoy por defecto si existe
+                if (f.esHoy) opt.selected = true;
+                select.appendChild(opt);
+            });
+            // Si hay fecha seleccionada, cargar resultados
+            if (select.value) cargarResultados();
+        } else {
+            select.innerHTML = '<option value="">No hay fechas</option>';
+        }
+    } catch (e) {
+        console.error(e);
+        select.innerHTML = '<option value="">Error al cargar</option>';
+    }
+}
+
+function onFiltroChange() {
+    if (document.getElementById('select-fecha').value) {
+        cargarResultados();
+    }
+}
+
+async function cargarResultados(silencioso = false) {
+    const sucursal = document.getElementById('select-sucursal').value;
+    const fecha = document.getElementById('select-fecha').value;
+    
+    if (!fecha) return;
+    
+    const container = document.getElementById('results-container');
+    if (!silencioso) {
+        container.innerHTML = '<div style="text-align:center;padding:40px;"><span class="loading"></span><p style="margin-top:10px;color:var(--gray-500);">Cargando resultados...</p></div>';
+    }
+    
+    try {
+        const url = GOOGLE_SCRIPT_URL + '?action=getResultadosPanel&fecha=' + encodeURIComponent(fecha) + '&sucursal=' + encodeURIComponent(sucursal);
+        const r = await fetch(url);
+        const data = await r.json();
+        
+        // Actualizar estadísticas
+        document.getElementById('stat-total').textContent = data.stats?.total || 0;
+        document.getElementById('stat-aprobados').textContent = data.stats?.aprobados || 0;
+        document.getElementById('stat-regulares').textContent = data.stats?.regulares || 0;
+        document.getElementById('stat-rechazados').textContent = data.stats?.rechazados || 0;
+        document.getElementById('stat-pendientes').textContent = data.stats?.pendientes || 0;
+        
+        // Actualizar hora
+        document.getElementById('ultima-actualizacion').textContent = 'Última actualización: ' + new Date().toLocaleTimeString('es-MX');
+        
+        // Renderizar tabla
+        if (!data.resultados || data.resultados.length === 0) {
+            container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><h3>No hay resultados</h3><p>Aún no hay aspirantes evaluados para esta fecha</p></div>';
+            return;
+        }
+        
+        let html = '<table class="results-table"><thead><tr>';
+        html += '<th>Aspirante</th>';
+        html += '<th class="hide-mobile">Sucursal</th>';
+        html += '<th style="text-align:center;">Puntaje</th>';
+        html += '<th style="text-align:center;">Resultado</th>';
+        html += '<th>Evaluadores</th>';
+        html += '</tr></thead><tbody>';
+        
+        data.resultados.forEach(r => {
+            const iniciales = r.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+            
+            // Clase del score
+            let scoreClass = 'score-low';
+            if (r.puntaje >= 64) scoreClass = 'score-high';
+            else if (r.puntaje >= 48) scoreClass = 'score-medium';
+            
+            // Clase del resultado
+            let resultClass = 'result-pendiente';
+            let resultText = '⏳ Pendiente';
+            if (r.resultado === 'Aprobado (muy bien)') { resultClass = 'result-aprobado'; resultText = '✅ Aprobado'; }
+            else if (r.resultado === 'Aprobado (regular)') { resultClass = 'result-regular'; resultText = '⚠️ Regular'; }
+            else if (r.resultado === 'No aprobó' || r.resultado === 'No aprobó (VETO)') { resultClass = 'result-rechazado'; resultText = '❌ No aprobó'; }
+            else if (r.resultado === 'No se presentó') { resultClass = 'result-noshow'; resultText = '🚫 No se presentó'; }
+            
+            html += '<tr>';
+            html += '<td><div class="aspirante-cell"><div class="aspirante-avatar">' + iniciales + '</div><div><div class="aspirante-name">' + r.nombre + '</div><div class="aspirante-time">🕐 ' + r.hora + '</div></div></div></td>';
+            html += '<td class="hide-mobile">' + r.sucursal + '</td>';
+            
+            if (r.resultado === 'No se presentó') {
+                html += '<td style="text-align:center;">-</td>';
+            } else if (r.puntaje > 0) {
+                html += '<td style="text-align:center;"><span class="score-badge ' + scoreClass + '">' + r.puntaje + '</span></td>';
+            } else {
+                html += '<td style="text-align:center;"><span style="color:var(--gray-400);">-</span></td>';
+            }
+            
+            html += '<td style="text-align:center;"><span class="result-badge ' + resultClass + '">' + resultText + '</span></td>';
+            html += '<td><div class="evaluadores-list">';
+            if (r.evaluadores && r.evaluadores.length > 0) {
+                html += '<span class="evaluadores-count">' + r.evaluadores.length + '</span>';
+                html += r.evaluadores.join(', ');
+            } else {
+                html += '<span style="color:var(--gray-400);">Sin evaluar</span>';
+            }
+            html += '</div></td>';
+            html += '</tr>';
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+        
+    } catch (e) {
+        console.error(e);
+        container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><h3>Error al cargar</h3><p>Intenta de nuevo</p></div>';
+    }
+}
+    </script>
+</body>
+</html>
