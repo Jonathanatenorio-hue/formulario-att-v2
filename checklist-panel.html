@@ -336,11 +336,16 @@ async function cargarAspirantesAprobados() {
         const data = await r.json(); 
         let aprobados = data.aprobados || [];
         
-        // Filtrar por reclutador si hay uno seleccionado
-        if (selectedReclutador) {
+        // Solo filtrar por reclutador en Antequera cuando se selecciona uno específico
+        if (selectedSucursal === 'Edificio Inbursa Antequera' && selectedReclutador) {
             console.log('Filtrando por reclutador:', selectedReclutador);
             console.log('Aspirantes antes del filtro:', aprobados.map(a => ({ nombre: a.nombre, reclutador: a.reclutador })));
-            aprobados = aprobados.filter(a => a.reclutador && a.reclutador.includes(selectedReclutador));
+            aprobados = aprobados.filter(a => {
+                if (!a.reclutador) return false;
+                const reclutadorNorm = a.reclutador.toLowerCase().trim();
+                const filtroNorm = selectedReclutador.toLowerCase().trim();
+                return reclutadorNorm.includes(filtroNorm) || filtroNorm.includes(reclutadorNorm.split(' ')[0]);
+            });
             console.log('Aspirantes después del filtro:', aprobados.length);
         }
         
