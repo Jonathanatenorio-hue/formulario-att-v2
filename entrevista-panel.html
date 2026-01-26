@@ -59,25 +59,28 @@
         .evaluador-name { font-size: 14px; font-weight: 500; color: var(--gray-700); }
         .aspirantes-list { display: flex; flex-direction: column; gap: 12px; }
         .aspirante-card { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; background: var(--gray-50); border: 2px solid var(--gray-200); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; }
-        .aspirante-card:hover { border-color: var(--att-blue); background: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        .aspirante-card:hover:not(.no-show) { border-color: var(--att-blue); background: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
         .aspirante-card.evaluated { border-color: var(--success); background: var(--success-light); }
-        .aspirante-card.no-show { border-color: var(--gray-400); background: var(--gray-100); opacity: 0.7; cursor: default; }
+        .aspirante-card.no-show { border-color: var(--danger); background: var(--danger-light); opacity: 0.7; cursor: not-allowed; }
         .aspirante-info { display: flex; align-items: center; gap: 15px; }
         .aspirante-avatar { width: 48px; height: 48px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 600; font-size: 18px; }
+        .aspirante-card.no-show .aspirante-avatar { background: linear-gradient(135deg, var(--gray-400) 0%, var(--gray-500) 100%); }
         .aspirante-details h4 { font-size: 16px; font-weight: 600; color: var(--gray-800); margin-bottom: 4px; }
         .aspirante-details p { font-size: 13px; color: var(--gray-500); }
         .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
         .status-pending { background: var(--warning-light); color: var(--warning); }
         .status-evaluated { background: var(--success-light); color: var(--success); }
-        .status-noshow { background: var(--gray-200); color: var(--gray-500); }
+        .status-noshow { background: var(--danger-light); color: var(--danger); }
         .section { display: none; }
         .section.active { display: block; }
         .eval-section { background: var(--gray-50); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
         .eval-section-title { font-size: 16px; font-weight: 600; color: var(--att-blue-dark); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--gray-200); }
         .eval-question { margin-bottom: 24px; }
         .eval-question:last-child { margin-bottom: 0; }
-        .eval-question-text { font-size: 14px; font-weight: 500; color: var(--gray-700); margin-bottom: 12px; line-height: 1.5; }
-        .eval-question-hint { font-size: 12px; color: var(--gray-500); margin-bottom: 12px; font-style: italic; }
+        .eval-question-text { font-size: 14px; font-weight: 500; color: var(--gray-700); margin-bottom: 8px; line-height: 1.5; }
+        .eval-question-hint { font-size: 12px; color: var(--gray-500); margin-bottom: 8px; font-style: italic; }
+        .eval-guide { font-size: 11px; color: var(--gray-600); margin-bottom: 12px; padding: 10px; background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%); border-radius: 8px; border-left: 3px solid var(--att-blue); }
+        .eval-guide strong { color: var(--att-blue-dark); }
         .rating-scale { display: flex; gap: 8px; }
         .rating-btn { width: 48px; height: 48px; border: 2px solid var(--gray-200); border-radius: 10px; background: var(--white); font-size: 16px; font-weight: 600; color: var(--gray-500); cursor: pointer; transition: all 0.2s ease; }
         .rating-btn:hover { border-color: var(--att-blue); color: var(--att-blue); }
@@ -115,6 +118,16 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .fade-in { animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Guía de rangos */
+        .guide-box { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid var(--warning); border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+        .guide-box-title { font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .guide-box-content { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .guide-item { text-align: center; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 8px; }
+        .guide-item-score { font-size: 18px; font-weight: 700; }
+        .guide-item-label { font-size: 11px; color: var(--gray-600); }
+        .guide-item.green .guide-item-score { color: var(--success); }
+        .guide-item.yellow .guide-item-score { color: var(--warning); }
+        .guide-item.red .guide-item-score { color: var(--danger); }
         @media (max-width: 640px) {
             .container { padding: 12px; }
             .header { padding: 20px; }
@@ -127,6 +140,7 @@
             .option-buttons { flex-direction: column; }
             .option-btn { width: 100%; text-align: center; }
             .eval-aspirante-header { flex-direction: column; text-align: center; }
+            .guide-box-content { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -135,7 +149,7 @@
         <div class="header">
             <div class="header-content">
                 <div class="logo-container">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1280px-AT%26T_logo_2016.svg.png" alt="AT&T Logo">
+                    <img src="https://cdn.brandfetch.io/idMKNzJhCD/w/512/h/512/theme/dark/icon.png" alt="AT&T Logo">
                 </div>
                 <div class="header-text">
                     <h1>Entrevista Panel</h1>
@@ -188,6 +202,26 @@
                     </div>
                     <button class="btn btn-secondary" onclick="marcarNoSePresento()" style="background: rgba(255,255,255,0.2); border: none; color: white;">🚫 No se presentó</button>
                 </div>
+
+                <!-- Guía de rangos (solo para ciertos evaluadores) -->
+                <div class="guide-box" id="guide-box" style="display: none;">
+                    <div class="guide-box-title">📊 Guía de Rangos de Aprobación</div>
+                    <div class="guide-box-content">
+                        <div class="guide-item green">
+                            <div class="guide-item-score">64-80 pts</div>
+                            <div class="guide-item-label">✅ Aprobado (muy bien)</div>
+                        </div>
+                        <div class="guide-item yellow">
+                            <div class="guide-item-score">48-63 pts</div>
+                            <div class="guide-item-label">⚠️ Aprobado (regular)</div>
+                        </div>
+                        <div class="guide-item red">
+                            <div class="guide-item-score">10-47 pts</div>
+                            <div class="guide-item-label">❌ No aprobó</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="eval-progress">
                     <div class="progress-bar"><div class="progress-fill" id="eval-progress-bar" style="width: 0%"></div></div>
                     <span class="progress-text" id="eval-progress-text">0/16</span>
@@ -198,12 +232,18 @@
                     <div class="eval-section-title">📝 Parte 1: Preguntas Iniciales</div>
                     <div class="eval-question">
                         <div class="eval-question-text">1. Presentación cronometrada (3-5 min)</div>
-                        <div class="eval-question-hint">"Preséntate como si fuera tu primer día con el equipo." — No suma puntaje.</div>
+                        <div class="eval-question-hint">"Preséntate como si fuera tu primer día con el equipo."</div>
+                        <div class="eval-guide"><strong>📌 No suma puntaje.</strong> Solo observa: presencia, seguridad y actitud inicial.</div>
                         <textarea id="q1-notas" placeholder="Notas sobre la presentación..." style="width: 100%; padding: 12px; border: 2px solid var(--gray-200); border-radius: 10px; font-family: inherit; min-height: 80px; resize: vertical;"></textarea>
                     </div>
                     <div class="eval-question">
                         <div class="eval-question-text">2. Caso real de call center</div>
                         <div class="eval-question-hint">"Llevas 2 días sin vender y el supervisor te pide resultados. ¿Qué haces?"</div>
+                        <div class="eval-guide">
+                            <strong>❌ 1-2:</strong> Se victimiza, culpa la base, excusas.<br>
+                            <strong>➖ 3:</strong> Respuesta genérica, sin plan concreto.<br>
+                            <strong>✅ 4-5:</strong> Ajusta discurso, pide coaching, se responsabiliza, tiene plan de acción.
+                        </div>
                         <div class="rating-scale" data-question="q2">
                             <button class="rating-btn" onclick="setRating('q2', 1)">1</button>
                             <button class="rating-btn" onclick="setRating('q2', 2)">2</button>
@@ -215,6 +255,11 @@
                     <div class="eval-question">
                         <div class="eval-question-text">3. Manejo de feedback frente a varios</div>
                         <div class="eval-question-hint">"Un supervisor te dice frente al equipo que tu cierre es débil. ¿Cómo reaccionas?"</div>
+                        <div class="eval-guide">
+                            <strong>❌ 1-2:</strong> Se ofende, ego alto, se pone a la defensiva.<br>
+                            <strong>➖ 3:</strong> Acepta pero sin acción clara.<br>
+                            <strong>✅ 4-5:</strong> Madurez, agradece el feedback, pregunta cómo mejorar, trabajo en equipo.
+                        </div>
                         <div class="rating-scale" data-question="q3">
                             <button class="rating-btn" onclick="setRating('q3', 1)">1</button>
                             <button class="rating-btn" onclick="setRating('q3', 2)">2</button>
@@ -225,7 +270,12 @@
                     </div>
                     <div class="eval-question">
                         <div class="eval-question-text">4. "¿Por qué no deberíamos contratarte?"</div>
-                        <div class="eval-question-hint">⭐ Top: Reconoce áreas de mejora, no se victimiza.</div>
+                        <div class="eval-question-hint">Pregunta incómoda pero poderosa.</div>
+                        <div class="eval-guide">
+                            <strong>❌ 1-2:</strong> Se victimiza, no sabe qué decir, respuesta vacía.<br>
+                            <strong>➖ 3:</strong> Respuesta genérica tipo "soy perfeccionista".<br>
+                            <strong>✅ 4-5:</strong> Reconoce áreas de mejora reales, usa debilidades como objetivos de crecimiento.
+                        </div>
                         <div class="rating-scale" data-question="q4">
                             <button class="rating-btn" onclick="setRating('q4', 1)">1</button>
                             <button class="rating-btn" onclick="setRating('q4', 2)">2</button>
@@ -237,6 +287,11 @@
                     <div class="eval-question">
                         <div class="eval-question-text">5. Cultura y equipo</div>
                         <div class="eval-question-hint">"¿Qué actitud tuya suma a un equipo y cuál podría restar?"</div>
+                        <div class="eval-guide">
+                            <strong>❌ 1-2:</strong> Respuestas de manual, no conoce sus defectos.<br>
+                            <strong>➖ 3:</strong> Respuesta honesta pero superficial.<br>
+                            <strong>✅ 4-5:</strong> Autoconocimiento real, respuestas genuinas, no las típicas de entrevista.
+                        </div>
                         <div class="rating-scale" data-question="q5">
                             <button class="rating-btn" onclick="setRating('q5', 1)">1</button>
                             <button class="rating-btn" onclick="setRating('q5', 2)">2</button>
@@ -248,6 +303,11 @@
                     <div class="eval-question">
                         <div class="eval-question-text">6. Responsabilidad vs Victimismo</div>
                         <div class="eval-question-hint">"Si después de un mes no vendes lo esperado, ¿qué harías antes de renunciar?"</div>
+                        <div class="eval-guide">
+                            <strong>❌ 1-2:</strong> Renunciaría, culparía al proceso, sin resiliencia.<br>
+                            <strong>➖ 3:</strong> Pediría ayuda pero sin plan propio.<br>
+                            <strong>✅ 4-5:</strong> Carácter, resiliencia, busca soluciones, se queda a luchar.
+                        </div>
                         <div class="rating-scale" data-question="q6">
                             <button class="rating-btn" onclick="setRating('q6', 1)">1</button>
                             <button class="rating-btn" onclick="setRating('q6', 2)">2</button>
@@ -262,10 +322,17 @@
                 <div class="eval-section">
                     <div class="eval-section-title">🎭 Parte 2: Roleplay (5 min)</div>
                     <p style="color: var(--gray-500); font-size: 13px; margin-bottom: 20px; padding: 12px; background: var(--gray-100); border-radius: 8px;">
-                        📋 <strong>Escenario:</strong> "Llamas a un cliente con plan activo elegible para renovación."<br>⏱️ Preparación: 30 seg | Ejecución: 3 min
+                        📋 <strong>Escenario:</strong> "Llamas a un cliente con plan activo elegible para renovación."<br>
+                        ⏱️ <strong>Preparación:</strong> 30 seg | <strong>Ejecución:</strong> 3 min<br>
+                        🎯 <strong>Objetivo:</strong> No buscamos técnica perfecta, sino ver cómo piensa y reacciona bajo presión.
                     </p>
                     <div class="eval-question">
                         <div class="eval-question-text">7. Apertura (¿rompe el hielo?)</div>
+                        <div class="eval-guide">
+                            <strong>❌ 1-2:</strong> Inseguro, titubea, no sabe cómo empezar.<br>
+                            <strong>➖ 3:</strong> Se presenta pero sin enganche.<br>
+                            <strong>✅ 4-5:</strong> Seguro, claro, buen tono, va al punto rápido.
+                        </div>
                         <div class="rating-scale" data-question="r1">
                             <button class="rating-btn" onclick="setRating('r1', 1)">1</button>
                             <button class="rating-btn" onclick="setRating('r1', 2)">2</button>
@@ -276,6 +343,11 @@
                     </div>
                     <div class="eval-question">
                         <div class="eval-question-text">8. Estructura (¿hay orden?)</div>
+                        <div class="eval-guide">
+                            <strong>❌ 1-2:</strong> Habla sin rumbo, no hay secuencia lógica.<br>
+                            <strong>➖ 3:</strong> Algo de orden pero se pierde.<br>
+                            <strong>✅ 4-5:</strong> Secuencia clara: Inicio → Beneficio → Intento de cierre.
+                        </div>
                         <div class="rating-scale" data-question="r2">
                             <button class="rating-btn" onclick="setRating('r2', 1)">1</button>
                             <button class="rating-btn" onclick="setRating('r2', 2)">2</button>
@@ -286,6 +358,11 @@
                     </div>
                     <div class="eval-question">
                         <div class="eval-question-text">9. Comunicación</div>
+                        <div class="eval-guide">
+                            <strong>❌ 1-2:</strong> Se traba, habla muy bajo, no se entiende.<br>
+                            <strong>➖ 3:</strong> Se entiende pero sin firmeza.<br>
+                            <strong>✅ 4-5:</strong> Fluido, palabras simples, buen ritmo, se escucha firme.
+                        </div>
                         <div class="rating-scale" data-question="r3">
                             <button class="rating-btn" onclick="setRating('r3', 1)">1</button>
                             <button class="rating-btn" onclick="setRating('r3', 2)">2</button>
@@ -295,7 +372,12 @@
                         </div>
                     </div>
                     <div class="eval-question">
-                        <div class="eval-question-text">10. Intento de cierre (Fundamental)</div>
+                        <div class="eval-question-text">10. Intento de cierre (FUNDAMENTAL)</div>
+                        <div class="eval-guide">
+                            <strong>❌ 1-2:</strong> Nunca intenta cerrar, solo informa.<br>
+                            <strong>➖ 3:</strong> Intento débil o indirecto.<br>
+                            <strong>✅ 4-5:</strong> Lanza un cierre claro, aunque sea básico. Pide la venta.
+                        </div>
                         <div class="rating-scale" data-question="r4">
                             <button class="rating-btn" onclick="setRating('r4', 1)">1</button>
                             <button class="rating-btn" onclick="setRating('r4', 2)">2</button>
@@ -306,6 +388,11 @@
                     </div>
                     <div class="eval-question">
                         <div class="eval-question-text">11. Actitud bajo presión</div>
+                        <div class="eval-guide">
+                            <strong>❌ 1-2:</strong> Se bloquea, ríe nervioso, se rinde.<br>
+                            <strong>➖ 3:</strong> Se incomoda pero continúa.<br>
+                            <strong>✅ 4-5:</strong> Mantiene compostura, maneja silencios, no se rinde.
+                        </div>
                         <div class="rating-scale" data-question="r5">
                             <button class="rating-btn" onclick="setRating('r5', 1)">1</button>
                             <button class="rating-btn" onclick="setRating('r5', 2)">2</button>
@@ -321,6 +408,7 @@
                     <div class="eval-section-title">🎯 Parte 3: Decisión Post-Roleplay</div>
                     <div class="eval-question">
                         <div class="eval-question-text">12. ¿Intentó cerrar?</div>
+                        <div class="eval-guide">🚨 <strong>RED FLAG si NO:</strong> Un vendedor que no intenta cerrar no sirve para ventas.</div>
                         <div class="option-buttons" data-question="d1">
                             <button class="option-btn" onclick="setOption('d1', 'si', 5)">✅ Sí (5 pts)</button>
                             <button class="option-btn" onclick="setOption('d1', 'no', 0)">❌ No (0 pts)</button>
@@ -328,6 +416,7 @@
                     </div>
                     <div class="eval-question">
                         <div class="eval-question-text">13. ¿Se comunicó con claridad?</div>
+                        <div class="eval-guide">Evalúa si pudiste entender su mensaje sin esfuerzo.</div>
                         <div class="option-buttons" data-question="d2">
                             <button class="option-btn" onclick="setOption('d2', 'si', 5)">✅ Sí (5 pts)</button>
                             <button class="option-btn" onclick="setOption('d2', 'no', 0)">❌ No (0 pts)</button>
@@ -335,6 +424,11 @@
                     </div>
                     <div class="eval-question">
                         <div class="eval-question-text">14. ¿Su actitud suma o resta?</div>
+                        <div class="eval-guide">
+                            <strong>✅ Suma:</strong> Se animó, improvisó, mantuvo profesionalismo.<br>
+                            <strong>➖ Neutral:</strong> Ni sumó ni restó, pasó desapercibido.<br>
+                            <strong>❌ Resta:</strong> Se burló, se quejó, culpó al escenario.
+                        </div>
                         <div class="option-buttons" data-question="d3">
                             <button class="option-btn" onclick="setOption('d3', 'suma', 5)">✅ Suma (5)</button>
                             <button class="option-btn" onclick="setOption('d3', 'neutral', 3)">➖ Neutral (3)</button>
@@ -348,6 +442,10 @@
                     <div class="eval-section-title">🏆 Parte 4: Decisión del Panel</div>
                     <div class="eval-question">
                         <div class="eval-question-text">15. ¿Lo quiero en mi equipo?</div>
+                        <div class="eval-guide">
+                            <strong>⚠️ VETO:</strong> Si marcas "No", el candidato NO PASA aunque tenga buen puntaje.<br>
+                            Piensa: ¿lo pondrías a trabajar contigo mañana?
+                        </div>
                         <div class="option-buttons" data-question="p1">
                             <button class="option-btn" onclick="setOption('p1', 'si', 5)">✅ Sí (5)</button>
                             <button class="option-btn" onclick="setOption('p1', 'talvez', 3)">🤔 Tal vez (3)</button>
@@ -356,6 +454,7 @@
                     </div>
                     <div class="eval-question">
                         <div class="eval-question-text">16. ¿Transmite responsabilidad?</div>
+                        <div class="eval-guide">¿Se haría cargo de sus resultados o buscaría excusas?</div>
                         <div class="option-buttons" data-question="p2">
                             <button class="option-btn" onclick="setOption('p2', 'si', 5)">✅ Sí (5)</button>
                             <button class="option-btn" onclick="setOption('p2', 'neutral', 3)">➖ Neutral (3)</button>
@@ -364,6 +463,10 @@
                     </div>
                     <div class="eval-question">
                         <div class="eval-question-text">17. ¿Tiene energía para ventas?</div>
+                        <div class="eval-guide">
+                            <strong>⚠️ VETO:</strong> Si marcas "Baja", el candidato NO PASA.<br>
+                            Ventas requiere energía constante. Sin energía, no hay ventas.
+                        </div>
                         <div class="option-buttons" data-question="p3">
                             <button class="option-btn" onclick="setOption('p3', 'alta', 5)">🔥 Alta (5)</button>
                             <button class="option-btn" onclick="setOption('p3', 'media', 3)">➖ Media (3)</button>
@@ -387,7 +490,7 @@
 
                 <div class="nav-buttons">
                     <button class="btn btn-secondary" onclick="volverALista()">← Volver</button>
-                    <button class="btn btn-primary" id="btn-enviar" onclick="enviarEvaluacion()" disabled>Enviar Evaluación →</button>
+                    <button class="btn btn-primary" id="btn-enviar" onclick="enviarEvaluacion()">Enviar Evaluación →</button>
                 </div>
             </div>
         </div>
@@ -399,9 +502,10 @@
                     <div class="no-show-icon">🚫</div>
                     <h3>¿Confirmas que no se presentó?</h3>
                     <p id="noshow-nombre">Juan Díaz</p>
+                    <p style="font-size: 13px; color: var(--danger); margin-bottom: 20px;">⚠️ Esta acción bloqueará al candidato para todos los evaluadores.</p>
                     <div style="display: flex; gap: 12px; justify-content: center;">
                         <button class="btn btn-secondary" onclick="volverAEvaluacion()">← Cancelar</button>
-                        <button class="btn btn-danger" onclick="confirmarNoShow()">Confirmar No Show</button>
+                        <button class="btn btn-danger" id="btn-noshow" onclick="confirmarNoShow()">Confirmar No Show</button>
                     </div>
                 </div>
             </div>
@@ -428,6 +532,9 @@ const EVALUADORES = {
     'Edificio Inbursa Antequera': ['Mashiel', 'Pilar', 'Julio', 'Jonathan', 'Eduardo', 'Reyna', 'Alan', 'Alfredo', 'Carlos', 'Yessica', 'Jezabel']
 };
 
+// Evaluadores que ven la guía de rangos
+const EVALUADORES_CON_GUIA = ['Pilar', 'Julio', 'Mashiel', 'Eduardo', 'Luisa', 'Jonathan'];
+
 let selectedSucursal = null;
 let selectedGrupo = null;
 let selectedEvaluador = null;
@@ -439,6 +546,7 @@ let vetos = [];
 function showSection(id) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
 }
 
 function onSucursalChange() {
@@ -519,11 +627,14 @@ async function cargarAspirantes() {
             const iniciales = asp.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
             let statusClass = 'status-pending', statusText = 'Pendiente', cardClass = '';
             if (asp.evaluadoPorMi) { statusClass = 'status-evaluated'; statusText = 'Evaluado'; cardClass = 'evaluated'; }
-            if (asp.noSePresento) { statusClass = 'status-noshow'; statusText = 'No se presentó'; cardClass = 'no-show'; }
+            if (asp.noSePresento) { statusClass = 'status-noshow'; statusText = '🚫 No se presentó'; cardClass = 'no-show'; }
             const div = document.createElement('div');
             div.className = 'aspirante-card ' + cardClass;
             div.innerHTML = '<div class="aspirante-info"><div class="aspirante-avatar">' + iniciales + '</div><div class="aspirante-details"><h4>' + asp.nombre + '</h4><p>' + asp.hora + ' • ' + asp.estado + '</p></div></div><span class="status-badge ' + statusClass + '">' + statusText + '</span>';
-            if (!asp.noSePresento) div.onclick = () => iniciarEvaluacion(asp);
+            // Solo permitir click si NO es no-show
+            if (!asp.noSePresento) {
+                div.onclick = () => iniciarEvaluacion(asp);
+            }
             lista.appendChild(div);
         });
     } catch (e) {
@@ -544,6 +655,20 @@ function iniciarEvaluacion(asp) {
     document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected','selected-warning','selected-danger'));
     document.getElementById('q1-notas').value = '';
     document.getElementById('observaciones').value = '';
+    
+    // Mostrar guía de rangos solo para ciertos evaluadores
+    const guideBox = document.getElementById('guide-box');
+    if (EVALUADORES_CON_GUIA.includes(selectedEvaluador)) {
+        guideBox.style.display = 'block';
+    } else {
+        guideBox.style.display = 'none';
+    }
+    
+    // Resetear botón de enviar
+    const btnEnviar = document.getElementById('btn-enviar');
+    btnEnviar.disabled = true;
+    btnEnviar.innerHTML = 'Enviar Evaluación →';
+    
     actualizarProgreso();
     showSection('section-evaluacion');
 }
@@ -587,6 +712,10 @@ function actualizarProgreso() {
 
 function marcarNoSePresento() {
     document.getElementById('noshow-nombre').textContent = selectedAspirante.nombre;
+    // Resetear botón
+    const btn = document.getElementById('btn-noshow');
+    btn.disabled = false;
+    btn.innerHTML = 'Confirmar No Show';
     showSection('section-noshow');
 }
 
@@ -594,7 +723,7 @@ function volverAEvaluacion() { showSection('section-evaluacion'); }
 function volverALista() { showSection('section-config'); cargarAspirantes(); }
 
 async function confirmarNoShow() {
-    const btn = event.target;
+    const btn = document.getElementById('btn-noshow');
     btn.disabled = true;
     btn.innerHTML = '<span class="loading"></span> Guardando...';
     const data = {
@@ -609,12 +738,12 @@ async function confirmarNoShow() {
     };
     try {
         await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-        document.getElementById('confirmacion-mensaje').textContent = 'Se registró que ' + selectedAspirante.nombre + ' no se presentó.';
+        document.getElementById('confirmacion-mensaje').textContent = 'Se registró que ' + selectedAspirante.nombre + ' no se presentó. Ya no aparecerá para los demás evaluadores.';
         showSection('section-confirmacion');
     } catch (e) {
         alert('Error. Intenta de nuevo.');
         btn.disabled = false;
-        btn.textContent = 'Confirmar No Show';
+        btn.innerHTML = 'Confirmar No Show';
     }
 }
 
@@ -651,7 +780,7 @@ async function enviarEvaluacion() {
     };
     try {
         await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-        document.getElementById('confirmacion-mensaje').textContent = 'Tu evaluación para ' + selectedAspirante.nombre + ' ha sido registrada.';
+        document.getElementById('confirmacion-mensaje').textContent = 'Tu evaluación para ' + selectedAspirante.nombre + ' ha sido registrada correctamente.';
         showSection('section-confirmacion');
     } catch (e) {
         alert('Error. Intenta de nuevo.');
