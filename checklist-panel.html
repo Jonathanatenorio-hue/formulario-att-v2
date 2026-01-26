@@ -153,19 +153,17 @@
             <div class="card">
                 <div class="card-title"><div class="icon">📍</div>Selecciona el Panel</div>
                 <div class="form-group">
-                    <label>Reclutador</label>
-                    <select id="select-reclutador">
-                        <option value="">Selecciona reclutador...</option>
-                        <option value="Karla Flores">Karla Flores</option>
-                        <option value="Yessica Huerta">Yessica Huerta</option>
-                    </select>
-                </div>
-                <div class="form-group">
                     <label>Sucursal</label>
                     <select id="select-sucursal" onchange="onSucursalChange()">
                         <option value="">Selecciona sucursal...</option>
                         <option value="Torre JV Juárez">🏢 Torre JV Juárez</option>
                         <option value="Edificio Inbursa Antequera">🏛️ Edificio Inbursa Antequera</option>
+                    </select>
+                </div>
+                <div class="form-group" id="reclutador-group" style="display: none;">
+                    <label>Reclutador</label>
+                    <select id="select-reclutador">
+                        <option value="">Selecciona reclutador...</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -274,7 +272,31 @@ function showTab(tab) { document.querySelectorAll('.tab-btn').forEach(b => b.cla
 async function onSucursalChange() {
     selectedSucursal = document.getElementById('select-sucursal').value;
     const selectFecha = document.getElementById('select-fecha');
-    if (!selectedSucursal) { selectFecha.disabled = true; selectFecha.innerHTML = '<option value="">Primero selecciona sucursal...</option>'; document.getElementById('aspirantes-card').style.display = 'none'; document.getElementById('stats-bar').style.display = 'none'; return; }
+    const reclutadorGroup = document.getElementById('reclutador-group');
+    const selectReclutador = document.getElementById('select-reclutador');
+    
+    if (!selectedSucursal) { 
+        selectFecha.disabled = true; 
+        selectFecha.innerHTML = '<option value="">Primero selecciona sucursal...</option>'; 
+        document.getElementById('aspirantes-card').style.display = 'none'; 
+        document.getElementById('stats-bar').style.display = 'none';
+        reclutadorGroup.style.display = 'none';
+        selectedReclutador = '';
+        return; 
+    }
+    
+    // Configurar reclutador según sucursal
+    if (selectedSucursal === 'Torre JV Juárez') {
+        // JV solo tiene a Karla, se asigna automáticamente
+        reclutadorGroup.style.display = 'none';
+        selectedReclutador = 'Karla Flores';
+    } else if (selectedSucursal === 'Edificio Inbursa Antequera') {
+        // Antequera tiene dos reclutadores, mostrar selector
+        reclutadorGroup.style.display = 'block';
+        selectReclutador.innerHTML = '<option value="">Selecciona reclutador...</option><option value="Yessica Huerta">Yessica Huerta</option><option value="Jezabel">Jezabel</option>';
+        selectedReclutador = '';
+    }
+    
     selectFecha.disabled = false; selectFecha.innerHTML = '<option value="">Cargando fechas...</option>';
     try {
         const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getFechasPanel&sucursal=' + encodeURIComponent(selectedSucursal));
@@ -340,11 +362,55 @@ function seleccionarAspirante(asp) {
     document.getElementById('aspirante-iniciales').textContent = iniciales;
     document.getElementById('aspirante-nombre').textContent = asp.nombre;
     document.getElementById('aspirante-detalles').textContent = `${asp.puntaje}/80 pts • ${asp.resultado}`;
+    
+    // LIMPIAR completamente el checklistStatus
     checklistStatus = { ine: null, curp: null, domicilio: null, acta: null, rfc: null, banco: null, psico: null, csf: null, estudios: null, laboral: null, nss: null, infonavit: null, fonacot: null };
-    if (asp.docs) { Object.keys(asp.docs).forEach(key => { if (asp.docs[key] !== null) { checklistStatus[key] = asp.docs[key]; updateItemUI(key, asp.docs[key]); } }); }
-    if (asp.emergencia) { document.getElementById('emergencia-nombre').value = asp.emergencia.nombre || ''; document.getElementById('emergencia-parentesco').value = asp.emergencia.parentesco || ''; document.getElementById('emergencia-telefono').value = asp.emergencia.telefono || ''; document.getElementById('emergencia-fecha-nac').value = asp.emergencia.fechaNac || ''; }
-    else { document.getElementById('emergencia-nombre').value = ''; document.getElementById('emergencia-parentesco').value = ''; document.getElementById('emergencia-telefono').value = ''; document.getElementById('emergencia-fecha-nac').value = ''; }
+    
+    // LIMPIAR todos los items visualmente primero
+    const allDocs = ['ine', 'curp', 'domicilio', 'acta', 'rfc', 'banco', 'psico', 'csf', 'estudios', 'laboral', 'nss', 'infonavit', 'fonacot'];
+    allDocs.forEach(doc => {
+        const item = document.getElementById('item-' + doc);
+        if (item) {
+            item.classList.remove('checked', 'pending');
+            item.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active-yes', 'active-no', 'active-na'));
+        }
+    });
+    
+    // Cargar datos existentes si hay
+    if (asp.docs) { 
+        Object.keys(asp.docs).forEach(key => { 
+            if (asp.docs[key] !== null && asp.docs[key] !== 'na') { 
+                checklistStatus[key] = asp.docs[key]; 
+                updateItemUI(key, asp.docs[key]); 
+            } else if (asp.docs[key] === 'na') {
+                checklistStatus[key] = 'na';
+                updateItemUI(key, 'na');
+            }
+        }); 
+    }
+    
+    // Limpiar campos de emergencia primero
+    document.getElementById('emergencia-nombre').value = '';
+    document.getElementById('emergencia-parentesco').value = '';
+    document.getElementById('emergencia-telefono').value = '';
+    document.getElementById('emergencia-fecha-nac').value = '';
+    
+    // Cargar contacto de emergencia si existe
+    if (asp.emergencia) { 
+        document.getElementById('emergencia-nombre').value = asp.emergencia.nombre || ''; 
+        document.getElementById('emergencia-parentesco').value = asp.emergencia.parentesco || ''; 
+        document.getElementById('emergencia-telefono').value = asp.emergencia.telefono || ''; 
+        document.getElementById('emergencia-fecha-nac').value = asp.emergencia.fechaNac || ''; 
+    }
+    
+    // Limpiar y cargar observaciones
     document.getElementById('observaciones').value = asp.observaciones || '';
+    
+    // Rehabilitar botón guardar
+    const btn = document.getElementById('btn-guardar');
+    btn.disabled = false;
+    btn.innerHTML = '💾 Guardar';
+    
     showSection('section-checklist');
 }
 
@@ -406,11 +472,15 @@ async function guardarChecklist() {
         return;
     }
     
-    selectedReclutador = document.getElementById('select-reclutador').value;
-    if (!selectedReclutador) {
-        alert('⚠️ Debes seleccionar un reclutador');
-        return;
+    // Validar reclutador solo para Antequera
+    if (selectedSucursal === 'Edificio Inbursa Antequera') {
+        selectedReclutador = document.getElementById('select-reclutador').value;
+        if (!selectedReclutador) {
+            alert('⚠️ Debes seleccionar un reclutador');
+            return;
+        }
     }
+    // Para JV ya está asignado automáticamente
     
     const btn = document.getElementById('btn-guardar'); btn.disabled = true; btn.innerHTML = '<span class="loading"></span> Guardando...';
     const data = { tipo: 'checklist_panel', reclutador: selectedReclutador, sucursal: selectedSucursal, fecha: selectedFecha, aspirante_nombre: selectedAspirante.nombre, aspirante_telefono: selectedAspirante.telefono, aspirante_email: selectedAspirante.email || '', ine: checklistStatus.ine, domicilio: checklistStatus.domicilio, curp: checklistStatus.curp, rfc: checklistStatus.rfc, csf: checklistStatus.csf, acta: checklistStatus.acta, estudios: checklistStatus.estudios, laboral: checklistStatus.laboral, banco: checklistStatus.banco, nss: checklistStatus.nss, infonavit: checklistStatus.infonavit, fonacot: checklistStatus.fonacot, psico: checklistStatus.psico, emergencia_nombre: document.getElementById('emergencia-nombre').value, emergencia_parentesco: document.getElementById('emergencia-parentesco').value, emergencia_telefono: document.getElementById('emergencia-telefono').value, emergencia_fecha_nac: document.getElementById('emergencia-fecha-nac').value, observaciones: document.getElementById('observaciones').value, timestamp: new Date().toLocaleString('es-MX'), enviarFelicitacion: true };
