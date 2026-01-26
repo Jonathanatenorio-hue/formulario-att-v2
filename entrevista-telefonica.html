@@ -736,7 +736,7 @@
             }
             
             try {
-                const url = `${GOOGLE_SCRIPT_URL}?action=getCandidatos&sucursal=${encodeURIComponent(sucursalFiltro)}`;
+                const url = `${GOOGLE_SCRIPT_URL}?action=getCandidatosPorReclutador&reclutador=${encodeURIComponent(selectedReclutadora.nombre)}`;
                 
                 const response = await fetch(url);
                 const data = await response.json();
