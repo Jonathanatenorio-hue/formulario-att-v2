@@ -338,7 +338,10 @@ async function cargarAspirantesAprobados() {
         
         // Filtrar por reclutador si hay uno seleccionado
         if (selectedReclutador) {
-            aprobados = aprobados.filter(a => a.reclutador && a.reclutador.includes(selectedReclutador.split(' ')[0]));
+            console.log('Filtrando por reclutador:', selectedReclutador);
+            console.log('Aspirantes antes del filtro:', aprobados.map(a => ({ nombre: a.nombre, reclutador: a.reclutador })));
+            aprobados = aprobados.filter(a => a.reclutador && a.reclutador.includes(selectedReclutador));
+            console.log('Aspirantes después del filtro:', aprobados.length);
         }
         
         aspirantesList = aprobados;
