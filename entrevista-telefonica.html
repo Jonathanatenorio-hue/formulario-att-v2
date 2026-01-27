@@ -681,7 +681,9 @@
         function llamar(telefono) { window.open(`tel:${telefono}`, '_blank'); }
 
         function abrirWhatsApp(telefono, nombre) {
-            const mensaje = `Hola ${nombre.split(' ')[0]}, te habla de Expertcell para tu entrevista telefónica. ¿Tienes unos minutos?`;
+            const reclutadora = document.getElementById('filtro-reclutadora').value;
+            const primerNombre = nombre.split(' ')[0];
+            const mensaje = `Hola ${primerNombre}, te escribe ${reclutadora}, estoy intentando comunicarme contigo para realizar tu entrevista telefónica, ¿tienes unos minutos?`;
             let tel = telefono.replace(/\D/g, '');
             if (tel.length === 10) tel = '52' + tel;
             window.open(`https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
