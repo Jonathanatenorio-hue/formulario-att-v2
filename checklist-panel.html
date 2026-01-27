@@ -255,9 +255,11 @@
         <div class="modal">
             <h3>📩 Enviar Recordatorio</h3>
             <p id="modal-mensaje">¿Deseas enviar un recordatorio de documentos pendientes?</p>
-            <div class="btn-row">
+            <p id="modal-docs-lista" style="font-size: 13px; color: var(--gray-600); margin-bottom: 16px;"></p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn btn-primary" onclick="enviarWhatsApp()" style="background: #25D366; border-color: #25D366;">📱 Enviar por WhatsApp</button>
+                <button class="btn btn-primary" id="btn-email" onclick="enviarEmail()">📧 Enviar por Email</button>
                 <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
-                <button class="btn btn-primary" onclick="confirmarRecordatorio()">📩 Enviar</button>
             </div>
         </div>
     </div>
@@ -417,8 +419,19 @@ function renderizarLista(containerId, lista) {
 }
 
 function abrirModalRecordatorio(nombre, telefono, email, docsPendientes) { 
-    recordatorioData = { nombre, telefono, email, docsPendientes: docsPendientes.split(', '), sucursal: selectedSucursal }; 
-    document.getElementById('modal-mensaje').innerHTML = `¿Enviar recordatorio a <strong>${nombre}</strong> sobre los documentos pendientes?<br><br><small>📋 ${docsPendientes}</small>`; 
+    recordatorioData = { nombre, telefono, email: email || '', docsPendientes: docsPendientes.split(', '), sucursal: selectedSucursal }; 
+    document.getElementById('modal-mensaje').innerHTML = `Enviar recordatorio a <strong>${nombre}</strong>`;
+    document.getElementById('modal-docs-lista').innerHTML = `📋 Documentos pendientes:<br>${docsPendientes}`;
+    
+    // Mostrar/ocultar botón de email según si tiene correo
+    const btnEmail = document.getElementById('btn-email');
+    if (email && email.trim() !== '') {
+        btnEmail.style.display = 'block';
+        btnEmail.innerHTML = `📧 Enviar por Email (${email})`;
+    } else {
+        btnEmail.style.display = 'none';
+    }
+    
     document.getElementById('modal-recordatorio').classList.add('active'); 
 }
 
@@ -427,15 +440,10 @@ function cerrarModal() {
     recordatorioData = null; 
 }
 
-async function confirmarRecordatorio() {
+async function enviarWhatsApp() {
     if (!recordatorioData) return;
-    const btn = document.querySelector('#modal-recordatorio .btn-primary'); 
-    btn.disabled = true; 
-    btn.innerHTML = '<span class="loading"></span>';
     
-    // Guardar datos antes de cerrar modal
     const datos = { ...recordatorioData };
-    const tieneEmail = datos.email && datos.email.trim() !== '';
     
     // Generar mensaje de WhatsApp
     const primerNombre = datos.nombre.split(' ')[0];
@@ -448,22 +456,42 @@ async function confirmarRecordatorio() {
     
     const urlWhatsApp = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
     
-    // Intentar enviar email también (solo si hay email)
-    if (tieneEmail) {
-        try {
-            const params = new URLSearchParams({ action: 'enviarRecordatorio', nombre: datos.nombre, telefono: datos.telefono, email: datos.email, docsPendientes: datos.docsPendientes.join(','), sucursal: datos.sucursal });
-            await fetch(GOOGLE_SCRIPT_URL + '?' + params.toString());
-        } catch (e) { console.log('Email no enviado:', e); }
+    cerrarModal();
+    window.open(urlWhatsApp, '_blank');
+}
+
+async function enviarEmail() {
+    if (!recordatorioData) return;
+    
+    const datos = { ...recordatorioData };
+    if (!datos.email || datos.email.trim() === '') {
+        alert('⚠️ Este aspirante no tiene email registrado');
+        return;
     }
     
-    // Cerrar modal y abrir WhatsApp
-    cerrarModal();
-    btn.disabled = false; 
-    btn.innerHTML = '📩 Enviar';
+    const btn = document.getElementById('btn-email');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span> Enviando...';
     
-    // Abrir WhatsApp
-    window.open(urlWhatsApp, '_blank');
-    alert(tieneEmail ? '✅ Recordatorio enviado por email y WhatsApp abierto' : '✅ WhatsApp abierto (sin email registrado)');
+    try {
+        const params = new URLSearchParams({ 
+            action: 'enviarRecordatorio', 
+            nombre: datos.nombre, 
+            telefono: datos.telefono, 
+            email: datos.email, 
+            docsPendientes: datos.docsPendientes.join(','), 
+            sucursal: datos.sucursal 
+        });
+        await fetch(GOOGLE_SCRIPT_URL + '?' + params.toString());
+        cerrarModal();
+        alert('✅ Email enviado correctamente a ' + datos.email);
+    } catch (e) { 
+        console.error('Error enviando email:', e);
+        alert('❌ Error al enviar el email');
+    }
+    
+    btn.disabled = false;
+    btn.innerHTML = `📧 Enviar por Email (${datos.email})`;
 }
 
 function seleccionarAspirante(asp) {
