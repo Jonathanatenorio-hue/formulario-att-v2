@@ -13,6 +13,78 @@
         .header p { opacity: 0.9; font-size: 14px; }
         .content { background: white; padding: 30px; border-radius: 0 0 16px 16px; }
         
+        /* Tabs de navegación */
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 25px; background: #f1f5f9; padding: 8px; border-radius: 12px; }
+        .nav-tab { flex: 1; padding: 14px 20px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; background: transparent; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .nav-tab:hover { background: #e2e8f0; }
+        .nav-tab.active { background: linear-gradient(135deg, #00A8E1 0%, #0066CC 100%); color: white; box-shadow: 0 4px 15px rgba(0,102,204,0.3); }
+        .nav-tab .badge { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+        .nav-tab.active .badge { background: rgba(255,255,255,0.3); }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Estilos del Calendario */
+        .calendario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+        .calendario-header h2 { font-size: 20px; color: #1e293b; }
+        .calendario-filters { display: flex; gap: 10px; flex-wrap: wrap; }
+        .calendario-filters select { padding: 10px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; cursor: pointer; }
+        .calendario-filters select:focus { outline: none; border-color: #0066CC; }
+        
+        .stats-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 20px; border-radius: 12px; text-align: center; border: 2px solid #e2e8f0; }
+        .stat-card.today { border-color: #00A8E1; background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%); }
+        .stat-card.pending { border-color: #ff9800; background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); }
+        .stat-card.done { border-color: #4CAF50; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
+        .stat-card .number { font-size: 32px; font-weight: 700; color: #1e293b; }
+        .stat-card .label { font-size: 12px; color: #64748b; margin-top: 5px; }
+        
+        .calendario-grid { display: flex; flex-direction: column; gap: 15px; }
+        
+        .dia-section { background: #f8fafc; border-radius: 12px; overflow: hidden; border: 2px solid #e2e8f0; }
+        .dia-header { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .dia-header.hoy { background: linear-gradient(135deg, #00A8E1 0%, #0066CC 100%); }
+        .dia-header h3 { font-size: 16px; }
+        .dia-header .count { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 13px; }
+        
+        .citas-lista { padding: 15px; display: flex; flex-direction: column; gap: 12px; }
+        .cita-card { background: white; border-radius: 10px; padding: 15px; border-left: 4px solid #00A8E1; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .cita-card.sobresaliente { border-left-color: #4CAF50; }
+        .cita-card.excelente { border-left-color: #2196F3; }
+        .cita-card.muy-bueno { border-left-color: #ff9800; }
+        .cita-card.realizada { opacity: 0.6; border-left-color: #9e9e9e; }
+        
+        .cita-info { flex: 1; min-width: 200px; }
+        .cita-info .nombre { font-weight: 600; font-size: 16px; color: #1e293b; margin-bottom: 4px; }
+        .cita-info .detalles { font-size: 13px; color: #64748b; display: flex; flex-wrap: wrap; gap: 10px; }
+        .cita-info .hora { background: #e0f2fe; color: #0277bd; padding: 3px 10px; border-radius: 15px; font-weight: 600; }
+        .cita-info .puntaje { display: flex; align-items: center; gap: 5px; }
+        .cita-info .clasificacion { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+        .cita-info .clasificacion.sobresaliente { background: #c8e6c9; color: #2e7d32; }
+        .cita-info .clasificacion.excelente { background: #bbdefb; color: #1565c0; }
+        .cita-info .clasificacion.muy-bueno { background: #ffe0b2; color: #e65100; }
+        
+        .cita-acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-accion { padding: 8px 12px; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.2s; }
+        .btn-llamar { background: #e3f2fd; color: #1565c0; }
+        .btn-llamar:hover { background: #1565c0; color: white; }
+        .btn-whatsapp { background: #e8f5e9; color: #2e7d32; }
+        .btn-whatsapp:hover { background: #25D366; color: white; }
+        .btn-realizada { background: #e8f5e9; color: #2e7d32; }
+        .btn-realizada:hover { background: #4CAF50; color: white; }
+        .btn-no-contesto { background: #fff3e0; color: #e65100; }
+        .btn-no-contesto:hover { background: #ff9800; color: white; }
+        .btn-evaluar { background: linear-gradient(135deg, #00A8E1 0%, #0066CC 100%); color: white; }
+        .btn-evaluar:hover { transform: scale(1.05); }
+        
+        .empty-state { text-align: center; padding: 40px; color: #64748b; }
+        .empty-state .icon { font-size: 48px; margin-bottom: 15px; }
+        .empty-state h3 { color: #1e293b; margin-bottom: 8px; }
+        
+        .loading-spinner { text-align: center; padding: 40px; }
+        .loading-spinner .spinner { width: 40px; height: 40px; border: 4px solid #e2e8f0; border-top-color: #0066CC; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         .scoring-guide { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 2px solid #4CAF50; }
         .scoring-guide h3 { color: #2e7d32; margin-bottom: 15px; font-size: 16px; text-align: center; }
         .scoring-guide .ranges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -71,19 +143,6 @@
         .response-section label { display: block; margin-bottom: 8px; color: #333; font-weight: 600; font-size: 15px; }
         .response-section textarea { width: 100%; min-height: 100px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; resize: vertical; }
         .response-section textarea:focus { outline: none; border-color: #0066CC; }
-        .response-section textarea.recording { border-color: #f44336; background: #fff5f5; }
-        
-        .voice-controls { display: flex; gap: 10px; margin-bottom: 10px; }
-        .btn-voice { padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s; }
-        .btn-record { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); color: white; }
-        .btn-record:hover { transform: scale(1.05); }
-        .btn-record.recording { animation: pulse 1s infinite; }
-        .btn-clear { background: #ff9800; color: white; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-        
-        .voice-status { font-size: 13px; color: #666; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-        .voice-status.active { color: #f44336; font-weight: 600; }
-        .recording-dot { width: 10px; height: 10px; background: #f44336; border-radius: 50%; animation: pulse 1s infinite; }
         
         .score-selector { margin-top: 20px; }
         .score-selector label { display: block; margin-bottom: 10px; color: #333; font-weight: 600; }
@@ -141,7 +200,6 @@
         .hidden { display: none !important; }
         
         .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
         
         .confirmacion-panel { display: none; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 30px; border-radius: 12px; margin-top: 20px; text-align: center; border: 2px solid #4CAF50; }
         .confirmacion-panel h3 { color: #2e7d32; margin-bottom: 15px; }
@@ -149,14 +207,15 @@
         .confirmacion-panel .detalle p { margin: 10px 0; font-size: 14px; }
         
         @media (max-width: 600px) {
+            .nav-tabs { flex-direction: column; }
+            .stats-cards { grid-template-columns: repeat(2, 1fr); }
             .flags-container { grid-template-columns: 1fr; }
             .reclutadora-select { grid-template-columns: 1fr; }
             .score-options { justify-content: center; }
             .candidate-info .info-grid { grid-template-columns: 1fr; }
             .scoring-guide .ranges { grid-template-columns: 1fr; }
-            .voice-controls { flex-wrap: wrap; }
-            .viernes-selector { grid-template-columns: 1fr 1fr; }
-            .horarios-grid { grid-template-columns: repeat(2, 1fr); }
+            .cita-card { flex-direction: column; align-items: flex-start; }
+            .cita-acciones { width: 100%; justify-content: flex-start; }
         }
     </style>
 </head>
@@ -168,515 +227,342 @@
         </div>
         
         <div class="content">
-            <!-- Guía de Rangos -->
-            <div class="scoring-guide">
-                <h3>📊 GUÍA DE APROBACIÓN</h3>
-                <div class="ranges">
-                    <div class="range range-pass">
-                        <strong>25-30 pts</strong>
-                        <span>✅ PASA A PANEL</span>
-                    </div>
-                    <div class="range range-maybe">
-                        <strong>20-24 pts</strong>
-                        <span>⚠️ CON RESERVAS</span>
-                    </div>
-                    <div class="range range-fail">
-                        <strong>0-19 pts</strong>
-                        <span>❌ NO PASA</span>
-                    </div>
-                </div>
+            <!-- Tabs de navegación -->
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="cambiarTab('calendario')">
+                    📅 Mis Citas <span class="badge" id="badge-citas">0</span>
+                </button>
+                <button class="nav-tab" onclick="cambiarTab('evaluacion')">
+                    📝 Nueva Evaluación
+                </button>
             </div>
-
-            <!-- Paso 1: Seleccionar Reclutadora -->
-            <div class="section" id="section-reclutadora">
-                <div class="section-title">👤 ¿Quién realiza la entrevista?</div>
-                <div class="reclutadora-select">
-                    <div class="reclutadora-option" onclick="selectReclutadora('Karla Flores', 'Torre JV Juárez')">
-                        <span class="name">Karla Flores</span>
-                        <span class="location">Torre JV Juárez</span>
-                    </div>
-                    <div class="reclutadora-option" onclick="selectReclutadora('Yessica Huerta', 'Edificio Inbursa')">
-                        <span class="name">Yessica Huerta</span>
-                        <span class="location">Edificio Inbursa</span>
-                    </div>
-                    <div class="reclutadora-option" onclick="selectReclutadora('Jezabel Monterrosas', 'Edificio Inbursa')">
-                        <span class="name">Jezabel Monterrosas</span>
-                        <span class="location">Edificio Inbursa</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Paso 2: Seleccionar Candidato -->
-            <div class="section hidden" id="section-candidato">
-                <div class="section-title">🎯 Selecciona el candidato a entrevistar</div>
-                <div class="form-group">
-                    <label>Candidatos pendientes de entrevista:</label>
-                    <select id="candidato-select" onchange="loadCandidate()">
-                        <option value="">-- Selecciona un candidato --</option>
-                    </select>
-                </div>
-                
-                <div class="candidate-info" id="candidate-info">
-                    <h3>📋 Información del Candidato</h3>
-                    <div class="info-grid">
-                        <div class="info-item"><strong>Nombre:</strong> <span id="info-nombre"></span></div>
-                        <div class="info-item"><strong>Teléfono:</strong> <span id="info-telefono"></span></div>
-                        <div class="info-item"><strong>Edad:</strong> <span id="info-edad"></span></div>
-                        <div class="info-item"><strong>Ubicación:</strong> <span id="info-ubicacion"></span></div>
-                        <div class="info-item"><strong>Sucursal:</strong> <span id="info-sucursal"></span></div>
-                        <div class="info-item"><strong>Pre-filtro:</strong> <span id="info-puntaje"></span></div>
-                        <div class="info-item"><strong>Tiempo traslado:</strong> <span id="info-traslado"></span></div>
-                        <div class="info-item"><strong>Ingreso esperado:</strong> <span id="info-ingreso"></span></div>
+            
+            <!-- Tab: Calendario de Citas -->
+            <div class="tab-content active" id="tab-calendario">
+                <div class="calendario-header">
+                    <h2>📅 Agenda de Entrevistas</h2>
+                    <div class="calendario-filters">
+                        <select id="filtro-reclutadora" onchange="cargarCitasCalendario()">
+                            <option value="">Selecciona reclutadora...</option>
+                            <option value="Karla Flores">Karla Flores</option>
+                            <option value="Yessica Huerta">Yessica Huerta</option>
+                            <option value="Jezabel Monterrosas">Jezabel Monterrosas</option>
+                        </select>
+                        <select id="filtro-periodo" onchange="cargarCitasCalendario()">
+                            <option value="hoy">Hoy</option>
+                            <option value="semana" selected>Esta semana</option>
+                            <option value="mes">Este mes</option>
+                        </select>
                     </div>
                 </div>
                 
-                <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 20px; border-radius: 12px; margin-top: 15px; border: 2px solid #4CAF50;">
-                    <h4 style="color: #2e7d32; margin-bottom: 15px; font-size: 16px;">📞 GUÍA DE INICIO DE LLAMADA</h4>
-                    
-                    <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                        <p style="margin: 0 0 10px 0; color: #333; font-weight: 600;">🎯 Objetivo del inicio:</p>
-                        <ul style="margin: 0; padding-left: 20px; color: #555; font-size: 14px;">
-                            <li>Romper el hielo</li>
-                            <li>Validar interés real</li>
-                            <li>Confirmar que entiende a qué viene</li>
-                            <li>Preparar el terreno para filtrar sin que se sienta interrogatorio</li>
-                        </ul>
+                <div class="stats-cards" id="stats-cards" style="display: none;">
+                    <div class="stat-card today">
+                        <div class="number" id="stat-hoy">0</div>
+                        <div class="label">📅 Citas Hoy</div>
                     </div>
-                    
-                    <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ffc107;">
-                        <p style="margin: 0; color: #856404; font-size: 14px;">🧠 <strong>TIP CLAVE:</strong> No repitas el formulario. Úsalo como contexto, no como cuestionario otra vez. El aspirante debe sentir: <em>"Aquí ya leyeron mi info, no estoy empezando de cero"</em>.</p>
+                    <div class="stat-card">
+                        <div class="number" id="stat-semana">0</div>
+                        <div class="label">📆 Esta Semana</div>
                     </div>
-                    
-                    <div style="background: white; padding: 15px; border-radius: 8px;">
-                        <p style="margin: 0 0 12px 0; color: #2e7d32; font-weight: 600;">🗣️ GUION RECOMENDADO:</p>
-                        
-                        <div style="margin-bottom: 12px; padding: 10px; background: #f5f5f5; border-radius: 6px;">
-                            <p style="margin: 0 0 5px 0; color: #0066CC; font-weight: 600; font-size: 13px;">1️⃣ Apertura corta y profesional:</p>
-                            <p style="margin: 0; color: #333; font-size: 14px; font-style: italic;">"Hola <strong>[Nombre]</strong>, ¿cómo estás? Te habla <strong>[Tu nombre]</strong> de Expertcell, ¿tienes 8–10 minutos para platicar contigo?"</p>
-                            <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">🔹 Esto da control y respeto al tiempo.</p>
-                        </div>
-                        
-                        <div style="margin-bottom: 12px; padding: 10px; background: #f5f5f5; border-radius: 6px;">
-                            <p style="margin: 0 0 5px 0; color: #0066CC; font-weight: 600; font-size: 13px;">2️⃣ Reconocimiento del formulario (genera conexión):</p>
-                            <p style="margin: 0; color: #333; font-size: 14px; font-style: italic;">"Vi que ya llenaste el formulario de la vacante y quiero agradecerte el tiempo, <strong>ya tengo claro tu perfil general</strong>."</p>
-                            <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">👉 Crea conexión y le da importancia a tu candidato.</p>
-                        </div>
-                        
-                        <div style="margin-bottom: 12px; padding: 10px; background: #f5f5f5; border-radius: 6px;">
-                            <p style="margin: 0 0 5px 0; color: #0066CC; font-weight: 600; font-size: 13px;">3️⃣ Enmarca la llamada (quita nervios):</p>
-                            <p style="margin: 0; color: #333; font-size: 14px; font-style: italic;">"Esta llamada es solo para validar algunos puntos y confirmar que estemos alineados, <strong>no es una entrevista larga ni complicada</strong>."</p>
-                            <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">🎯 Aquí el aspirante se relaja.</p>
-                        </div>
-                        
-                        <div style="padding: 10px; background: #e3f2fd; border-radius: 6px; border-left: 4px solid #2196F3;">
-                            <p style="margin: 0 0 5px 0; color: #1565c0; font-weight: 600; font-size: 13px;">4️⃣ Pregunta de arranque inteligente (no obvia):</p>
-                            <p style="margin: 0; color: #333; font-size: 14px;">Ahora sí, comienza con las preguntas de evaluación 👇</p>
-                        </div>
+                    <div class="stat-card pending">
+                        <div class="number" id="stat-pendientes">0</div>
+                        <div class="label">⏳ Pendientes</div>
+                    </div>
+                    <div class="stat-card done">
+                        <div class="number" id="stat-realizadas">0</div>
+                        <div class="label">✅ Realizadas</div>
+                    </div>
+                </div>
+                
+                <div class="calendario-grid" id="calendario-grid">
+                    <div class="empty-state">
+                        <div class="icon">👆</div>
+                        <h3>Selecciona una reclutadora</h3>
+                        <p>Para ver las citas pendientes de entrevista telefónica</p>
                     </div>
                 </div>
             </div>
+            
+            <!-- Tab: Evaluación -->
+            <div class="tab-content" id="tab-evaluacion">
+                <div class="scoring-guide">
+                    <h3>📊 GUÍA DE APROBACIÓN</h3>
+                    <div class="ranges">
+                        <div class="range range-pass"><strong>25-30 pts</strong><span>✅ PASA A PANEL</span></div>
+                        <div class="range range-maybe"><strong>20-24 pts</strong><span>⚠️ CON RESERVAS</span></div>
+                        <div class="range range-fail"><strong>0-19 pts</strong><span>❌ NO PASA</span></div>
+                    </div>
+                </div>
 
-            <!-- Paso 3: Evaluación -->
-            <div class="section hidden" id="section-evaluacion">
-                <div class="section-title">📝 Evaluación de la Entrevista</div>
-
-                <!-- Pregunta 1: Coherencia -->
-                <div class="evaluation-card" id="card-q1">
-                    <h4>1️⃣ Coherencia</h4>
-                    <div class="question">📢 "En el formulario comentaste que te motiva ganar por resultados, cuéntame una experiencia donde eso haya pasado."</div>
-                    
-                    <div class="flags-container">
-                        <div class="flag-box red-flags">
-                            <h5>🚩 Red Flags</h5>
-                            <ul>
-                                <li>Respuestas vagas sin detalles</li>
-                                <li>Cambia la historia</li>
-                                <li>Se contradice con el formulario</li>
-                            </ul>
+                <div class="section" id="section-reclutadora">
+                    <div class="section-title">👤 ¿Quién realiza la entrevista?</div>
+                    <div class="reclutadora-select">
+                        <div class="reclutadora-option" onclick="selectReclutadora('Karla Flores', 'Torre JV Juárez')">
+                            <span class="name">Karla Flores</span>
+                            <span class="location">Torre JV Juárez</span>
                         </div>
-                        <div class="flag-box green-flags">
-                            <h5>💎 Green Flags</h5>
-                            <ul>
-                                <li>Ejemplo concreto y específico</li>
-                                <li>Historia coherente con fechas/datos</li>
-                                <li>Menciona logros medibles</li>
-                            </ul>
+                        <div class="reclutadora-option" onclick="selectReclutadora('Yessica Huerta', 'Edificio Inbursa')">
+                            <span class="name">Yessica Huerta</span>
+                            <span class="location">Edificio Inbursa</span>
                         </div>
-                    </div>
-                    
-                    <div class="rubrica-box">
-                        <h5>📏 RÚBRICA DE EVALUACIÓN:</h5>
-                        <div class="rubrica-item r1"><span class="score">1</span> No tiene ejemplo, inventa o contradice completamente lo del formulario</div>
-                        <div class="rubrica-item r2"><span class="score">2</span> Ejemplo muy vago, sin detalles, parece inventado</div>
-                        <div class="rubrica-item r3"><span class="score">3</span> Tiene ejemplo pero le faltan detalles o fechas específicas</div>
-                        <div class="rubrica-item r4"><span class="score">4</span> Buen ejemplo con algunos datos concretos, coherente</div>
-                        <div class="rubrica-item r5"><span class="score">5</span> Ejemplo excelente con números, fechas y logros específicos</div>
-                    </div>
-                    
-                    <div class="response-section">
-                        <label>✍️ Respuesta del candidato:</label>
-                        <textarea id="response-q1" placeholder="Escribe aquí la respuesta del candidato..."></textarea>
-                    </div>
-                    
-                    <div class="score-selector">
-                        <label>📊 Puntaje:</label>
-                        <div class="score-options" id="score-options-q1">
-                            <div class="score-option" onclick="selectScore('q1', 1)"><span class="number">1</span><span class="label">Muy mal</span></div>
-                            <div class="score-option" onclick="selectScore('q1', 2)"><span class="number">2</span><span class="label">Mal</span></div>
-                            <div class="score-option" onclick="selectScore('q1', 3)"><span class="number">3</span><span class="label">Regular</span></div>
-                            <div class="score-option" onclick="selectScore('q1', 4)"><span class="number">4</span><span class="label">Bien</span></div>
-                            <div class="score-option" onclick="selectScore('q1', 5)"><span class="number">5</span><span class="label">Excelente</span></div>
+                        <div class="reclutadora-option" onclick="selectReclutadora('Jezabel Monterrosas', 'Edificio Inbursa')">
+                            <span class="name">Jezabel Monterrosas</span>
+                            <span class="location">Edificio Inbursa</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Pregunta 2: Comunicación -->
-                <div class="evaluation-card" id="card-q2">
-                    <h4>2️⃣ Comunicación Real</h4>
-                    <div class="question">📢 "Explícame en 30 segundos qué es lo que hacías en tu último trabajo."</div>
-                    
-                    <div class="flags-container">
-                        <div class="flag-box red-flags">
-                            <h5>🚩 Red Flags</h5>
-                            <ul>
-                                <li>Desordenado, no va al punto</li>
-                                <li>Inseguro, titubea mucho</li>
-                                <li>Usa muchas muletillas</li>
-                            </ul>
-                        </div>
-                        <div class="flag-box green-flags">
-                            <h5>💎 Green Flags</h5>
-                            <ul>
-                                <li>Orden mental, va directo</li>
-                                <li>Claridad y fluidez verbal</li>
-                                <li>Seguridad al hablar</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <p style="background: #ffebee; padding: 10px; border-radius: 6px; font-size: 13px; color: #c62828; margin-bottom: 15px;">⚠️ <strong>Si aquí falla, no sirve para ventas, punto.</strong></p>
-                    
-                    <div class="rubrica-box">
-                        <h5>📏 RÚBRICA DE EVALUACIÓN:</h5>
-                        <div class="rubrica-item r1"><span class="score">1</span> Incomprensible, muy nervioso, no puede explicar qué hacía</div>
-                        <div class="rubrica-item r2"><span class="score">2</span> Muy desordenado, muchas muletillas, titubea constantemente</div>
-                        <div class="rubrica-item r3"><span class="score">3</span> Se entiende pero titubea, algunas muletillas, falta fluidez</div>
-                        <div class="rubrica-item r4"><span class="score">4</span> Claro y ordenado, pocas pausas, se expresa bien</div>
-                        <div class="rubrica-item r5"><span class="score">5</span> Excelente fluidez, seguro, claro, conciso y profesional</div>
-                    </div>
-                    
-                    <div class="response-section">
-                        <label>✍️ Respuesta del candidato:</label>
-                        <textarea id="response-q2" placeholder="Escribe aquí la respuesta del candidato..."></textarea>
-                    </div>
-                    
-                    <div class="score-selector">
-                        <label>📊 Puntaje:</label>
-                        <div class="score-options" id="score-options-q2">
-                            <div class="score-option" onclick="selectScore('q2', 1)"><span class="number">1</span><span class="label">Muy mal</span></div>
-                            <div class="score-option" onclick="selectScore('q2', 2)"><span class="number">2</span><span class="label">Mal</span></div>
-                            <div class="score-option" onclick="selectScore('q2', 3)"><span class="number">3</span><span class="label">Regular</span></div>
-                            <div class="score-option" onclick="selectScore('q2', 4)"><span class="number">4</span><span class="label">Bien</span></div>
-                            <div class="score-option" onclick="selectScore('q2', 5)"><span class="number">5</span><span class="label">Excelente</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pregunta 3: Manejo del Rechazo -->
-                <div class="evaluation-card" id="card-q3">
-                    <h4>3️⃣ Manejo del Rechazo</h4>
-                    <div class="question">📢 "Cuéntame una llamada difícil que recuerdes y cómo la manejaste."</div>
-                    
-                    <div class="flags-container">
-                        <div class="flag-box red-flags">
-                            <h5>🚩 Red Flags</h5>
-                            <ul>
-                                <li>Culpa al cliente</li>
-                                <li>Culpa a la empresa/sistema</li>
-                                <li>Evita el tema</li>
-                            </ul>
-                        </div>
-                        <div class="flag-box green-flags">
-                            <h5>💎 Green Flags</h5>
-                            <ul>
-                                <li>Asume responsabilidad</li>
-                                <li>Aprendió de la situación</li>
-                                <li>Muestra resiliencia</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="rubrica-box">
-                        <h5>📏 RÚBRICA DE EVALUACIÓN:</h5>
-                        <div class="rubrica-item r1"><span class="score">1</span> Culpa totalmente al cliente o empresa, actitud de víctima</div>
-                        <div class="rubrica-item r2"><span class="score">2</span> Evita el tema o no tiene ejemplos, parece que se rinde fácil</div>
-                        <div class="rubrica-item r3"><span class="score">3</span> Tiene ejemplo pero no muestra aprendizaje claro</div>
-                        <div class="rubrica-item r4"><span class="score">4</span> Buen ejemplo, asume responsabilidad, muestra mejora</div>
-                        <div class="rubrica-item r5"><span class="score">5</span> Excelente manejo, resiliente, aprendió y tiene estrategias</div>
-                    </div>
-                    
-                    <div class="response-section">
-                        <label>✍️ Respuesta del candidato:</label>
-                        <textarea id="response-q3" placeholder="Escribe aquí la respuesta del candidato..."></textarea>
-                    </div>
-                    
-                    <div class="score-selector">
-                        <label>📊 Puntaje:</label>
-                        <div class="score-options" id="score-options-q3">
-                            <div class="score-option" onclick="selectScore('q3', 1)"><span class="number">1</span><span class="label">Muy mal</span></div>
-                            <div class="score-option" onclick="selectScore('q3', 2)"><span class="number">2</span><span class="label">Mal</span></div>
-                            <div class="score-option" onclick="selectScore('q3', 3)"><span class="number">3</span><span class="label">Regular</span></div>
-                            <div class="score-option" onclick="selectScore('q3', 4)"><span class="number">4</span><span class="label">Bien</span></div>
-                            <div class="score-option" onclick="selectScore('q3', 5)"><span class="number">5</span><span class="label">Excelente</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pregunta 4: Energía y Actitud -->
-                <div class="evaluation-card" id="card-q4">
-                    <h4>4️⃣ Energía y Actitud</h4>
-                    <div class="question">📢 "¿Qué es lo que más te gusta y lo que menos te gusta de trabajar en ventas?"</div>
-                    
-                    <div class="flags-container">
-                        <div class="flag-box red-flags">
-                            <h5>🚩 Red Flags</h5>
-                            <ul>
-                                <li>Actitud negativa hacia ventas</li>
-                                <li>Sin autoconocimiento</li>
-                                <li>Inmadurez emocional</li>
-                            </ul>
-                        </div>
-                        <div class="flag-box green-flags">
-                            <h5>💎 Green Flags</h5>
-                            <ul>
-                                <li>Honestidad equilibrada</li>
-                                <li>Autoconocimiento claro</li>
-                                <li>Madurez y profesionalismo</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="rubrica-box">
-                        <h5>📏 RÚBRICA DE EVALUACIÓN:</h5>
-                        <div class="rubrica-item r1"><span class="score">1</span> Muy negativo hacia ventas, no le gusta nada, inmaduro</div>
-                        <div class="rubrica-item r2"><span class="score">2</span> Más negativo que positivo, poco autoconocimiento</div>
-                        <div class="rubrica-item r3"><span class="score">3</span> Respuesta básica, ni muy positivo ni muy negativo</div>
-                        <div class="rubrica-item r4"><span class="score">4</span> Equilibrado, honesto, muestra autoconocimiento</div>
-                        <div class="rubrica-item r5"><span class="score">5</span> Excelente actitud, maduro, sabe sus fortalezas y áreas de mejora</div>
-                    </div>
-                    
-                    <div class="response-section">
-                        <label>✍️ Respuesta del candidato:</label>
-                        <textarea id="response-q4" placeholder="Escribe aquí la respuesta del candidato..."></textarea>
-                    </div>
-                    
-                    <div class="score-selector">
-                        <label>📊 Puntaje:</label>
-                        <div class="score-options" id="score-options-q4">
-                            <div class="score-option" onclick="selectScore('q4', 1)"><span class="number">1</span><span class="label">Muy mal</span></div>
-                            <div class="score-option" onclick="selectScore('q4', 2)"><span class="number">2</span><span class="label">Mal</span></div>
-                            <div class="score-option" onclick="selectScore('q4', 3)"><span class="number">3</span><span class="label">Regular</span></div>
-                            <div class="score-option" onclick="selectScore('q4', 4)"><span class="number">4</span><span class="label">Bien</span></div>
-                            <div class="score-option" onclick="selectScore('q4', 5)"><span class="number">5</span><span class="label">Excelente</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pregunta 5: Realismo del Puesto -->
-                <div class="evaluation-card" id="card-q5">
-                    <h4>5️⃣ Realismo del Puesto</h4>
-                    <div class="question">📢 "Aquí trabajamos con metas diarias, seguimiento y presión constante. ¿Qué parte de eso te costaría más y cómo la manejarías?"</div>
-                    
-                    <div class="flags-container">
-                        <div class="flag-box red-flags">
-                            <h5>🚩 Red Flags</h5>
-                            <ul>
-                                <li>Idealiza el puesto ("todo bien")</li>
-                                <li>No reconoce dificultades</li>
-                                <li>Sin estrategia de manejo</li>
-                            </ul>
-                        </div>
-                        <div class="flag-box green-flags">
-                            <h5>💎 Green Flags</h5>
-                            <ul>
-                                <li>Consciente de los retos</li>
-                                <li>Tiene estrategia concreta</li>
-                                <li>Realista y preparado</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <p style="background: #fff3cd; padding: 10px; border-radius: 6px; font-size: 13px; color: #856404; margin-bottom: 15px;">⚠️ <strong>Esto elimina al que idealiza y aguanta solo 1 semana.</strong></p>
-                    
-                    <div class="rubrica-box">
-                        <h5>📏 RÚBRICA DE EVALUACIÓN:</h5>
-                        <div class="rubrica-item r1"><span class="score">1</span> Dice que no le costará nada, idealiza completamente</div>
-                        <div class="rubrica-item r2"><span class="score">2</span> Reconoce algo pero no tiene estrategia, parece ingenuo</div>
-                        <div class="rubrica-item r3"><span class="score">3</span> Reconoce retos pero estrategia básica o vaga</div>
-                        <div class="rubrica-item r4"><span class="score">4</span> Consciente de retos, tiene plan razonable</div>
-                        <div class="rubrica-item r5"><span class="score">5</span> Muy realista, estrategia concreta, experiencia previa con presión</div>
-                    </div>
-                    
-                    <div class="response-section">
-                        <label>✍️ Respuesta del candidato:</label>
-                        <textarea id="response-q5" placeholder="Escribe aquí la respuesta del candidato..."></textarea>
-                    </div>
-                    
-                    <div class="score-selector">
-                        <label>📊 Puntaje:</label>
-                        <div class="score-options" id="score-options-q5">
-                            <div class="score-option" onclick="selectScore('q5', 1)"><span class="number">1</span><span class="label">Muy mal</span></div>
-                            <div class="score-option" onclick="selectScore('q5', 2)"><span class="number">2</span><span class="label">Mal</span></div>
-                            <div class="score-option" onclick="selectScore('q5', 3)"><span class="number">3</span><span class="label">Regular</span></div>
-                            <div class="score-option" onclick="selectScore('q5', 4)"><span class="number">4</span><span class="label">Bien</span></div>
-                            <div class="score-option" onclick="selectScore('q5', 5)"><span class="number">5</span><span class="label">Excelente</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pregunta 6: Cierre/Autoventa -->
-                <div class="evaluation-card" id="card-q6">
-                    <h4>6️⃣ Cierre - Autoventa</h4>
-                    <div class="question">📢 "¿Por qué crees que deberíamos avanzar contigo y no con otro candidato?"</div>
-                    
-                    <div class="flags-container">
-                        <div class="flag-box red-flags">
-                            <h5>🚩 Red Flags</h5>
-                            <ul>
-                                <li>No sabe qué decir</li>
-                                <li>Respuesta genérica</li>
-                                <li>Inseguro, sin convicción</li>
-                            </ul>
-                        </div>
-                        <div class="flag-box green-flags">
-                            <h5>💎 Green Flags</h5>
-                            <ul>
-                                <li>Se vende con confianza</li>
-                                <li>Argumenta diferenciadores</li>
-                                <li>Cierra con fuerza</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <p style="background: #e8f5e9; padding: 10px; border-radius: 6px; font-size: 13px; color: #2e7d32; margin-bottom: 15px;">💎 <strong>Si no sabe venderse aquí, no venderá planes.</strong></p>
-                    
-                    <div class="rubrica-box">
-                        <h5>📏 RÚBRICA DE EVALUACIÓN:</h5>
-                        <div class="rubrica-item r1"><span class="score">1</span> No sabe qué decir, se queda callado o respuesta vacía</div>
-                        <div class="rubrica-item r2"><span class="score">2</span> Respuesta genérica: "soy responsable, puntual"</div>
-                        <div class="rubrica-item r3"><span class="score">3</span> Algo de argumentación pero falta convicción</div>
-                        <div class="rubrica-item r4"><span class="score">4</span> Buenos argumentos, se diferencia, cierra bien</div>
-                        <div class="rubrica-item r5"><span class="score">5</span> Excelente cierre, confianza, diferenciadores claros, vendedor nato</div>
-                    </div>
-                    
-                    <div class="response-section">
-                        <label>✍️ Respuesta del candidato:</label>
-                        <textarea id="response-q6" placeholder="Escribe aquí la respuesta del candidato..."></textarea>
-                    </div>
-                    
-                    <div class="score-selector">
-                        <label>📊 Puntaje:</label>
-                        <div class="score-options" id="score-options-q6">
-                            <div class="score-option" onclick="selectScore('q6', 1)"><span class="number">1</span><span class="label">Muy mal</span></div>
-                            <div class="score-option" onclick="selectScore('q6', 2)"><span class="number">2</span><span class="label">Mal</span></div>
-                            <div class="score-option" onclick="selectScore('q6', 3)"><span class="number">3</span><span class="label">Regular</span></div>
-                            <div class="score-option" onclick="selectScore('q6', 4)"><span class="number">4</span><span class="label">Bien</span></div>
-                            <div class="score-option" onclick="selectScore('q6', 5)"><span class="number">5</span><span class="label">Excelente</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Observaciones Generales -->
-                <div class="evaluation-card" style="border-left-color: #9c27b0;">
-                    <h4>📝 Observaciones Generales</h4>
+                <div class="section hidden" id="section-candidato">
+                    <div class="section-title">🎯 Selecciona el candidato a entrevistar</div>
                     <div class="form-group">
-                        <textarea id="observaciones-generales" placeholder="Comentarios adicionales sobre el candidato, impresión general, recomendaciones..." style="min-height: 100px;"></textarea>
+                        <label>Candidatos pendientes de entrevista:</label>
+                        <select id="candidato-select" onchange="loadCandidate()">
+                            <option value="">-- Selecciona un candidato --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="candidate-info" id="candidate-info">
+                        <h3>📋 Información del Candidato</h3>
+                        <div class="info-grid">
+                            <div class="info-item"><strong>Nombre:</strong> <span id="info-nombre"></span></div>
+                            <div class="info-item"><strong>Teléfono:</strong> <span id="info-telefono"></span></div>
+                            <div class="info-item"><strong>Edad:</strong> <span id="info-edad"></span></div>
+                            <div class="info-item"><strong>Ubicación:</strong> <span id="info-ubicacion"></span></div>
+                            <div class="info-item"><strong>Sucursal:</strong> <span id="info-sucursal"></span></div>
+                            <div class="info-item"><strong>Pre-filtro:</strong> <span id="info-puntaje"></span></div>
+                            <div class="info-item"><strong>Tiempo traslado:</strong> <span id="info-traslado"></span></div>
+                            <div class="info-item"><strong>Ingreso esperado:</strong> <span id="info-ingreso"></span></div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 20px; border-radius: 12px; margin-top: 15px; border: 2px solid #4CAF50;">
+                        <h4 style="color: #2e7d32; margin-bottom: 15px; font-size: 16px;">📞 GUÍA DE INICIO DE LLAMADA</h4>
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <p style="margin: 0 0 10px 0; color: #333; font-weight: 600;">🎯 Objetivo:</p>
+                            <ul style="margin: 0; padding-left: 20px; color: #555; font-size: 14px;">
+                                <li>Romper el hielo</li>
+                                <li>Validar interés real</li>
+                                <li>Confirmar que entiende a qué viene</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 8px;">
+                            <p style="margin: 0 0 12px 0; color: #2e7d32; font-weight: 600;">🗣️ GUION:</p>
+                            <p style="margin: 0 0 10px 0; color: #333; font-size: 14px;"><em>"Hola [Nombre], ¿cómo estás? Te habla [Tu nombre] de Expertcell, ¿tienes 8–10 minutos para platicar?"</em></p>
+                            <p style="margin: 0; color: #333; font-size: 14px;"><em>"Vi que ya llenaste el formulario, ya tengo claro tu perfil. Esta llamada es solo para validar algunos puntos."</em></p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Panel de Resultado -->
-                <div class="result-panel" id="result-panel">
-                    <h3>Resultado de la Entrevista</h3>
-                    <div class="total-score" id="total-score">0/30</div>
-                    <p id="verdict-text" style="margin: 10px 0; font-size: 16px;"></p>
-                    <div class="verdict" id="verdict-badge"></div>
+                <div class="section hidden" id="section-evaluacion">
+                    <div class="section-title">📝 Evaluación de la Entrevista</div>
+                    
+                    <!-- Las 6 preguntas de evaluación -->
+                    <div class="evaluation-card">
+                        <h4>1️⃣ Coherencia</h4>
+                        <div class="question">📢 "En el formulario comentaste que te motiva ganar por resultados, cuéntame una experiencia donde eso haya pasado."</div>
+                        <div class="flags-container">
+                            <div class="flag-box red-flags"><h5>🚩 Red Flags</h5><ul><li>Respuestas vagas</li><li>Se contradice</li></ul></div>
+                            <div class="flag-box green-flags"><h5>💎 Green Flags</h5><ul><li>Ejemplo concreto</li><li>Logros medibles</li></ul></div>
+                        </div>
+                        <div class="response-section">
+                            <label>✍️ Respuesta:</label>
+                            <textarea id="response-q1" placeholder="Escribe la respuesta..."></textarea>
+                        </div>
+                        <div class="score-selector">
+                            <label>📊 Puntaje:</label>
+                            <div class="score-options" id="score-options-q1">
+                                <div class="score-option" onclick="selectScore('q1', 1)"><span class="number">1</span></div>
+                                <div class="score-option" onclick="selectScore('q1', 2)"><span class="number">2</span></div>
+                                <div class="score-option" onclick="selectScore('q1', 3)"><span class="number">3</span></div>
+                                <div class="score-option" onclick="selectScore('q1', 4)"><span class="number">4</span></div>
+                                <div class="score-option" onclick="selectScore('q1', 5)"><span class="number">5</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="evaluation-card">
+                        <h4>2️⃣ Comunicación Real</h4>
+                        <div class="question">📢 "Explícame en 30 segundos qué hacías en tu último trabajo."</div>
+                        <div class="flags-container">
+                            <div class="flag-box red-flags"><h5>🚩 Red Flags</h5><ul><li>Desordenado</li><li>Muchas muletillas</li></ul></div>
+                            <div class="flag-box green-flags"><h5>💎 Green Flags</h5><ul><li>Claro y directo</li><li>Seguridad</li></ul></div>
+                        </div>
+                        <div class="response-section">
+                            <label>✍️ Respuesta:</label>
+                            <textarea id="response-q2" placeholder="Escribe la respuesta..."></textarea>
+                        </div>
+                        <div class="score-selector">
+                            <label>📊 Puntaje:</label>
+                            <div class="score-options" id="score-options-q2">
+                                <div class="score-option" onclick="selectScore('q2', 1)"><span class="number">1</span></div>
+                                <div class="score-option" onclick="selectScore('q2', 2)"><span class="number">2</span></div>
+                                <div class="score-option" onclick="selectScore('q2', 3)"><span class="number">3</span></div>
+                                <div class="score-option" onclick="selectScore('q2', 4)"><span class="number">4</span></div>
+                                <div class="score-option" onclick="selectScore('q2', 5)"><span class="number">5</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="evaluation-card">
+                        <h4>3️⃣ Manejo del Rechazo</h4>
+                        <div class="question">📢 "Cuéntame una llamada difícil y cómo la manejaste."</div>
+                        <div class="flags-container">
+                            <div class="flag-box red-flags"><h5>🚩 Red Flags</h5><ul><li>Culpa al cliente</li><li>Evita el tema</li></ul></div>
+                            <div class="flag-box green-flags"><h5>💎 Green Flags</h5><ul><li>Asume responsabilidad</li><li>Resiliencia</li></ul></div>
+                        </div>
+                        <div class="response-section">
+                            <label>✍️ Respuesta:</label>
+                            <textarea id="response-q3" placeholder="Escribe la respuesta..."></textarea>
+                        </div>
+                        <div class="score-selector">
+                            <label>📊 Puntaje:</label>
+                            <div class="score-options" id="score-options-q3">
+                                <div class="score-option" onclick="selectScore('q3', 1)"><span class="number">1</span></div>
+                                <div class="score-option" onclick="selectScore('q3', 2)"><span class="number">2</span></div>
+                                <div class="score-option" onclick="selectScore('q3', 3)"><span class="number">3</span></div>
+                                <div class="score-option" onclick="selectScore('q3', 4)"><span class="number">4</span></div>
+                                <div class="score-option" onclick="selectScore('q3', 5)"><span class="number">5</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="evaluation-card">
+                        <h4>4️⃣ Energía y Actitud</h4>
+                        <div class="question">📢 "¿Qué te gusta y qué no te gusta de trabajar en ventas?"</div>
+                        <div class="flags-container">
+                            <div class="flag-box red-flags"><h5>🚩 Red Flags</h5><ul><li>Actitud negativa</li><li>Inmadurez</li></ul></div>
+                            <div class="flag-box green-flags"><h5>💎 Green Flags</h5><ul><li>Equilibrado</li><li>Autoconocimiento</li></ul></div>
+                        </div>
+                        <div class="response-section">
+                            <label>✍️ Respuesta:</label>
+                            <textarea id="response-q4" placeholder="Escribe la respuesta..."></textarea>
+                        </div>
+                        <div class="score-selector">
+                            <label>📊 Puntaje:</label>
+                            <div class="score-options" id="score-options-q4">
+                                <div class="score-option" onclick="selectScore('q4', 1)"><span class="number">1</span></div>
+                                <div class="score-option" onclick="selectScore('q4', 2)"><span class="number">2</span></div>
+                                <div class="score-option" onclick="selectScore('q4', 3)"><span class="number">3</span></div>
+                                <div class="score-option" onclick="selectScore('q4', 4)"><span class="number">4</span></div>
+                                <div class="score-option" onclick="selectScore('q4', 5)"><span class="number">5</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="evaluation-card">
+                        <h4>5️⃣ Realismo del Puesto</h4>
+                        <div class="question">📢 "Trabajamos con metas diarias y presión. ¿Qué te costaría más?"</div>
+                        <div class="flags-container">
+                            <div class="flag-box red-flags"><h5>🚩 Red Flags</h5><ul><li>Idealiza todo</li><li>Sin estrategia</li></ul></div>
+                            <div class="flag-box green-flags"><h5>💎 Green Flags</h5><ul><li>Consciente</li><li>Tiene plan</li></ul></div>
+                        </div>
+                        <div class="response-section">
+                            <label>✍️ Respuesta:</label>
+                            <textarea id="response-q5" placeholder="Escribe la respuesta..."></textarea>
+                        </div>
+                        <div class="score-selector">
+                            <label>📊 Puntaje:</label>
+                            <div class="score-options" id="score-options-q5">
+                                <div class="score-option" onclick="selectScore('q5', 1)"><span class="number">1</span></div>
+                                <div class="score-option" onclick="selectScore('q5', 2)"><span class="number">2</span></div>
+                                <div class="score-option" onclick="selectScore('q5', 3)"><span class="number">3</span></div>
+                                <div class="score-option" onclick="selectScore('q5', 4)"><span class="number">4</span></div>
+                                <div class="score-option" onclick="selectScore('q5', 5)"><span class="number">5</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="evaluation-card">
+                        <h4>6️⃣ Cierre - Autoventa</h4>
+                        <div class="question">📢 "¿Por qué deberíamos avanzar contigo y no con otro?"</div>
+                        <div class="flags-container">
+                            <div class="flag-box red-flags"><h5>🚩 Red Flags</h5><ul><li>No sabe qué decir</li><li>Genérico</li></ul></div>
+                            <div class="flag-box green-flags"><h5>💎 Green Flags</h5><ul><li>Se vende bien</li><li>Diferenciadores</li></ul></div>
+                        </div>
+                        <div class="response-section">
+                            <label>✍️ Respuesta:</label>
+                            <textarea id="response-q6" placeholder="Escribe la respuesta..."></textarea>
+                        </div>
+                        <div class="score-selector">
+                            <label>📊 Puntaje:</label>
+                            <div class="score-options" id="score-options-q6">
+                                <div class="score-option" onclick="selectScore('q6', 1)"><span class="number">1</span></div>
+                                <div class="score-option" onclick="selectScore('q6', 2)"><span class="number">2</span></div>
+                                <div class="score-option" onclick="selectScore('q6', 3)"><span class="number">3</span></div>
+                                <div class="score-option" onclick="selectScore('q6', 4)"><span class="number">4</span></div>
+                                <div class="score-option" onclick="selectScore('q6', 5)"><span class="number">5</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="evaluation-card" style="border-left-color: #9c27b0;">
+                        <h4>📝 Observaciones Generales</h4>
+                        <textarea id="observaciones-generales" placeholder="Comentarios adicionales..." style="width:100%; min-height:100px; padding:12px; border:2px solid #e0e0e0; border-radius:8px;"></textarea>
+                    </div>
+
+                    <div class="result-panel" id="result-panel">
+                        <h3>Resultado de la Entrevista</h3>
+                        <div class="total-score" id="total-score">0/30</div>
+                        <p id="verdict-text"></p>
+                        <div class="verdict" id="verdict-badge"></div>
+                    </div>
+
+                    <button class="btn btn-primary" id="btn-calcular" onclick="calcularResultado()">📊 Calcular Resultado</button>
                 </div>
 
-                <!-- Botón Calcular -->
-                <button class="btn btn-primary" id="btn-calcular" onclick="calcularResultado()">
-                    📊 Calcular Resultado
-                </button>
-            </div>
+                <div class="agenda-section" id="agenda-section">
+                    <h3>📅 Agendar Entrevista Panel (Viernes)</h3>
+                    <div class="email-field">
+                        <label style="font-weight:600; margin-bottom:8px; display:block;">📧 Correo del candidato:</label>
+                        <input type="email" id="email-candidato" placeholder="ejemplo@correo.com">
+                    </div>
+                    <div style="margin-bottom:20px;">
+                        <label style="font-weight:600; margin-bottom:10px; display:block;">Selecciona el viernes:</label>
+                        <div class="viernes-selector" id="viernes-selector"></div>
+                    </div>
+                    <div id="horarios-container" style="display:none;">
+                        <label style="font-weight:600; margin-bottom:10px; display:block;">Selecciona el horario:</label>
+                        <div class="horarios-grid" id="horarios-grid"></div>
+                    </div>
+                    <button class="btn btn-success" id="btn-agendar" onclick="confirmarAgenda()" style="display:none;">✅ Confirmar Cita</button>
+                </div>
 
-            <!-- Sección de Agenda (para aprobados) -->
-            <div class="agenda-section" id="agenda-section">
-                <h3>📅 Agendar Entrevista Panel (Viernes)</h3>
-                
-                <div class="email-field">
-                    <label style="font-weight: 600; margin-bottom: 8px; display: block;">📧 Correo del candidato para enviar instrucciones:</label>
-                    <input type="email" id="email-candidato" placeholder="ejemplo@correo.com">
+                <div class="agenda-section rejected" id="rejected-section" style="display:none;">
+                    <h3>😔 Candidato No Aprobado</h3>
+                    <p style="margin:15px 0; color:#c62828;">No alcanzó el puntaje mínimo requerido.</p>
+                    <button class="btn btn-whatsapp" onclick="enviarWhatsAppRechazo()">💬 Enviar agradecimiento</button>
                 </div>
-                
-                <div style="margin-bottom: 20px;">
-                    <label style="font-weight: 600; margin-bottom: 10px; display: block;">Selecciona el viernes:</label>
-                    <div class="viernes-selector" id="viernes-selector"></div>
-                </div>
-                
-                <div id="horarios-container" style="display: none;">
-                    <label style="font-weight: 600; margin-bottom: 10px; display: block;">Selecciona el horario:</label>
-                    <div class="horarios-grid" id="horarios-grid"></div>
-                </div>
-                
-                <button class="btn btn-success" id="btn-agendar" onclick="confirmarAgenda()" style="display: none;">
-                    ✅ Confirmar Cita
-                </button>
-            </div>
 
-            <!-- Sección para rechazados -->
-            <div class="agenda-section rejected" id="rejected-section" style="display: none;">
-                <h3>😔 Candidato No Aprobado</h3>
-                <p style="margin: 15px 0; color: #c62828;">El candidato no alcanzó el puntaje mínimo requerido.</p>
-                <button class="btn btn-whatsapp" onclick="enviarWhatsAppRechazo()">
-                    💬 Enviar agradecimiento por WhatsApp
-                </button>
-            </div>
-
-            <!-- Panel de Confirmación -->
-            <div class="confirmacion-panel" id="confirmacion-panel">
-                <h3>✅ ¡Cita Agendada Exitosamente!</h3>
-                <div class="detalle">
-                    <p><strong>👤 Candidato:</strong> <span id="conf-nombre"></span></p>
-                    <p><strong>📅 Fecha:</strong> <span id="conf-fecha"></span></p>
-                    <p><strong>🕐 Hora:</strong> <span id="conf-hora"></span></p>
-                    <p><strong>📍 Sucursal:</strong> <span id="conf-sucursal"></span></p>
-                    <p><strong>📧 Email:</strong> <span id="conf-email"></span></p>
+                <div class="confirmacion-panel" id="confirmacion-panel">
+                    <h3>✅ ¡Cita Agendada!</h3>
+                    <div class="detalle">
+                        <p><strong>👤 Candidato:</strong> <span id="conf-nombre"></span></p>
+                        <p><strong>📅 Fecha:</strong> <span id="conf-fecha"></span></p>
+                        <p><strong>🕐 Hora:</strong> <span id="conf-hora"></span></p>
+                        <p><strong>📍 Sucursal:</strong> <span id="conf-sucursal"></span></p>
+                        <p><strong>📧 Email:</strong> <span id="conf-email"></span></p>
+                    </div>
+                    <button class="btn btn-whatsapp" onclick="enviarWhatsAppAprobado()">💬 WhatsApp</button>
+                    <button class="btn btn-primary" onclick="enviarEmailAprobado()" style="margin-top:10px;">📧 Email</button>
+                    <button class="btn" onclick="location.reload()" style="margin-top:15px; background:#666; color:white;">🔄 Nueva Evaluación</button>
                 </div>
-                <button class="btn btn-whatsapp" onclick="enviarWhatsAppAprobado()">
-                    💬 Enviar instrucciones por WhatsApp
-                </button>
-                <button class="btn btn-primary" onclick="enviarEmailAprobado()" style="margin-top: 10px;">
-                    📧 Enviar instrucciones por Email
-                </button>
-                <button class="btn" onclick="location.reload()" style="margin-top: 15px; background: #666; color: white;">
-                    🔄 Nueva Evaluación
-                </button>
             </div>
         </div>
     </div>
 
     <script>
-        // Variables globales
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
+        
         let selectedReclutadora = null;
         let selectedCandidato = null;
         let scores = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0 };
         let candidatos = [];
+        let citasCalendario = [];
         let selectedViernes = null;
         let selectedHorario = null;
         let resultadoFinal = null;
-        
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
 
-        // Horarios disponibles
         const HORARIOS = [
             { hora: '10:00', fin: '10:45' },
             { hora: '10:45', fin: '11:30' },
@@ -691,83 +577,165 @@
             { hora: '18:15', fin: '19:00' }
         ];
 
-        // Direcciones
         const DIRECCIONES = {
             'Torre JV Juárez': 'Av. Juárez 2925, La Paz, 72160, Puebla',
             'Edificio Inbursa Antequera': 'Cto Interior 49, Nueva Antequera, 72180, Puebla',
             'Edificio Inbursa': 'Cto Interior 49, Nueva Antequera, 72180, Puebla'
         };
 
-        // Documentos requeridos
-        const DOCUMENTOS = [
-            'Currículum',
-            'INE',
-            'CURP',
-            'Constancia de Situación Fiscal (RFC)',
-            'NSS (Número de Seguro Social)',
-            'Acta de Nacimiento',
-            'Comprobante de domicilio (no mayor a 3 meses)',
-            'Certificado de estudios (máximo grado)',
-            'Constancia laboral de empleos anteriores',
-            'Estado de cuenta (con nombre, número de cuenta, CLABE y banco)',
-            'Hoja de Infonavit (solo si aplica)',
-            'Hoja de Fonacot (solo si aplica)',
-            'Contacto de emergencia (nombre, parentesco, teléfono y fecha de nacimiento)'
-        ];
-
-        // Slots ocupados (se cargaría de Google Sheets)
-        let slotsOcupados = {};
-
-        function clearText(questionId) {
-            document.getElementById(`response-${questionId}`).value = '';
+        function cambiarTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector(`[onclick="cambiarTab('${tab}')"]`).classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.add('active');
         }
 
-        // Cargar candidatos desde Google Sheets
-        async function cargarCandidatos() {
-            const select = document.getElementById('candidato-select');
-            select.innerHTML = '<option value="">⏳ Cargando candidatos...</option>';
+        async function cargarCitasCalendario() {
+            const reclutadora = document.getElementById('filtro-reclutadora').value;
+            const periodo = document.getElementById('filtro-periodo').value;
             
-            // Determinar sucursal según reclutadora
-            let sucursalFiltro = '';
-            if (selectedReclutadora.ubicacion === 'Torre JV Juárez') {
-                sucursalFiltro = 'Torre JV Juárez';
-            } else {
-                sucursalFiltro = 'Edificio Inbursa Antequera';
+            if (!reclutadora) {
+                document.getElementById('calendario-grid').innerHTML = `<div class="empty-state"><div class="icon">👆</div><h3>Selecciona una reclutadora</h3><p>Para ver las citas pendientes</p></div>`;
+                document.getElementById('stats-cards').style.display = 'none';
+                return;
             }
             
+            document.getElementById('calendario-grid').innerHTML = `<div class="loading-spinner"><div class="spinner"></div><p>Cargando citas...</p></div>`;
+            
             try {
-                const url = `${GOOGLE_SCRIPT_URL}?action=getCandidatosPorReclutador&reclutador=${encodeURIComponent(selectedReclutadora.nombre)}`;
-                
+                const url = `${GOOGLE_SCRIPT_URL}?action=getCitasCalendario&reclutadora=${encodeURIComponent(reclutadora)}&periodo=${periodo}`;
                 const response = await fetch(url);
                 const data = await response.json();
                 
+                if (data.status === 'success') {
+                    citasCalendario = data.citas || [];
+                    renderizarCalendario(citasCalendario, data.stats);
+                } else {
+                    throw new Error(data.message || 'Error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('calendario-grid').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><h3>Error al cargar</h3><p>Intenta de nuevo</p></div>`;
+            }
+        }
+
+        function renderizarCalendario(citas, stats) {
+            document.getElementById('stats-cards').style.display = 'grid';
+            document.getElementById('stat-hoy').textContent = stats?.hoy || 0;
+            document.getElementById('stat-semana').textContent = stats?.semana || 0;
+            document.getElementById('stat-pendientes').textContent = stats?.pendientes || 0;
+            document.getElementById('stat-realizadas').textContent = stats?.realizadas || 0;
+            document.getElementById('badge-citas').textContent = stats?.pendientes || 0;
+            
+            if (citas.length === 0) {
+                document.getElementById('calendario-grid').innerHTML = `<div class="empty-state"><div class="icon">📭</div><h3>No hay citas pendientes</h3><p>¡Excelente!</p></div>`;
+                return;
+            }
+            
+            const citasPorFecha = {};
+            citas.forEach(cita => {
+                if (!citasPorFecha[cita.fecha]) citasPorFecha[cita.fecha] = [];
+                citasPorFecha[cita.fecha].push(cita);
+            });
+            
+            const hoy = new Date().toISOString().split('T')[0];
+            let html = '';
+            
+            Object.keys(citasPorFecha).sort().forEach(fecha => {
+                const citasDelDia = citasPorFecha[fecha].sort((a, b) => a.hora.localeCompare(b.hora));
+                const esHoy = fecha === hoy;
+                const fechaObj = new Date(fecha + 'T12:00:00');
+                const fechaLegible = fechaObj.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
+                
+                html += `<div class="dia-section"><div class="dia-header ${esHoy ? 'hoy' : ''}"><h3>${esHoy ? '📅 HOY - ' : ''}${fechaLegible}</h3><span class="count">${citasDelDia.length} cita(s)</span></div><div class="citas-lista">`;
+                
+                citasDelDia.forEach(cita => {
+                    const clasificacionClass = cita.puntaje >= 41 ? 'sobresaliente' : cita.puntaje >= 35 ? 'excelente' : 'muy-bueno';
+                    const clasificacionTexto = cita.puntaje >= 41 ? 'SOBRESALIENTE' : cita.puntaje >= 35 ? 'EXCELENTE' : 'MUY BUENO';
+                    
+                    html += `<div class="cita-card ${clasificacionClass}">
+                        <div class="cita-info">
+                            <div class="nombre">${cita.nombre}</div>
+                            <div class="detalles">
+                                <span class="hora">🕐 ${cita.hora}</span>
+                                <span>📞 ${cita.telefono}</span>
+                                <span class="puntaje">⭐ ${cita.puntaje}/45 <span class="clasificacion ${clasificacionClass}">${clasificacionTexto}</span></span>
+                            </div>
+                        </div>
+                        <div class="cita-acciones">
+                            <button class="btn-accion btn-llamar" onclick="llamar('${cita.telefono}')">📞</button>
+                            <button class="btn-accion btn-whatsapp" onclick="abrirWhatsApp('${cita.telefono}', '${cita.nombre}')">💬</button>
+                            <button class="btn-accion btn-evaluar" onclick="iniciarEvaluacion('${cita.telefono}')">📝 Evaluar</button>
+                            <button class="btn-accion btn-realizada" onclick="marcarEstado('${cita.telefono}', 'Realizada')">✅</button>
+                            <button class="btn-accion btn-no-contesto" onclick="marcarEstado('${cita.telefono}', 'No Contestó')">📵</button>
+                        </div>
+                    </div>`;
+                });
+                
+                html += '</div></div>';
+            });
+            
+            document.getElementById('calendario-grid').innerHTML = html;
+        }
+
+        function llamar(telefono) { window.open(`tel:${telefono}`, '_blank'); }
+
+        function abrirWhatsApp(telefono, nombre) {
+            const mensaje = `Hola ${nombre.split(' ')[0]}, te habla de Expertcell para tu entrevista telefónica. ¿Tienes unos minutos?`;
+            let tel = telefono.replace(/\D/g, '');
+            if (tel.length === 10) tel = '52' + tel;
+            window.open(`https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+
+        function iniciarEvaluacion(telefono) {
+            cambiarTab('evaluacion');
+            const reclutadora = document.getElementById('filtro-reclutadora').value;
+            if (reclutadora) {
+                document.querySelectorAll('.reclutadora-option').forEach(opt => {
+                    if (opt.querySelector('.name').textContent === reclutadora) opt.click();
+                });
+                setTimeout(() => {
+                    const select = document.getElementById('candidato-select');
+                    for (let i = 0; i < select.options.length; i++) {
+                        if (select.options[i].text.includes(telefono)) {
+                            select.value = i - 1;
+                            loadCandidate();
+                            break;
+                        }
+                    }
+                }, 1500);
+            }
+        }
+
+        async function marcarEstado(telefono, nuevoEstado) {
+            if (!confirm(`¿Marcar como "${nuevoEstado}"?`)) return;
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tipo: 'actualizar_estado_pf', telefono, estado: nuevoEstado })
+                });
+                setTimeout(() => cargarCitasCalendario(), 500);
+            } catch (error) { alert('Error al actualizar'); }
+        }
+
+        async function cargarCandidatos() {
+            const select = document.getElementById('candidato-select');
+            select.innerHTML = '<option value="">⏳ Cargando...</option>';
+            try {
+                const url = `${GOOGLE_SCRIPT_URL}?action=getCandidatosPorReclutador&reclutador=${encodeURIComponent(selectedReclutadora.nombre)}`;
+                const response = await fetch(url);
+                const data = await response.json();
                 if (data.status === 'success' && data.candidatos) {
                     candidatos = data.candidatos;
-                    
-                    select.innerHTML = '<option value="">-- Selecciona un candidato --</option>';
-                    
-                    if (candidatos.length === 0) {
-                        select.innerHTML = '<option value="">No hay candidatos pendientes</option>';
-                        return;
-                    }
-                    
-                    candidatos.forEach((c, index) => {
-                        const puntajeIcon = c.puntaje >= 41 ? '🌟' : c.puntaje >= 35 ? '⭐' : '✅';
-                        select.innerHTML += `<option value="${index}">${c.nombre} - ${c.telefono} - ${c.puntaje}pts ${puntajeIcon}</option>`;
+                    select.innerHTML = '<option value="">-- Selecciona --</option>';
+                    if (candidatos.length === 0) { select.innerHTML = '<option value="">No hay candidatos</option>'; return; }
+                    candidatos.forEach((c, i) => {
+                        const icon = c.puntaje >= 41 ? '🌟' : c.puntaje >= 35 ? '⭐' : '✅';
+                        select.innerHTML += `<option value="${i}">${c.nombre} - ${c.telefono} - ${c.puntaje}pts ${icon}</option>`;
                     });
-                } else {
-                    throw new Error('No se pudieron cargar los candidatos');
                 }
-                
-            } catch (error) {
-                console.error('Error cargando candidatos:', error);
-                select.innerHTML = '<option value="">Error al cargar - Intenta de nuevo</option>';
-                
-                // Fallback: datos de ejemplo para pruebas
-                candidatos = [
-                    { nombre: 'Error de conexión', telefono: '0000000000', edad: 0, ubicacion: 'N/A', sucursal: sucursalFiltro, puntaje: 0, clasificacion: 'N/A', tiempoTraslado: 'N/A', ingresoEsperado: 'N/A' }
-                ];
-            }
+            } catch (error) { select.innerHTML = '<option value="">Error al cargar</option>'; }
         }
 
         function selectReclutadora(nombre, ubicacion) {
@@ -779,32 +747,24 @@
         }
 
         function loadCandidate() {
-            const select = document.getElementById('candidato-select');
-            const index = select.value;
-            
+            const index = document.getElementById('candidato-select').value;
             if (index === '') {
                 document.getElementById('candidate-info').style.display = 'none';
                 document.getElementById('section-evaluacion').classList.add('hidden');
                 return;
             }
-            
             selectedCandidato = candidatos[index];
-            
             document.getElementById('info-nombre').textContent = selectedCandidato.nombre;
             document.getElementById('info-telefono').textContent = selectedCandidato.telefono;
             document.getElementById('info-edad').textContent = selectedCandidato.edad + ' años';
             document.getElementById('info-ubicacion').textContent = selectedCandidato.ubicacion;
             document.getElementById('info-sucursal').textContent = selectedCandidato.sucursal;
-            document.getElementById('info-traslado').textContent = selectedCandidato.tiempoTraslado || 'No especificado';
-            document.getElementById('info-ingreso').textContent = selectedCandidato.ingresoEsperado || 'No especificado';
-            
+            document.getElementById('info-traslado').textContent = selectedCandidato.tiempoTraslado || 'N/A';
+            document.getElementById('info-ingreso').textContent = selectedCandidato.ingresoEsperado || 'N/A';
             const puntajeClass = selectedCandidato.puntaje >= 41 ? 'score-high' : selectedCandidato.puntaje >= 35 ? 'score-med' : 'score-low';
-            const clasificacionTexto = selectedCandidato.clasificacion || (selectedCandidato.puntaje >= 41 ? '🌟 SOBRESALIENTE' : selectedCandidato.puntaje >= 35 ? '⭐ EXCELENTE' : '✅ APROBADO');
-            document.getElementById('info-puntaje').innerHTML = `<span class="score-badge ${puntajeClass}">${selectedCandidato.puntaje}/45 pts - ${clasificacionTexto}</span>`;
-            
+            document.getElementById('info-puntaje').innerHTML = `<span class="score-badge ${puntajeClass}">${selectedCandidato.puntaje}/45 pts</span>`;
             document.getElementById('candidate-info').style.display = 'block';
             document.getElementById('section-evaluacion').classList.remove('hidden');
-            
             resetEvaluacion();
         }
 
@@ -820,62 +780,35 @@
             document.getElementById('rejected-section').style.display = 'none';
             document.getElementById('confirmacion-panel').style.display = 'none';
             document.getElementById('btn-calcular').style.display = 'block';
-            stopAllRecording();
         }
 
-        function selectScore(questionId, score) {
-            scores[questionId] = score;
-            document.querySelectorAll(`#score-options-${questionId} .score-option`).forEach(opt => opt.classList.remove('selected'));
+        function selectScore(q, s) {
+            scores[q] = s;
+            document.querySelectorAll(`#score-options-${q} .score-option`).forEach(opt => opt.classList.remove('selected'));
             event.target.closest('.score-option').classList.add('selected');
         }
 
         function calcularResultado() {
             let faltantes = [];
-            for (let i = 1; i <= 6; i++) {
-                if (scores[`q${i}`] === 0) faltantes.push(`Pregunta ${i}: falta puntaje`);
-            }
-            
-            if (faltantes.length > 0) {
-                alert('⚠️ Faltan datos:\n\n' + faltantes.join('\n'));
-                return;
-            }
+            for (let i = 1; i <= 6; i++) { if (scores[`q${i}`] === 0) faltantes.push(`Pregunta ${i}`); }
+            if (faltantes.length > 0) { alert('⚠️ Falta puntaje en: ' + faltantes.join(', ')); return; }
             
             const total = Object.values(scores).reduce((a, b) => a + b, 0);
-            
             document.getElementById('total-score').textContent = `${total}/30`;
             
             let verdict, verdictClass, verdictText;
-            if (total >= 25) {
-                verdict = '✅ PASA A PANEL';
-                verdictClass = 'verdict-pass';
-                verdictText = 'Excelente candidato. Procede a agendar entrevista panel.';
-                resultadoFinal = 'PASA';
-            } else if (total >= 20) {
-                verdict = '⚠️ PASA CON RESERVAS';
-                verdictClass = 'verdict-maybe';
-                verdictText = 'Candidato con áreas de mejora. Procede a agendar con observaciones.';
-                resultadoFinal = 'RESERVAS';
-            } else {
-                verdict = '❌ NO PASA';
-                verdictClass = 'verdict-fail';
-                verdictText = 'No cumple con el perfil. Agradecer y cerrar proceso.';
-                resultadoFinal = 'NO PASA';
-            }
+            if (total >= 25) { verdict = '✅ PASA A PANEL'; verdictClass = 'verdict-pass'; verdictText = 'Excelente. Agendar panel.'; resultadoFinal = 'PASA'; }
+            else if (total >= 20) { verdict = '⚠️ CON RESERVAS'; verdictClass = 'verdict-maybe'; verdictText = 'Áreas de mejora. Agendar con observaciones.'; resultadoFinal = 'RESERVAS'; }
+            else { verdict = '❌ NO PASA'; verdictClass = 'verdict-fail'; verdictText = 'No cumple el perfil.'; resultadoFinal = 'NO PASA'; }
             
             document.getElementById('verdict-badge').textContent = verdict;
             document.getElementById('verdict-badge').className = 'verdict ' + verdictClass;
             document.getElementById('verdict-text').textContent = verdictText;
-            
             document.getElementById('result-panel').style.display = 'block';
             document.getElementById('btn-calcular').style.display = 'none';
             
-            // Mostrar sección correspondiente
-            if (total >= 20) {
-                document.getElementById('agenda-section').style.display = 'block';
-                cargarViernes();
-            } else {
-                document.getElementById('rejected-section').style.display = 'block';
-            }
+            if (total >= 20) { document.getElementById('agenda-section').style.display = 'block'; cargarViernes(); }
+            else { document.getElementById('rejected-section').style.display = 'block'; }
             
             document.getElementById('result-panel').scrollIntoView({ behavior: 'smooth' });
         }
@@ -883,32 +816,18 @@
         function cargarViernes() {
             const container = document.getElementById('viernes-selector');
             container.innerHTML = '';
-            
             const hoy = new Date();
             const viernes = [];
-            
-            // Buscar próximos 4 viernes
             for (let i = 0; i < 30 && viernes.length < 4; i++) {
-                const fecha = new Date(hoy);
-                fecha.setDate(hoy.getDate() + i);
-                if (fecha.getDay() === 5) { // Viernes
-                    viernes.push(fecha);
-                }
+                const fecha = new Date(hoy); fecha.setDate(hoy.getDate() + i);
+                if (fecha.getDay() === 5) viernes.push(fecha);
             }
-            
             viernes.forEach(v => {
-                // Formatear fecha manualmente para evitar problemas de zona horaria
-                const year = v.getFullYear();
-                const month = String(v.getMonth() + 1).padStart(2, '0');
-                const day = String(v.getDate()).padStart(2, '0');
-                const fechaStr = `${year}-${month}-${day}`;
-                
-                const opciones = { weekday: 'long', day: 'numeric', month: 'long' };
-                const fechaLegible = v.toLocaleDateString('es-MX', opciones);
-                
+                const fechaStr = `${v.getFullYear()}-${String(v.getMonth()+1).padStart(2,'0')}-${String(v.getDate()).padStart(2,'0')}`;
+                const fechaLegible = v.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
                 const div = document.createElement('div');
                 div.className = 'viernes-option';
-                div.innerHTML = `<div class="fecha">${fechaLegible}</div><div class="disponibles">10 slots disponibles</div>`;
+                div.innerHTML = `<div class="fecha">${fechaLegible}</div>`;
                 div.onclick = () => selectViernes(fechaStr, fechaLegible, div);
                 container.appendChild(div);
             });
@@ -918,57 +837,35 @@
             document.querySelectorAll('.viernes-option').forEach(opt => opt.classList.remove('selected'));
             element.classList.add('selected');
             selectedViernes = { fecha, fechaLegible };
-            
             document.getElementById('horarios-container').style.display = 'block';
             cargarHorarios(fecha);
         }
 
         async function cargarHorarios(fecha) {
             const container = document.getElementById('horarios-grid');
-            container.innerHTML = '<p style="text-align:center; color:#666;">⏳ Cargando horarios...</p>';
-            
-            const sucursal = selectedCandidato.sucursal;
-            
-            // Obtener slots ocupados desde Google Sheets
+            container.innerHTML = '<p style="text-align:center;">⏳ Cargando...</p>';
             let ocupados = [];
             try {
-                const url = `${GOOGLE_SCRIPT_URL}?action=getSlots&fecha=${encodeURIComponent(fecha)}&sucursal=${encodeURIComponent(sucursal)}`;
+                const url = `${GOOGLE_SCRIPT_URL}?action=getSlots&fecha=${encodeURIComponent(fecha)}&sucursal=${encodeURIComponent(selectedCandidato.sucursal)}`;
                 const response = await fetch(url);
                 const data = await response.json();
-                
-                if (data.ocupados) {
-                    ocupados = data.ocupados;
-                }
-            } catch (error) {
-                console.error('Error cargando slots:', error);
-            }
+                if (data.ocupados) ocupados = data.ocupados;
+            } catch (error) { console.error('Error:', error); }
             
             container.innerHTML = '';
-            
             HORARIOS.forEach(h => {
                 const div = document.createElement('div');
                 div.className = 'horario-slot';
-                
-                if (h.comida) {
-                    div.classList.add('comida');
-                    div.innerHTML = `🍽️ COMIDA`;
-                } else if (ocupados.includes(h.hora)) {
-                    div.classList.add('ocupado');
-                    div.innerHTML = `${h.hora} - ${h.fin}`;
-                } else {
-                    div.innerHTML = `${h.hora} - ${h.fin}`;
-                    div.onclick = () => selectHorario(h.hora, h.fin, div);
-                }
-                
+                if (h.comida) { div.classList.add('comida'); div.innerHTML = '🍽️ COMIDA'; }
+                else if (ocupados.includes(h.hora)) { div.classList.add('ocupado'); div.innerHTML = `${h.hora} - ${h.fin}`; }
+                else { div.innerHTML = `${h.hora} - ${h.fin}`; div.onclick = () => selectHorario(h.hora, h.fin, div); }
                 container.appendChild(div);
             });
-            
             document.getElementById('btn-agendar').style.display = 'block';
         }
 
         function selectHorario(inicio, fin, element) {
             if (element.classList.contains('ocupado') || element.classList.contains('comida')) return;
-            
             document.querySelectorAll('.horario-slot').forEach(opt => opt.classList.remove('selected'));
             element.classList.add('selected');
             selectedHorario = { inicio, fin };
@@ -976,279 +873,84 @@
 
         function confirmarAgenda() {
             const email = document.getElementById('email-candidato').value.trim();
-            
-            if (!email) {
-                alert('⚠️ Por favor ingresa el correo del candidato');
-                return;
-            }
-            
-            if (!selectedViernes) {
-                alert('⚠️ Por favor selecciona un viernes');
-                return;
-            }
-            
-            if (!selectedHorario) {
-                alert('⚠️ Por favor selecciona un horario');
-                return;
-            }
-            
-            // Guardar en Google Sheets
+            if (!email) { alert('⚠️ Ingresa el correo'); return; }
+            if (!selectedViernes) { alert('⚠️ Selecciona un viernes'); return; }
+            if (!selectedHorario) { alert('⚠️ Selecciona un horario'); return; }
             guardarEvaluacionYCita(email);
         }
 
         async function guardarEvaluacionYCita(email) {
             const btn = document.getElementById('btn-agendar');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading"></span> Guardando...';
-            
+            btn.disabled = true; btn.innerHTML = '<span class="loading"></span> Guardando...';
             const total = Object.values(scores).reduce((a, b) => a + b, 0);
-            
-            // Generar token único para confirmación
             const tokenConfirmacion = 'conf_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             
             const data = {
-                tipo: 'entrevista_telefonica',
-                timestamp: new Date().toLocaleString('es-MX'),
-                reclutadora: selectedReclutadora.nombre,
-                candidato_nombre: selectedCandidato.nombre,
-                candidato_telefono: selectedCandidato.telefono,
-                candidato_email: email,
-                candidato_sucursal: selectedCandidato.sucursal,
-                puntaje_prefiltro: selectedCandidato.puntaje,
-                
-                respuesta_q1: document.getElementById('response-q1').value,
-                respuesta_q2: document.getElementById('response-q2').value,
-                respuesta_q3: document.getElementById('response-q3').value,
-                respuesta_q4: document.getElementById('response-q4').value,
-                respuesta_q5: document.getElementById('response-q5').value,
-                respuesta_q6: document.getElementById('response-q6').value,
-                
-                puntaje_q1: scores.q1,
-                puntaje_q2: scores.q2,
-                puntaje_q3: scores.q3,
-                puntaje_q4: scores.q4,
-                puntaje_q5: scores.q5,
-                puntaje_q6: scores.q6,
-                puntaje_total: total,
-                
-                resultado: resultadoFinal,
-                observaciones: document.getElementById('observaciones-generales').value,
-                
-                panel_fecha: selectedViernes.fecha,
-                panel_hora: selectedHorario.inicio,
-                panel_hora_fin: selectedHorario.fin,
-                token_confirmacion: tokenConfirmacion
+                tipo: 'entrevista_telefonica', timestamp: new Date().toLocaleString('es-MX'),
+                reclutadora: selectedReclutadora.nombre, candidato_nombre: selectedCandidato.nombre,
+                candidato_telefono: selectedCandidato.telefono, candidato_email: email,
+                candidato_sucursal: selectedCandidato.sucursal, puntaje_prefiltro: selectedCandidato.puntaje,
+                respuesta_q1: document.getElementById('response-q1').value, respuesta_q2: document.getElementById('response-q2').value,
+                respuesta_q3: document.getElementById('response-q3').value, respuesta_q4: document.getElementById('response-q4').value,
+                respuesta_q5: document.getElementById('response-q5').value, respuesta_q6: document.getElementById('response-q6').value,
+                puntaje_q1: scores.q1, puntaje_q2: scores.q2, puntaje_q3: scores.q3, puntaje_q4: scores.q4, puntaje_q5: scores.q5, puntaje_q6: scores.q6,
+                puntaje_total: total, resultado: resultadoFinal, observaciones: document.getElementById('observaciones-generales').value,
+                panel_fecha: selectedViernes.fecha, panel_hora: selectedHorario.inicio, panel_hora_fin: selectedHorario.fin, token_confirmacion: tokenConfirmacion
             };
-            
-            // Guardar token para usarlo en WhatsApp/Email
             window.tokenConfirmacion = tokenConfirmacion;
             
             try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                
-                // Mostrar confirmación
+                await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
                 document.getElementById('agenda-section').style.display = 'none';
                 document.getElementById('confirmacion-panel').style.display = 'block';
-                
                 document.getElementById('conf-nombre').textContent = selectedCandidato.nombre;
                 document.getElementById('conf-fecha').textContent = selectedViernes.fechaLegible;
                 document.getElementById('conf-hora').textContent = `${selectedHorario.inicio} - ${selectedHorario.fin}`;
                 document.getElementById('conf-sucursal').textContent = selectedCandidato.sucursal;
                 document.getElementById('conf-email').textContent = email;
-                
                 document.getElementById('confirmacion-panel').scrollIntoView({ behavior: 'smooth' });
-                
-            } catch (error) {
-                console.error('Error:', error);
-                alert('⚠️ Error al guardar. Intenta de nuevo.');
-                btn.disabled = false;
-                btn.innerHTML = '✅ Confirmar Cita';
-            }
+            } catch (error) { alert('⚠️ Error al guardar'); btn.disabled = false; btn.innerHTML = '✅ Confirmar Cita'; }
         }
 
         function enviarWhatsAppAprobado() {
             const direccion = DIRECCIONES[selectedCandidato.sucursal] || selectedCandidato.sucursal;
-            const docsLista = DOCUMENTOS.slice(0, 10).map((d, i) => `${i+1}. ${d}`).join('\n');
-            const linkConfirmacion = `${GOOGLE_SCRIPT_URL}?action=confirmar&token=${window.tokenConfirmacion}`;
-            
-            const mensaje = `¡Hola ${selectedCandidato.nombre.split(' ')[0]}! 🎉
-
-*¡Felicidades!* Has sido seleccionado para la *Entrevista Panel* en ExpertCell.
-
-📅 *FECHA:* ${selectedViernes.fechaLegible}
-🕐 *HORA:* ${selectedHorario.inicio}
-📍 *LUGAR:* ${selectedCandidato.sucursal}
-📌 *DIRECCIÓN:* ${direccion}
-
-⚠️ *IMPORTANTE - CONSIDERA TIEMPO ADICIONAL:*
-Si apruebas la entrevista panel, *ese mismo día* concluirías el proceso de contratación y realizarías los psicométricos. Por favor considera disponer de *1-2 horas* en total.
-
-🕘 *Llega 15 minutos antes*
-
-📄 *DOCUMENTOS A LLEVAR (en PDF legible):*
-${docsLista}
-
-*Opcionales:*
-• Hoja de Infonavit (si aplica)
-• Hoja de Fonacot (si aplica)
-
-También necesitamos:
-• Contacto de emergencia (nombre, parentesco, teléfono y fecha de nacimiento)
-
-👔 *Vestimenta:* Formal/Semiformal
-
-✅ *POR FAVOR CONFIRMA TU ASISTENCIA* haciendo clic aquí:
-${linkConfirmacion}
-
-¡Te esperamos! Cualquier duda estamos a tus órdenes.
-
-*ExpertCell - e-Team Contact Center*`;
-
-            const whatsappURL = `https://wa.me/52${selectedCandidato.telefono}?text=${encodeURIComponent(mensaje)}`;
-            window.open(whatsappURL, '_blank');
+            const link = `${GOOGLE_SCRIPT_URL}?action=confirmar&token=${window.tokenConfirmacion}`;
+            const mensaje = `¡Hola ${selectedCandidato.nombre.split(' ')[0]}! 🎉\n\n*¡Felicidades!* Pasaste a *Entrevista Panel*.\n\n📅 *Fecha:* ${selectedViernes.fechaLegible}\n🕐 *Hora:* ${selectedHorario.inicio}\n📍 *Lugar:* ${selectedCandidato.sucursal}\n📌 *Dirección:* ${direccion}\n\n📄 Lleva: INE, CURP, RFC, NSS, Comprobante domicilio, CV\n\n✅ *Confirma aquí:* ${link}\n\n¡Te esperamos!\n*ExpertCell*`;
+            window.open(`https://wa.me/52${selectedCandidato.telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
 
         function enviarEmailAprobado() {
             const email = document.getElementById('email-candidato').value;
             const direccion = DIRECCIONES[selectedCandidato.sucursal] || selectedCandidato.sucursal;
-            const linkConfirmacion = `${GOOGLE_SCRIPT_URL}?action=confirmar&token=${window.tokenConfirmacion}`;
-            
+            const link = `${GOOGLE_SCRIPT_URL}?action=confirmar&token=${window.tokenConfirmacion}`;
             const subject = `✅ Confirmación Entrevista Panel - ExpertCell | ${selectedViernes.fechaLegible}`;
-            const body = `Hola ${selectedCandidato.nombre.split(' ')[0]},
-
-¡Felicidades! Has sido seleccionado para la Entrevista Panel en ExpertCell.
-
-DETALLES DE TU CITA:
-📅 Fecha: ${selectedViernes.fechaLegible}
-🕐 Hora: ${selectedHorario.inicio}
-📍 Lugar: ${selectedCandidato.sucursal}
-📌 Dirección: ${direccion}
-
-⚠️ IMPORTANTE - CONSIDERA TIEMPO ADICIONAL:
-Si apruebas la entrevista panel, ese mismo día concluirías el proceso de contratación y realizarías los psicométricos. Por favor considera disponer de 1-2 horas en total.
-
-🕘 Por favor llega 15 minutos antes
-
-DOCUMENTOS A LLEVAR (en PDF legible):
-1. Currículum
-2. INE
-3. CURP
-4. Constancia de Situación Fiscal (RFC)
-5. NSS (Número de Seguro Social)
-6. Acta de Nacimiento
-7. Comprobante de domicilio (no mayor a 3 meses)
-8. Certificado de estudios (máximo grado)
-9. Constancia laboral de empleos anteriores
-10. Estado de cuenta (con nombre, número de cuenta, CLABE y banco)
-
-Opcionales:
-- Hoja de Infonavit (solo si aplica)
-- Hoja de Fonacot (solo si aplica)
-
-También necesitamos:
-- Contacto de emergencia (nombre, parentesco, teléfono y fecha de nacimiento)
-
-Vestimenta: Formal/Semiformal
-
-✅ POR FAVOR CONFIRMA TU ASISTENCIA haciendo clic en este enlace:
-${linkConfirmacion}
-
-¡Te esperamos!
-
-Saludos,
-ExpertCell - e-Team Contact Center`;
-
-            const mailtoURL = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            window.open(mailtoURL, '_blank');
+            const body = `Hola ${selectedCandidato.nombre.split(' ')[0]},\n\n¡Felicidades! Pasaste a Entrevista Panel.\n\nFecha: ${selectedViernes.fechaLegible}\nHora: ${selectedHorario.inicio}\nLugar: ${selectedCandidato.sucursal}\nDirección: ${direccion}\n\nDocumentos: INE, CURP, RFC, NSS, Comprobante domicilio, CV\n\nConfirma tu asistencia: ${link}\n\n¡Te esperamos!\nExpertCell`;
+            window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
         }
 
         function enviarWhatsAppRechazo() {
-            if (!selectedCandidato) {
-                alert('Error: No hay candidato seleccionado');
-                return;
-            }
-            
-            const nombreCorto = selectedCandidato.nombre.split(' ')[0];
-            const telefono = selectedCandidato.telefono.replace(/\D/g, ''); // Solo números
-            
-            const mensaje = `Hola ${nombreCorto},
-
-Gracias por tu interés en formar parte de ExpertCell y por el tiempo dedicado a nuestro proceso de selección.
-
-En esta ocasión hemos decidido continuar con otros candidatos cuyo perfil se ajusta más a los requerimientos actuales de la posición.
-
-Te invitamos a seguir en contacto y aplicar a futuras vacantes.
-
-¡Te deseamos mucho éxito en tu búsqueda laboral! 🙌
-
-Saludos,
-*ExpertCell - e-Team Contact Center*`;
-
-            // Guardar rechazo en Google Sheets
+            if (!selectedCandidato) return;
+            const mensaje = `Hola ${selectedCandidato.nombre.split(' ')[0]},\n\nGracias por tu interés en ExpertCell.\n\nEn esta ocasión continuamos con otros candidatos. Te invitamos a aplicar a futuras vacantes.\n\n¡Éxito en tu búsqueda!\n*ExpertCell*`;
             guardarRechazo();
-
-            const whatsappURL = `https://wa.me/52${telefono}?text=${encodeURIComponent(mensaje)}`;
-            window.open(whatsappURL, '_blank');
+            window.open(`https://wa.me/52${selectedCandidato.telefono.replace(/\D/g, '')}?text=${encodeURIComponent(mensaje)}`, '_blank');
         }
 
         async function guardarRechazo() {
             const total = Object.values(scores).reduce((a, b) => a + b, 0);
-            
             const data = {
-                tipo: 'entrevista_telefonica',
-                timestamp: new Date().toLocaleString('es-MX'),
-                reclutadora: selectedReclutadora.nombre,
-                candidato_nombre: selectedCandidato.nombre,
-                candidato_telefono: selectedCandidato.telefono,
-                candidato_email: '',
-                candidato_sucursal: selectedCandidato.sucursal,
+                tipo: 'entrevista_telefonica', timestamp: new Date().toLocaleString('es-MX'),
+                reclutadora: selectedReclutadora.nombre, candidato_nombre: selectedCandidato.nombre,
+                candidato_telefono: selectedCandidato.telefono, candidato_email: '', candidato_sucursal: selectedCandidato.sucursal,
                 puntaje_prefiltro: selectedCandidato.puntaje,
-                
-                respuesta_q1: document.getElementById('response-q1').value,
-                respuesta_q2: document.getElementById('response-q2').value,
-                respuesta_q3: document.getElementById('response-q3').value,
-                respuesta_q4: document.getElementById('response-q4').value,
-                respuesta_q5: document.getElementById('response-q5').value,
-                respuesta_q6: document.getElementById('response-q6').value,
-                
-                puntaje_q1: scores.q1,
-                puntaje_q2: scores.q2,
-                puntaje_q3: scores.q3,
-                puntaje_q4: scores.q4,
-                puntaje_q5: scores.q5,
-                puntaje_q6: scores.q6,
-                puntaje_total: total,
-                
-                resultado: 'NO PASA',
-                observaciones: document.getElementById('observaciones-generales').value,
-                
-                panel_fecha: '',
-                panel_hora: '',
-                panel_hora_fin: ''
+                respuesta_q1: document.getElementById('response-q1').value, respuesta_q2: document.getElementById('response-q2').value,
+                respuesta_q3: document.getElementById('response-q3').value, respuesta_q4: document.getElementById('response-q4').value,
+                respuesta_q5: document.getElementById('response-q5').value, respuesta_q6: document.getElementById('response-q6').value,
+                puntaje_q1: scores.q1, puntaje_q2: scores.q2, puntaje_q3: scores.q3, puntaje_q4: scores.q4, puntaje_q5: scores.q5, puntaje_q6: scores.q6,
+                puntaje_total: total, resultado: 'NO PASA', observaciones: document.getElementById('observaciones-generales').value,
+                panel_fecha: '', panel_hora: '', panel_hora_fin: ''
             };
-            
-            try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                console.log('Rechazo guardado');
-            } catch (error) {
-                console.error('Error al guardar rechazo:', error);
-            }
+            try { await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); } catch (e) {}
         }
-
-        // Inicializar
-        window.onload = function() {
-            console.log('Formulario cargado');
-        };
     </script>
 </body>
 </html>
