@@ -1,20 +1,70 @@
 const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
 let candidateData={},selectedTime=null,selectedSucursal=null,selectedDireccion=null,totalScore=0,reclutadorInfo={nombre:'',email:'',whatsapp:'',whatsappNumero:''};
+let horariosOcupados = []; // Para guardar los horarios ya tomados
 const mapsLinks={'Torre JV Juárez':'https://maps.google.com/?q=Av.+Juárez+2925,+La+Paz,+72160,+Puebla','Edificio Inbursa Antequera':'https://maps.app.goo.gl/fGn2Mz5hKdaKTkxL8'};
 
 function checkIfRejected(){const rejected=localStorage.getItem('att_rejected');if(rejected==='true'){document.getElementById('intro').style.display='none';document.getElementById('rejected-screen').classList.add('active');document.querySelector('.rejected-screen h2').textContent='Ya completaste este formulario';document.querySelector('.rejected-screen p').textContent='Detectamos que ya enviaste tu información anteriormente.'}}
 window.onload=function(){checkIfRejected()};
 
 const questions={
-    q1:[{text:'Tener un ingreso fijo aunque no haya comisiones',score:0,type:'reject'},{text:'Que sea un trabajo sencillo sin mucha presión',score:0,type:'reject'},{text:'Aprender y generar ingresos adicionales con comisiones',score:3,type:'good'},{text:'Ganar dinero a través de resultados y superar metas',score:5,type:'ideal'}],
-    q2:[{text:'Me estresa y prefiero evitarlas',score:0,type:'reject'},{text:'Solo cumplo lo mínimo para no tener problemas',score:0,type:'reject'},{text:'Me adapto y hago mi esfuerzo',score:3,type:'good'},{text:'Me motiva competir conmigo mismo y con el equipo',score:5,type:'ideal'}],
-    q3:[{text:'Termino la llamada de inmediato',score:0,type:'reject'},{text:'Insisto sin escuchar al cliente',score:1,type:'warning'},{text:'Intento explicar brevemente el beneficio',score:3,type:'good'},{text:'Investigo el motivo, manejo la objeción y vuelvo a intentar el cierre',score:5,type:'ideal'}],
-    q4:[{text:'No me interesa, prefiero sueldo fijo',score:0,type:'reject'},{text:'Solo las veo como un extra ocasional',score:1,type:'warning'},{text:'Son importantes, pero no mi prioridad',score:3,type:'good'},{text:'Son una parte clave de mi ingreso',score:5,type:'ideal'}],
-    q5:[{text:'Me desmotivo y bajo el ritmo',score:0,type:'reject'},{text:'Culpo a la base o al sistema',score:0,type:'reject'},{text:'Pido retroalimentación y sigo intentando',score:3,type:'good'},{text:'Ajusto mi estrategia, escucho mis llamadas y busco mejorar',score:5,type:'ideal'}],
-    q6:[{text:'A veces llego tarde, depende del día',score:0,type:'reject'},{text:'Cumplo mientras no haya problemas personales',score:1,type:'warning'},{text:'Suelo ser puntual',score:3,type:'good'},{text:'Soy muy puntual y responsable con mis horarios',score:5,type:'ideal'}],
-    q7:[{text:'Que no me presione',score:0,type:'reject'},{text:'Que me deje trabajar sin decirme nada',score:0,type:'reject'},{text:'Que me apoye cuando lo necesito',score:3,type:'good'},{text:'Que me exija, me rete y me ayude a mejorar resultados',score:5,type:'ideal'}],
-    q8:[{text:'Me molesta y me pongo a la defensiva',score:0,type:'reject'},{text:'Si no me gusta no lo aplico',score:0,type:'reject'},{text:'La tomo en cuenta y trato de mejorar',score:3,type:'good'},{text:'La agradezco y la uso para crecer',score:5,type:'ideal'}],
-    q9:[{text:'Solo mientras encuentro otra cosa',score:0,type:'reject'},{text:'Un par de meses',score:0,type:'reject'},{text:'Al menos 6 meses',score:3,type:'good'},{text:'Busco estabilidad y crecimiento a largo plazo',score:5,type:'ideal'}]
+    // Q1: Modificada la primera opción
+    q1:[
+        {text:'Tener un ingreso fijo y hacer amigos',score:0,type:'reject'},
+        {text:'Que sea un trabajo sencillo sin mucha presión',score:0,type:'reject'},
+        {text:'Aprender y generar ingresos adicionales con comisiones',score:3,type:'good'},
+        {text:'Ganar dinero a través de resultados y superar metas',score:5,type:'ideal'}
+    ],
+    // Q2: Modificada la primera opción
+    q2:[
+        {text:'No tengo problema mientras haya una buena base de datos',score:0,type:'reject'},
+        {text:'Solo cumplo lo mínimo para no tener problemas',score:0,type:'reject'},
+        {text:'Me adapto y hago mi esfuerzo',score:3,type:'good'},
+        {text:'Me motiva competir conmigo mismo y con el equipo',score:5,type:'ideal'}
+    ],
+    // Q3: Modificada la primera opción
+    q3:[
+        {text:'Si su tono no es amigable, prefiero colgar la llamada',score:0,type:'reject'},
+        {text:'Insisto sin escuchar al cliente',score:1,type:'warning'},
+        {text:'Intento explicar brevemente el beneficio',score:3,type:'good'},
+        {text:'Investigo el motivo, manejo la objeción y vuelvo a intentar el cierre',score:5,type:'ideal'}
+    ],
+    q4:[
+        {text:'No me interesa, prefiero sueldo fijo',score:0,type:'reject'},
+        {text:'Solo las veo como un extra ocasional',score:1,type:'warning'},
+        {text:'Son importantes, pero no mi prioridad',score:3,type:'good'},
+        {text:'Son una parte clave de mi ingreso',score:5,type:'ideal'}
+    ],
+    // Q5: Modificada la segunda opción
+    q5:[
+        {text:'Me desmotivo y bajo el ritmo',score:0,type:'reject'},
+        {text:'Normal, lo mas probable es que se deba a la base o al sistema',score:0,type:'reject'},
+        {text:'Pido retroalimentación y sigo intentando',score:3,type:'good'},
+        {text:'Ajusto mi estrategia, escucho mis llamadas y busco mejorar',score:5,type:'ideal'}
+    ],
+    q6:[
+        {text:'A veces llego tarde, depende del día',score:0,type:'reject'},
+        {text:'Cumplo mientras no haya problemas personales',score:1,type:'warning'},
+        {text:'Suelo ser puntual',score:3,type:'good'},
+        {text:'Soy muy puntual y responsable con mis horarios',score:5,type:'ideal'}
+    ],
+    q7:[
+        {text:'Que no me presione',score:0,type:'reject'},
+        {text:'Que me deje trabajar sin decirme nada',score:0,type:'reject'},
+        {text:'Que me apoye cuando lo necesito',score:3,type:'good'},
+        {text:'Que me exija, me rete y me ayude a mejorar resultados',score:5,type:'ideal'}
+    ],
+    q8:[
+        {text:'Me molesta y me pongo a la defensiva',score:0,type:'reject'},
+        {text:'Si no me gusta no lo aplico',score:0,type:'reject'},
+        {text:'La tomo en cuenta y trato de mejorar',score:3,type:'good'},
+        {text:'La agradezco y la uso para crecer',score:5,type:'ideal'}
+    ],
+    q9:[
+        {text:'Solo mientras encuentro otra cosa',score:0,type:'reject'},
+        {text:'Un par de meses',score:0,type:'reject'},
+        {text:'Al menos 6 meses',score:3,type:'good'},
+        {text:'Busco estabilidad y crecimiento a largo plazo',score:5,type:'ideal'}
+    ]
 };
 
 function shuffleArray(array){const shuffled=[...array];for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]}return shuffled}
@@ -120,10 +170,25 @@ function submitForm(){
 
 function setupDatePicker(){
     const dateInput=document.getElementById('fecha-cita');
-    const today=new Date();
-    dateInput.min=today.toISOString().split('T')[0];
-    const maxDate=new Date();maxDate.setDate(maxDate.getDate()+30);
-    dateInput.max=maxDate.toISOString().split('T')[0];
+    const ahora = new Date();
+    
+    // Calcular fecha mínima (mañana si ya pasaron las 6pm, o hoy si no)
+    let fechaMinima = new Date(ahora);
+    if (ahora.getHours() >= 18) {
+        // Si ya son las 6pm o más, la fecha mínima es mañana
+        fechaMinima.setDate(fechaMinima.getDate() + 1);
+    }
+    dateInput.min = fechaMinima.toISOString().split('T')[0];
+    
+    // Fecha máxima: 30 días adelante
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 30);
+    dateInput.max = maxDate.toISOString().split('T')[0];
+    
+    // Listener para cuando cambie la fecha
+    dateInput.addEventListener('change', function() {
+        cargarHorariosDisponibles(this.value);
+    });
     
     // Asignar reclutadora
     if(candidateData.sucursal==='Torre JV Juárez'){
@@ -154,6 +219,122 @@ function setupDatePicker(){
     document.getElementById('reclutador-whatsapp').textContent=reclutadorInfo.whatsapp
 }
 
+// =====================================================
+// CARGAR HORARIOS DISPONIBLES (evita duplicados)
+// =====================================================
+async function cargarHorariosDisponibles(fecha) {
+    const timeSlotsContainer = document.querySelector('.time-slots');
+    if (!timeSlotsContainer) return;
+    
+    // Mostrar loading
+    timeSlotsContainer.innerHTML = '<p style="text-align: center; color: #64748B; padding: 20px;">⏳ Cargando horarios disponibles...</p>';
+    selectedTime = null;
+    
+    try {
+        // Obtener horarios ocupados del servidor (cuenta por horario)
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getHorariosOcupadosPF&fecha=${fecha}&sucursal=${encodeURIComponent(candidateData.sucursal)}`);
+        const data = await response.json();
+        const conteoHorarios = data.conteo || {}; // {horario: cantidad}
+        
+        // Determinar cuántos espacios hay por horario según sucursal
+        // Antequera: 2 reclutadoras = 2 espacios por horario
+        // Torre JV: 1 reclutadora = 1 espacio por horario
+        const espaciosPorHorario = (candidateData.sucursal === 'Edificio Inbursa Antequera') ? 2 : 1;
+        
+        // Definir todos los horarios posibles (cada 15 minutos)
+        const todosLosHorarios = [
+            '9:00', '9:15', '9:30', '9:45',
+            '10:00', '10:15', '10:30', '10:45',
+            '11:00', '11:15', '11:30', '11:45',
+            '12:00', '12:15', '12:30', '12:45',
+            '13:00', '13:15', '13:30', '13:45',
+            '14:00', '14:15', '14:30', '14:45',
+            '15:00', '15:15', '15:30', '15:45',
+            '16:00', '16:15', '16:30', '16:45',
+            '17:00', '17:15', '17:30', '17:45',
+            '18:00', '18:15', '18:30', '18:45'
+        ];
+        
+        // Obtener hora actual para filtrar si es hoy
+        const ahora = new Date();
+        const hoy = ahora.toISOString().split('T')[0];
+        const horaActual = ahora.getHours();
+        const minutosActuales = ahora.getMinutes();
+        
+        // Renderizar horarios
+        timeSlotsContainer.innerHTML = '';
+        let horariosDisponibles = 0;
+        
+        todosLosHorarios.forEach(horario => {
+            const [hora, minutos] = horario.split(':').map(Number);
+            
+            // Si es hoy, solo mostrar horarios futuros (al menos 30 min después)
+            if (fecha === hoy) {
+                const horarioEnMinutos = hora * 60 + minutos;
+                const actualEnMinutos = horaActual * 60 + minutosActuales + 30; // 30 min de margen
+                if (horarioEnMinutos <= actualEnMinutos) {
+                    return; // Saltar este horario
+                }
+            }
+            
+            // Verificar si el horario está lleno
+            const ocupados = conteoHorarios[horario] || 0;
+            const estaLleno = ocupados >= espaciosPorHorario;
+            
+            const slot = document.createElement('div');
+            slot.className = 'time-slot' + (estaLleno ? ' ocupado' : '');
+            slot.textContent = horario;
+            
+            if (estaLleno) {
+                slot.style.background = '#FEE2E2';
+                slot.style.color = '#9CA3AF';
+                slot.style.cursor = 'not-allowed';
+                slot.style.textDecoration = 'line-through';
+                slot.title = 'Horario no disponible';
+            } else {
+                // Mostrar espacios disponibles si hay más de 1
+                if (espaciosPorHorario > 1) {
+                    const disponibles = espaciosPorHorario - ocupados;
+                    slot.title = `${disponibles} espacio(s) disponible(s)`;
+                }
+                slot.onclick = function() { selectTime(horario); };
+                horariosDisponibles++;
+            }
+            
+            timeSlotsContainer.appendChild(slot);
+        });
+        
+        // Si no hay horarios disponibles
+        if (horariosDisponibles === 0) {
+            timeSlotsContainer.innerHTML = '<p style="text-align: center; color: #EF4444; padding: 20px;">❌ No hay horarios disponibles para esta fecha. Por favor selecciona otro día.</p>';
+        }
+        
+    } catch (error) {
+        console.error('Error cargando horarios:', error);
+        // En caso de error, mostrar todos los horarios
+        const todosLosHorarios = [
+            '9:00', '9:15', '9:30', '9:45',
+            '10:00', '10:15', '10:30', '10:45',
+            '11:00', '11:15', '11:30', '11:45',
+            '12:00', '12:15', '12:30', '12:45',
+            '13:00', '13:15', '13:30', '13:45',
+            '14:00', '14:15', '14:30', '14:45',
+            '15:00', '15:15', '15:30', '15:45',
+            '16:00', '16:15', '16:30', '16:45',
+            '17:00', '17:15', '17:30', '17:45',
+            '18:00', '18:15', '18:30', '18:45'
+        ];
+        timeSlotsContainer.innerHTML = '';
+        todosLosHorarios.forEach(horario => {
+            const slot = document.createElement('div');
+            slot.className = 'time-slot';
+            slot.textContent = horario;
+            slot.onclick = function() { selectTime(horario); };
+            timeSlotsContainer.appendChild(slot);
+        });
+    }
+}
+
 function sendCVWhatsApp(){
     const fechaObj = new Date(candidateData.citaFecha + 'T12:00:00');
     const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -163,12 +344,28 @@ function sendCVWhatsApp(){
     window.open(whatsappURL,'_blank')
 }
 
-function selectTime(time){document.querySelectorAll('.time-slot').forEach(slot=>{slot.classList.remove('selected')});event.target.classList.add('selected');selectedTime=time}
+function selectTime(time){
+    document.querySelectorAll('.time-slot').forEach(slot=>{
+        if (!slot.classList.contains('ocupado')) {
+            slot.classList.remove('selected');
+        }
+    });
+    event.target.classList.add('selected');
+    selectedTime=time;
+}
 
 function confirmAppointment(){
     const fecha=document.getElementById('fecha-cita').value;
     if(!fecha){alert('Por favor selecciona una fecha.');return}
     if(!selectedTime){alert('Por favor selecciona un horario.');return}
+    
+    // Validar que el horario siga disponible
+    if (horariosOcupados.includes(selectedTime)) {
+        alert('Este horario acaba de ser ocupado. Por favor selecciona otro.');
+        cargarHorariosDisponibles(fecha);
+        return;
+    }
+    
     candidateData.citaFecha=fecha;
     candidateData.citaHora=selectedTime;
     const btn=event.target;
