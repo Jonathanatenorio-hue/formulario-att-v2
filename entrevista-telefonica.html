@@ -13,29 +13,27 @@
         .header p { opacity: 0.9; font-size: 14px; }
         .content { background: white; padding: 30px; border-radius: 0 0 16px 16px; }
         
-        /* Tabs de navegación */
-        .nav-tabs { display: flex; gap: 10px; margin-bottom: 25px; background: #f1f5f9; padding: 8px; border-radius: 12px; }
-        .nav-tab { flex: 1; padding: 14px 20px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; background: transparent; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 25px; background: #f1f5f9; padding: 8px; border-radius: 12px; flex-wrap: wrap; }
+        .nav-tab { flex: 1; min-width: 120px; padding: 14px 15px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s; background: transparent; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .nav-tab:hover { background: #e2e8f0; }
         .nav-tab.active { background: linear-gradient(135deg, #00A8E1 0%, #0066CC 100%); color: white; box-shadow: 0 4px 15px rgba(0,102,204,0.3); }
-        .nav-tab .badge { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+        .nav-tab .badge { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 10px; font-size: 11px; }
         .nav-tab.active .badge { background: rgba(255,255,255,0.3); }
         
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* Estilos del Calendario */
         .calendario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
         .calendario-header h2 { font-size: 20px; color: #1e293b; }
         .calendario-filters { display: flex; gap: 10px; flex-wrap: wrap; }
         .calendario-filters select { padding: 10px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; cursor: pointer; }
         .calendario-filters select:focus { outline: none; border-color: #0066CC; }
         
-        .stats-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stats-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 20px; border-radius: 12px; text-align: center; border: 2px solid #e2e8f0; }
         .stat-card.today { border-color: #00A8E1; background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%); }
         .stat-card.pending { border-color: #ff9800; background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); }
-        .stat-card.done { border-color: #4CAF50; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
+        .stat-card.no-contesto { border-color: #f44336; background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); }
         .stat-card .number { font-size: 32px; font-weight: 700; color: #1e293b; }
         .stat-card .label { font-size: 12px; color: #64748b; margin-top: 5px; }
         
@@ -52,13 +50,16 @@
         .cita-card.sobresaliente { border-left-color: #4CAF50; }
         .cita-card.excelente { border-left-color: #2196F3; }
         .cita-card.muy-bueno { border-left-color: #ff9800; }
-        .cita-card.realizada { opacity: 0.6; border-left-color: #9e9e9e; }
+        .cita-card.no-contesto { border-left-color: #f44336; background: #fff5f5; }
         
         .cita-info { flex: 1; min-width: 200px; }
-        .cita-info .nombre { font-weight: 600; font-size: 16px; color: #1e293b; margin-bottom: 4px; }
-        .cita-info .detalles { font-size: 13px; color: #64748b; display: flex; flex-wrap: wrap; gap: 10px; }
+        .cita-info .nombre { font-weight: 600; font-size: 16px; color: #1e293b; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .cita-info .intentos { background: #f44336; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; }
+        .cita-info .estado-tag { padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+        .cita-info .estado-tag.nuevo { background: #e3f2fd; color: #1565c0; }
+        .cita-info .estado-tag.no-contesto { background: #ffebee; color: #c62828; }
+        .cita-info .detalles { font-size: 13px; color: #64748b; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
         .cita-info .hora { background: #e0f2fe; color: #0277bd; padding: 3px 10px; border-radius: 15px; font-weight: 600; }
-        .cita-info .puntaje { display: flex; align-items: center; gap: 5px; }
         .cita-info .clasificacion { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
         .cita-info .clasificacion.sobresaliente { background: #c8e6c9; color: #2e7d32; }
         .cita-info .clasificacion.excelente { background: #bbdefb; color: #1565c0; }
@@ -70,10 +71,8 @@
         .btn-llamar:hover { background: #1565c0; color: white; }
         .btn-whatsapp { background: #e8f5e9; color: #2e7d32; }
         .btn-whatsapp:hover { background: #25D366; color: white; }
-        .btn-realizada { background: #e8f5e9; color: #2e7d32; }
-        .btn-realizada:hover { background: #4CAF50; color: white; }
-        .btn-no-contesto { background: #fff3e0; color: #e65100; }
-        .btn-no-contesto:hover { background: #ff9800; color: white; }
+        .btn-no-contesto { background: #ffebee; color: #c62828; }
+        .btn-no-contesto:hover { background: #f44336; color: white; }
         .btn-evaluar { background: linear-gradient(135deg, #00A8E1 0%, #0066CC 100%); color: white; }
         .btn-evaluar:hover { transform: scale(1.05); }
         
@@ -84,6 +83,30 @@
         .loading-spinner { text-align: center; padding: 40px; }
         .loading-spinner .spinner { width: 40px; height: 40px; border: 4px solid #e2e8f0; border-top-color: #0066CC; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Estilos del Historial */
+        .historial-card { background: white; border-radius: 10px; padding: 15px; border-left: 4px solid #9e9e9e; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 12px; }
+        .historial-card.aprobado { border-left-color: #4CAF50; }
+        .historial-card.rechazado { border-left-color: #f44336; }
+        .historial-card.reservas { border-left-color: #ff9800; }
+        .historial-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .historial-header .nombre { font-weight: 600; font-size: 16px; color: #1e293b; }
+        .historial-header .resultado { padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: 600; }
+        .historial-header .resultado.aprobado { background: #c8e6c9; color: #2e7d32; }
+        .historial-header .resultado.rechazado { background: #ffcdd2; color: #c62828; }
+        .historial-header .resultado.reservas { background: #ffe0b2; color: #e65100; }
+        .historial-detalles { display: flex; flex-wrap: wrap; gap: 15px; font-size: 13px; color: #64748b; }
+        .historial-detalles span { display: flex; align-items: center; gap: 5px; }
+        .btn-ver-detalle { background: #f1f5f9; color: #475569; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; margin-top: 10px; }
+        .btn-ver-detalle:hover { background: #e2e8f0; }
+        
+        .detalle-entrevista { display: none; background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 10px; }
+        .detalle-entrevista.visible { display: block; }
+        .detalle-entrevista h4 { font-size: 14px; color: #1e293b; margin-bottom: 10px; }
+        .detalle-pregunta { margin-bottom: 12px; padding: 10px; background: white; border-radius: 6px; }
+        .detalle-pregunta .pregunta-titulo { font-size: 12px; color: #0066CC; font-weight: 600; margin-bottom: 5px; }
+        .detalle-pregunta .pregunta-respuesta { font-size: 13px; color: #333; }
+        .detalle-pregunta .pregunta-puntaje { font-size: 12px; color: #666; margin-top: 5px; }
 
         .scoring-guide { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 2px solid #4CAF50; }
         .scoring-guide h3 { color: #2e7d32; margin-bottom: 15px; font-size: 16px; text-align: center; }
@@ -103,7 +126,6 @@
         .form-group label { display: block; margin-bottom: 8px; color: #333; font-weight: 600; }
         .form-group select, .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 15px; }
         .form-group select:focus, .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #0066CC; }
-        .form-group textarea { min-height: 100px; resize: vertical; }
         
         .candidate-info { background: linear-gradient(135deg, #e8f4fd 0%, #d1e8fa 100%); padding: 20px; border-radius: 12px; margin-bottom: 20px; display: none; }
         .candidate-info h3 { color: #0066CC; margin-bottom: 15px; font-size: 16px; }
@@ -129,16 +151,6 @@
         .green-flags h5 { color: #2e7d32; margin-bottom: 10px; font-size: 14px; }
         .green-flags li { color: #1b5e20; margin-left: 15px; margin-bottom: 5px; }
         
-        .rubrica-box { background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .rubrica-box h5 { color: #333; margin-bottom: 10px; font-size: 14px; }
-        .rubrica-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; padding: 8px; border-radius: 6px; font-size: 13px; }
-        .rubrica-item.r1 { background: #ffebee; }
-        .rubrica-item.r2 { background: #fff3e0; }
-        .rubrica-item.r3 { background: #fff8e1; }
-        .rubrica-item.r4 { background: #e8f5e9; }
-        .rubrica-item.r5 { background: #e3f2fd; }
-        .rubrica-item .score { font-weight: bold; min-width: 25px; }
-        
         .response-section { margin-bottom: 20px; }
         .response-section label { display: block; margin-bottom: 8px; color: #333; font-weight: 600; font-size: 15px; }
         .response-section textarea { width: 100%; min-height: 100px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; resize: vertical; }
@@ -151,7 +163,6 @@
         .score-option:hover { border-color: #0066CC; background: #f0f8ff; }
         .score-option.selected { border-color: #0066CC; background: #0066CC; color: white; }
         .score-option .number { font-size: 24px; font-weight: bold; display: block; }
-        .score-option .label { font-size: 11px; display: block; margin-top: 3px; }
         
         .result-panel { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 12px; color: white; text-align: center; margin-top: 25px; display: none; }
         .result-panel h3 { font-size: 22px; margin-bottom: 15px; }
@@ -171,7 +182,6 @@
         .viernes-option:hover { background: #e8f5e9; }
         .viernes-option.selected { background: #4CAF50; color: white; }
         .viernes-option .fecha { font-weight: 600; font-size: 14px; }
-        .viernes-option .disponibles { font-size: 12px; opacity: 0.8; }
         
         .horarios-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 20px; }
         .horario-slot { padding: 12px; border: 2px solid #4CAF50; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.3s; background: white; font-size: 14px; }
@@ -208,12 +218,9 @@
         
         @media (max-width: 600px) {
             .nav-tabs { flex-direction: column; }
-            .stats-cards { grid-template-columns: repeat(2, 1fr); }
+            .stats-cards { grid-template-columns: 1fr; }
             .flags-container { grid-template-columns: 1fr; }
             .reclutadora-select { grid-template-columns: 1fr; }
-            .score-options { justify-content: center; }
-            .candidate-info .info-grid { grid-template-columns: 1fr; }
-            .scoring-guide .ranges { grid-template-columns: 1fr; }
             .cita-card { flex-direction: column; align-items: flex-start; }
             .cita-acciones { width: 100%; justify-content: flex-start; }
         }
@@ -234,6 +241,9 @@
                 </button>
                 <button class="nav-tab" onclick="cambiarTab('evaluacion')">
                     📝 Nueva Evaluación
+                </button>
+                <button class="nav-tab" onclick="cambiarTab('historial')">
+                    📋 Historial
                 </button>
             </div>
             
@@ -261,17 +271,13 @@
                         <div class="number" id="stat-hoy">0</div>
                         <div class="label">📅 Citas Hoy</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="number" id="stat-semana">0</div>
-                        <div class="label">📆 Esta Semana</div>
-                    </div>
                     <div class="stat-card pending">
-                        <div class="number" id="stat-pendientes">0</div>
-                        <div class="label">⏳ Pendientes</div>
+                        <div class="number" id="stat-nuevas">0</div>
+                        <div class="label">🆕 Nuevas</div>
                     </div>
-                    <div class="stat-card done">
-                        <div class="number" id="stat-realizadas">0</div>
-                        <div class="label">✅ Realizadas</div>
+                    <div class="stat-card no-contesto">
+                        <div class="number" id="stat-nocontesto">0</div>
+                        <div class="label">📵 No Contestó</div>
                     </div>
                 </div>
                 
@@ -279,7 +285,30 @@
                     <div class="empty-state">
                         <div class="icon">👆</div>
                         <h3>Selecciona una reclutadora</h3>
-                        <p>Para ver las citas pendientes de entrevista telefónica</p>
+                        <p>Para ver las citas pendientes</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab: Historial -->
+            <div class="tab-content" id="tab-historial">
+                <div class="calendario-header">
+                    <h2>📋 Entrevistas Realizadas</h2>
+                    <div class="calendario-filters">
+                        <select id="filtro-reclutadora-historial" onchange="cargarHistorial()">
+                            <option value="">Selecciona reclutadora...</option>
+                            <option value="Karla Flores">Karla Flores</option>
+                            <option value="Yessica Huerta">Yessica Huerta</option>
+                            <option value="Jezabel Monterrosas">Jezabel Monterrosas</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="historial-grid">
+                    <div class="empty-state">
+                        <div class="icon">👆</div>
+                        <h3>Selecciona una reclutadora</h3>
+                        <p>Para ver el historial de entrevistas</p>
                     </div>
                 </div>
             </div>
@@ -338,16 +367,7 @@
                     
                     <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 20px; border-radius: 12px; margin-top: 15px; border: 2px solid #4CAF50;">
                         <h4 style="color: #2e7d32; margin-bottom: 15px; font-size: 16px;">📞 GUÍA DE INICIO DE LLAMADA</h4>
-                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                            <p style="margin: 0 0 10px 0; color: #333; font-weight: 600;">🎯 Objetivo:</p>
-                            <ul style="margin: 0; padding-left: 20px; color: #555; font-size: 14px;">
-                                <li>Romper el hielo</li>
-                                <li>Validar interés real</li>
-                                <li>Confirmar que entiende a qué viene</li>
-                            </ul>
-                        </div>
                         <div style="background: white; padding: 15px; border-radius: 8px;">
-                            <p style="margin: 0 0 12px 0; color: #2e7d32; font-weight: 600;">🗣️ GUION:</p>
                             <p style="margin: 0 0 10px 0; color: #333; font-size: 14px;"><em>"Hola [Nombre], ¿cómo estás? Te habla [Tu nombre] de Expertcell, ¿tienes 8–10 minutos para platicar?"</em></p>
                             <p style="margin: 0; color: #333; font-size: 14px;"><em>"Vi que ya llenaste el formulario, ya tengo claro tu perfil. Esta llamada es solo para validar algunos puntos."</em></p>
                         </div>
@@ -357,7 +377,7 @@
                 <div class="section hidden" id="section-evaluacion">
                     <div class="section-title">📝 Evaluación de la Entrevista</div>
                     
-                    <!-- Las 6 preguntas de evaluación -->
+                    <!-- Pregunta 1 -->
                     <div class="evaluation-card">
                         <h4>1️⃣ Coherencia</h4>
                         <div class="question">📢 "En el formulario comentaste que te motiva ganar por resultados, cuéntame una experiencia donde eso haya pasado."</div>
@@ -381,6 +401,7 @@
                         </div>
                     </div>
 
+                    <!-- Pregunta 2 -->
                     <div class="evaluation-card">
                         <h4>2️⃣ Comunicación Real</h4>
                         <div class="question">📢 "Explícame en 30 segundos qué hacías en tu último trabajo."</div>
@@ -404,6 +425,7 @@
                         </div>
                     </div>
 
+                    <!-- Pregunta 3 -->
                     <div class="evaluation-card">
                         <h4>3️⃣ Manejo del Rechazo</h4>
                         <div class="question">📢 "Cuéntame una llamada difícil y cómo la manejaste."</div>
@@ -427,6 +449,7 @@
                         </div>
                     </div>
 
+                    <!-- Pregunta 4 -->
                     <div class="evaluation-card">
                         <h4>4️⃣ Energía y Actitud</h4>
                         <div class="question">📢 "¿Qué te gusta y qué no te gusta de trabajar en ventas?"</div>
@@ -450,6 +473,7 @@
                         </div>
                     </div>
 
+                    <!-- Pregunta 5 -->
                     <div class="evaluation-card">
                         <h4>5️⃣ Realismo del Puesto</h4>
                         <div class="question">📢 "Trabajamos con metas diarias y presión. ¿Qué te costaría más?"</div>
@@ -473,6 +497,7 @@
                         </div>
                     </div>
 
+                    <!-- Pregunta 6 -->
                     <div class="evaluation-card">
                         <h4>6️⃣ Cierre - Autoventa</h4>
                         <div class="question">📢 "¿Por qué deberíamos avanzar contigo y no con otro?"</div>
@@ -590,6 +615,9 @@
             document.getElementById(`tab-${tab}`).classList.add('active');
         }
 
+        // ==========================================
+        // CALENDARIO DE CITAS
+        // ==========================================
         async function cargarCitasCalendario() {
             const reclutadora = document.getElementById('filtro-reclutadora').value;
             const periodo = document.getElementById('filtro-periodo').value;
@@ -622,13 +650,14 @@
         function renderizarCalendario(citas, stats) {
             document.getElementById('stats-cards').style.display = 'grid';
             document.getElementById('stat-hoy').textContent = stats?.hoy || 0;
-            document.getElementById('stat-semana').textContent = stats?.semana || 0;
-            document.getElementById('stat-pendientes').textContent = stats?.pendientes || 0;
-            document.getElementById('stat-realizadas').textContent = stats?.realizadas || 0;
-            document.getElementById('badge-citas').textContent = stats?.pendientes || 0;
+            document.getElementById('stat-nuevas').textContent = stats?.nuevas || 0;
+            document.getElementById('stat-nocontesto').textContent = stats?.noContesto || 0;
+            
+            const totalPendientes = (stats?.nuevas || 0) + (stats?.noContesto || 0);
+            document.getElementById('badge-citas').textContent = totalPendientes;
             
             if (citas.length === 0) {
-                document.getElementById('calendario-grid').innerHTML = `<div class="empty-state"><div class="icon">📭</div><h3>No hay citas pendientes</h3><p>¡Excelente!</p></div>`;
+                document.getElementById('calendario-grid').innerHTML = `<div class="empty-state"><div class="icon">📭</div><h3>No hay citas pendientes</h3><p>¡Excelente! No tienes entrevistas por realizar</p></div>`;
                 return;
             }
             
@@ -652,22 +681,27 @@
                 citasDelDia.forEach(cita => {
                     const clasificacionClass = cita.puntaje >= 41 ? 'sobresaliente' : cita.puntaje >= 35 ? 'excelente' : 'muy-bueno';
                     const clasificacionTexto = cita.puntaje >= 41 ? 'SOBRESALIENTE' : cita.puntaje >= 35 ? 'EXCELENTE' : 'MUY BUENO';
+                    const esNoContesto = cita.estado === 'No Contestó';
+                    const cardClass = esNoContesto ? 'no-contesto' : clasificacionClass;
                     
-                    html += `<div class="cita-card ${clasificacionClass}">
+                    html += `<div class="cita-card ${cardClass}">
                         <div class="cita-info">
-                            <div class="nombre">${cita.nombre}</div>
+                            <div class="nombre">
+                                ${cita.nombre}
+                                ${esNoContesto ? `<span class="estado-tag no-contesto">📵 No Contestó</span>` : `<span class="estado-tag nuevo">🆕 Nuevo</span>`}
+                                ${cita.intentos > 0 ? `<span class="intentos">${cita.intentos} intento(s)</span>` : ''}
+                            </div>
                             <div class="detalles">
                                 <span class="hora">🕐 ${cita.hora}</span>
                                 <span>📞 ${cita.telefono}</span>
-                                <span class="puntaje">⭐ ${cita.puntaje}/45 <span class="clasificacion ${clasificacionClass}">${clasificacionTexto}</span></span>
+                                <span>⭐ ${cita.puntaje}/45 <span class="clasificacion ${clasificacionClass}">${clasificacionTexto}</span></span>
                             </div>
                         </div>
                         <div class="cita-acciones">
                             <button class="btn-accion btn-llamar" onclick="llamar('${cita.telefono}')">📞</button>
                             <button class="btn-accion btn-whatsapp" onclick="abrirWhatsApp('${cita.telefono}', '${cita.nombre}')">💬</button>
                             <button class="btn-accion btn-evaluar" onclick="iniciarEvaluacion('${cita.telefono}')">📝 Evaluar</button>
-                            <button class="btn-accion btn-realizada" onclick="marcarEstado('${cita.telefono}', 'Realizada')">✅</button>
-                            <button class="btn-accion btn-no-contesto" onclick="marcarEstado('${cita.telefono}', 'No Contestó')">📵</button>
+                            <button class="btn-accion btn-no-contesto" onclick="marcarNoContesto('${cita.telefono}')">📵 No Contestó</button>
                         </div>
                     </div>`;
                 });
@@ -700,7 +734,7 @@
                     const select = document.getElementById('candidato-select');
                     for (let i = 0; i < select.options.length; i++) {
                         if (select.options[i].text.includes(telefono)) {
-                            select.value = i - 1;
+                            select.value = select.options[i].value;
                             loadCandidate();
                             break;
                         }
@@ -709,18 +743,121 @@
             }
         }
 
-        async function marcarEstado(telefono, nuevoEstado) {
-            if (!confirm(`¿Marcar como "${nuevoEstado}"?`)) return;
+        async function marcarNoContesto(telefono) {
+            if (!confirm('¿Marcar como "No Contestó"? Se registrará un intento de contacto.')) return;
+            
             try {
                 await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST', mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tipo: 'actualizar_estado_pf', telefono, estado: nuevoEstado })
+                    body: JSON.stringify({ tipo: 'actualizar_estado_pf', telefono, estado: 'No Contestó', registrarIntento: true })
                 });
+                alert('✅ Marcado como "No Contestó". Se registró el intento de contacto.');
                 setTimeout(() => cargarCitasCalendario(), 500);
             } catch (error) { alert('Error al actualizar'); }
         }
 
+        // ==========================================
+        // HISTORIAL DE ENTREVISTAS
+        // ==========================================
+        async function cargarHistorial() {
+            const reclutadora = document.getElementById('filtro-reclutadora-historial').value;
+            
+            if (!reclutadora) {
+                document.getElementById('historial-grid').innerHTML = `<div class="empty-state"><div class="icon">👆</div><h3>Selecciona una reclutadora</h3><p>Para ver el historial de entrevistas</p></div>`;
+                return;
+            }
+            
+            document.getElementById('historial-grid').innerHTML = `<div class="loading-spinner"><div class="spinner"></div><p>Cargando historial...</p></div>`;
+            
+            try {
+                const url = `${GOOGLE_SCRIPT_URL}?action=getHistorialEntrevistas&reclutadora=${encodeURIComponent(reclutadora)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    renderizarHistorial(data.entrevistas || []);
+                } else {
+                    throw new Error(data.message || 'Error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('historial-grid').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><h3>Error al cargar</h3><p>Intenta de nuevo</p></div>`;
+            }
+        }
+
+        function renderizarHistorial(entrevistas) {
+            if (entrevistas.length === 0) {
+                document.getElementById('historial-grid').innerHTML = `<div class="empty-state"><div class="icon">📋</div><h3>Sin entrevistas</h3><p>Aún no has realizado entrevistas</p></div>`;
+                return;
+            }
+            
+            let html = '';
+            entrevistas.forEach((ent, index) => {
+                const resultadoClass = ent.resultado === 'PASA' ? 'aprobado' : ent.resultado === 'NO PASA' ? 'rechazado' : 'reservas';
+                const resultadoTexto = ent.resultado === 'PASA' ? '✅ Aprobado' : ent.resultado === 'NO PASA' ? '❌ Rechazado' : '⚠️ Con Reservas';
+                
+                html += `
+                <div class="historial-card ${resultadoClass}">
+                    <div class="historial-header">
+                        <span class="nombre">${ent.nombre}</span>
+                        <span class="resultado ${resultadoClass}">${resultadoTexto}</span>
+                    </div>
+                    <div class="historial-detalles">
+                        <span>📞 ${ent.telefono}</span>
+                        <span>📅 ${ent.fecha}</span>
+                        <span>📊 ${ent.puntaje}/30 pts</span>
+                        <span>🏢 ${ent.sucursal}</span>
+                    </div>
+                    <button class="btn-ver-detalle" onclick="toggleDetalle(${index})">👁️ Ver detalle</button>
+                    <div class="detalle-entrevista" id="detalle-${index}">
+                        <h4>Respuestas de la entrevista:</h4>
+                        <div class="detalle-pregunta">
+                            <div class="pregunta-titulo">1️⃣ Coherencia</div>
+                            <div class="pregunta-respuesta">${ent.respuestas?.q1 || 'Sin respuesta'}</div>
+                            <div class="pregunta-puntaje">Puntaje: ${ent.puntajes?.q1 || 0}/5</div>
+                        </div>
+                        <div class="detalle-pregunta">
+                            <div class="pregunta-titulo">2️⃣ Comunicación</div>
+                            <div class="pregunta-respuesta">${ent.respuestas?.q2 || 'Sin respuesta'}</div>
+                            <div class="pregunta-puntaje">Puntaje: ${ent.puntajes?.q2 || 0}/5</div>
+                        </div>
+                        <div class="detalle-pregunta">
+                            <div class="pregunta-titulo">3️⃣ Manejo del Rechazo</div>
+                            <div class="pregunta-respuesta">${ent.respuestas?.q3 || 'Sin respuesta'}</div>
+                            <div class="pregunta-puntaje">Puntaje: ${ent.puntajes?.q3 || 0}/5</div>
+                        </div>
+                        <div class="detalle-pregunta">
+                            <div class="pregunta-titulo">4️⃣ Energía y Actitud</div>
+                            <div class="pregunta-respuesta">${ent.respuestas?.q4 || 'Sin respuesta'}</div>
+                            <div class="pregunta-puntaje">Puntaje: ${ent.puntajes?.q4 || 0}/5</div>
+                        </div>
+                        <div class="detalle-pregunta">
+                            <div class="pregunta-titulo">5️⃣ Realismo del Puesto</div>
+                            <div class="pregunta-respuesta">${ent.respuestas?.q5 || 'Sin respuesta'}</div>
+                            <div class="pregunta-puntaje">Puntaje: ${ent.puntajes?.q5 || 0}/5</div>
+                        </div>
+                        <div class="detalle-pregunta">
+                            <div class="pregunta-titulo">6️⃣ Cierre/Autoventa</div>
+                            <div class="pregunta-respuesta">${ent.respuestas?.q6 || 'Sin respuesta'}</div>
+                            <div class="pregunta-puntaje">Puntaje: ${ent.puntajes?.q6 || 0}/5</div>
+                        </div>
+                        ${ent.observaciones ? `<div class="detalle-pregunta"><div class="pregunta-titulo">📝 Observaciones</div><div class="pregunta-respuesta">${ent.observaciones}</div></div>` : ''}
+                    </div>
+                </div>`;
+            });
+            
+            document.getElementById('historial-grid').innerHTML = html;
+        }
+
+        function toggleDetalle(index) {
+            const detalle = document.getElementById(`detalle-${index}`);
+            detalle.classList.toggle('visible');
+        }
+
+        // ==========================================
+        // EVALUACIÓN
+        // ==========================================
         async function cargarCandidatos() {
             const select = document.getElementById('candidato-select');
             select.innerHTML = '<option value="">⏳ Cargando...</option>';
@@ -731,10 +868,11 @@
                 if (data.status === 'success' && data.candidatos) {
                     candidatos = data.candidatos;
                     select.innerHTML = '<option value="">-- Selecciona --</option>';
-                    if (candidatos.length === 0) { select.innerHTML = '<option value="">No hay candidatos</option>'; return; }
+                    if (candidatos.length === 0) { select.innerHTML = '<option value="">No hay candidatos pendientes</option>'; return; }
                     candidatos.forEach((c, i) => {
                         const icon = c.puntaje >= 41 ? '🌟' : c.puntaje >= 35 ? '⭐' : '✅';
-                        select.innerHTML += `<option value="${i}">${c.nombre} - ${c.telefono} - ${c.puntaje}pts ${icon}</option>`;
+                        const estadoTag = c.estado === 'No Contestó' ? ' 📵' : '';
+                        select.innerHTML += `<option value="${i}">${c.nombre} - ${c.telefono} - ${c.puntaje}pts ${icon}${estadoTag}</option>`;
                     });
                 }
             } catch (error) { select.innerHTML = '<option value="">Error al cargar</option>'; }
