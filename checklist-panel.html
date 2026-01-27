@@ -181,6 +181,19 @@
                 <div class="stat-item neutral"><div class="stat-number" id="stat-sin-iniciar">0</div><div class="stat-label">📝 Sin iniciar</div></div>
             </div>
 
+            <!-- Botón para enviar reporte manual -->
+            <div class="card" id="card-enviar-reporte" style="display: none;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h4 style="font-size: 15px; color: var(--gray-800); margin-bottom: 4px;">📧 Enviar Reporte a Capacitación</h4>
+                        <p style="font-size: 13px; color: var(--gray-500);">Envía el listado de aspirantes con documentos completos al equipo de capacitación.</p>
+                    </div>
+                    <button class="btn btn-primary" id="btn-enviar-reporte" onclick="enviarReporteCapacitacion()" style="white-space: nowrap;">
+                        📤 Enviar Reporte
+                    </button>
+                </div>
+            </div>
+
             <div class="card" id="aspirantes-card" style="display: none;">
                 <div class="card-title"><div class="icon">👥</div>Aspirantes Aprobados</div>
                 <div class="tabs">
@@ -389,6 +402,14 @@ async function cargarAspirantesAprobados() {
         document.getElementById('stat-sin-iniciar').textContent = sinIniciar.length;
         document.getElementById('tab-pendientes-count').textContent = pendientes.length + sinIniciar.length;
         document.getElementById('tab-completos-count').textContent = completos.length;
+        
+        // Mostrar/ocultar botón de enviar reporte según si hay completos
+        const cardEnviarReporte = document.getElementById('card-enviar-reporte');
+        if (completos.length > 0) {
+            cardEnviarReporte.style.display = 'block';
+        } else {
+            cardEnviarReporte.style.display = 'none';
+        }
         
         renderizarLista('lista-pendientes', [...pendientes, ...sinIniciar]);
         renderizarLista('lista-completos', completos);
@@ -795,6 +816,47 @@ Saludos,
     
     const urlWhatsApp = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
     window.open(urlWhatsApp, '_blank');
+}
+
+// =====================================================
+// ENVIAR REPORTE DE CAPACITACIÓN MANUAL
+// =====================================================
+async function enviarReporteCapacitacion() {
+    const btn = document.getElementById('btn-enviar-reporte');
+    const completos = aspirantesList.filter(a => a.estadoChecklist === 'Completo');
+    
+    if (completos.length === 0) {
+        alert('No hay aspirantes con documentos completos para enviar.');
+        return;
+    }
+    
+    // Confirmar envío
+    const sucursalActual = selectedSucursal;
+    const confirmacion = confirm(`¿Enviar reporte de capacitación?\n\n📍 Sucursal: ${sucursalActual}\n👥 Aspirantes completos: ${completos.length}\n\nSe enviará el correo al equipo de capacitación.`);
+    
+    if (!confirmacion) return;
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span> Enviando...';
+    
+    try {
+        // Llamar al endpoint para enviar el reporte
+        const url = `${GOOGLE_SCRIPT_URL}?action=enviarReporteCapacitacionManual&sucursal=${encodeURIComponent(sucursalActual)}`;
+        const response = await fetch(url);
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert(`✅ ¡Reporte enviado exitosamente!\n\n${result.message || 'El equipo de capacitación ha sido notificado.'}`);
+        } else {
+            alert(`⚠️ Hubo un problema: ${result.message || 'Error desconocido'}`);
+        }
+    } catch (e) {
+        console.error('Error al enviar reporte:', e);
+        alert('❌ Error al enviar el reporte. Intenta de nuevo.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '📤 Enviar Reporte';
+    }
 }
     </script>
 </body>
