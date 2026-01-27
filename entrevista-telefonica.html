@@ -105,6 +105,7 @@
         .detalle-entrevista h4 { font-size: 14px; color: #1e293b; margin-bottom: 10px; }
         .detalle-pregunta { margin-bottom: 12px; padding: 10px; background: white; border-radius: 6px; }
         .detalle-pregunta .pregunta-titulo { font-size: 12px; color: #0066CC; font-weight: 600; margin-bottom: 5px; }
+        .detalle-pregunta .pregunta-texto { font-size: 12px; color: #666; font-style: italic; margin-bottom: 8px; background: #e3f2fd; padding: 8px; border-radius: 4px; }
         .detalle-pregunta .pregunta-respuesta { font-size: 13px; color: #333; }
         .detalle-pregunta .pregunta-puntaje { font-size: 12px; color: #666; margin-top: 5px; }
 
@@ -300,6 +301,18 @@
                             <option value="Karla Flores">Karla Flores</option>
                             <option value="Yessica Huerta">Yessica Huerta</option>
                             <option value="Jezabel Monterrosas">Jezabel Monterrosas</option>
+                        </select>
+                        <select id="filtro-fecha-historial" onchange="filtrarHistorial()">
+                            <option value="todos">Todas las fechas</option>
+                            <option value="hoy">Hoy</option>
+                            <option value="semana">Esta semana</option>
+                            <option value="mes">Este mes</option>
+                        </select>
+                        <select id="filtro-resultado-historial" onchange="filtrarHistorial()">
+                            <option value="todos">Todos los resultados</option>
+                            <option value="PASA">✅ Aprobados</option>
+                            <option value="NO PASA">❌ Rechazados</option>
+                            <option value="RESERVAS">⚠️ Con Reservas</option>
                         </select>
                     </div>
                 </div>
@@ -717,7 +730,7 @@
         function abrirWhatsApp(telefono, nombre) {
             const reclutadora = document.getElementById('filtro-reclutadora').value;
             const primerNombre = nombre.split(' ')[0];
-            const mensaje = `Hola ${primerNombre}, te escribe ${reclutadora}, estoy intentando comunicarme contigo para realizar tu entrevista telefónica, ¿tienes unos minutos?`;
+            const mensaje = `Hola ${primerNombre}, te escribe ${reclutadora} de ExpertCell, estoy intentando comunicarme contigo para realizar tu entrevista telefónica, ¿tienes unos minutos?`;
             let tel = telefono.replace(/\D/g, '');
             if (tel.length === 10) tel = '52' + tel;
             window.open(`https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`, '_blank');
@@ -760,6 +773,8 @@
         // ==========================================
         // HISTORIAL DE ENTREVISTAS
         // ==========================================
+        let historialCompleto = [];
+        
         async function cargarHistorial() {
             const reclutadora = document.getElementById('filtro-reclutadora-historial').value;
             
@@ -776,7 +791,8 @@
                 const data = await response.json();
                 
                 if (data.status === 'success') {
-                    renderizarHistorial(data.entrevistas || []);
+                    historialCompleto = data.entrevistas || [];
+                    filtrarHistorial();
                 } else {
                     throw new Error(data.message || 'Error');
                 }
@@ -786,13 +802,59 @@
             }
         }
 
+        function filtrarHistorial() {
+            const filtroFecha = document.getElementById('filtro-fecha-historial').value;
+            const filtroResultado = document.getElementById('filtro-resultado-historial').value;
+            
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            
+            const entrevistasFiltradas = historialCompleto.filter(ent => {
+                // Filtrar por resultado
+                if (filtroResultado !== 'todos' && ent.resultado !== filtroResultado) {
+                    return false;
+                }
+                
+                // Filtrar por fecha
+                if (filtroFecha !== 'todos') {
+                    const partesFecha = ent.fecha.split('/');
+                    const fechaEnt = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
+                    
+                    if (filtroFecha === 'hoy') {
+                        if (fechaEnt.toDateString() !== hoy.toDateString()) return false;
+                    } else if (filtroFecha === 'semana') {
+                        const hace7Dias = new Date(hoy);
+                        hace7Dias.setDate(hace7Dias.getDate() - 7);
+                        if (fechaEnt < hace7Dias) return false;
+                    } else if (filtroFecha === 'mes') {
+                        const hace30Dias = new Date(hoy);
+                        hace30Dias.setDate(hace30Dias.getDate() - 30);
+                        if (fechaEnt < hace30Dias) return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            renderizarHistorial(entrevistasFiltradas);
+        }
+
+        const PREGUNTAS_ENTREVISTA = {
+            q1: '📢 "En el formulario comentaste que te motiva ganar por resultados, cuéntame una experiencia donde eso haya pasado."',
+            q2: '📢 "Explícame en 30 segundos qué hacías en tu último trabajo."',
+            q3: '📢 "Cuéntame una llamada difícil que recuerdes y cómo la manejaste."',
+            q4: '📢 "¿Qué es lo que más te gusta y lo que menos te gusta de trabajar en ventas?"',
+            q5: '📢 "Aquí trabajamos con metas diarias, seguimiento y presión constante. ¿Qué parte de eso te costaría más y cómo la manejarías?"',
+            q6: '📢 "¿Por qué crees que deberíamos avanzar contigo y no con otro candidato?"'
+        };
+
         function renderizarHistorial(entrevistas) {
             if (entrevistas.length === 0) {
-                document.getElementById('historial-grid').innerHTML = `<div class="empty-state"><div class="icon">📋</div><h3>Sin entrevistas</h3><p>Aún no has realizado entrevistas</p></div>`;
+                document.getElementById('historial-grid').innerHTML = `<div class="empty-state"><div class="icon">📋</div><h3>Sin resultados</h3><p>No hay entrevistas que coincidan con los filtros</p></div>`;
                 return;
             }
             
-            let html = '';
+            let html = `<p style="color:#64748b; margin-bottom:15px; font-size:14px;">Mostrando ${entrevistas.length} entrevista(s)</p>`;
             entrevistas.forEach((ent, index) => {
                 const resultadoClass = ent.resultado === 'PASA' ? 'aprobado' : ent.resultado === 'NO PASA' ? 'rechazado' : 'reservas';
                 const resultadoTexto = ent.resultado === 'PASA' ? '✅ Aprobado' : ent.resultado === 'NO PASA' ? '❌ Rechazado' : '⚠️ Con Reservas';
@@ -814,35 +876,41 @@
                         <h4>Respuestas de la entrevista:</h4>
                         <div class="detalle-pregunta">
                             <div class="pregunta-titulo">1️⃣ Coherencia</div>
-                            <div class="pregunta-respuesta">${ent.respuestas?.q1 || 'Sin respuesta'}</div>
+                            <div class="pregunta-texto">${PREGUNTAS_ENTREVISTA.q1}</div>
+                            <div class="pregunta-respuesta"><strong>Respuesta:</strong> ${ent.respuestas?.q1 || 'Sin respuesta'}</div>
                             <div class="pregunta-puntaje">Puntaje: ${ent.puntajes?.q1 || 0}/5</div>
                         </div>
                         <div class="detalle-pregunta">
-                            <div class="pregunta-titulo">2️⃣ Comunicación</div>
-                            <div class="pregunta-respuesta">${ent.respuestas?.q2 || 'Sin respuesta'}</div>
+                            <div class="pregunta-titulo">2️⃣ Comunicación Real</div>
+                            <div class="pregunta-texto">${PREGUNTAS_ENTREVISTA.q2}</div>
+                            <div class="pregunta-respuesta"><strong>Respuesta:</strong> ${ent.respuestas?.q2 || 'Sin respuesta'}</div>
                             <div class="pregunta-puntaje">Puntaje: ${ent.puntajes?.q2 || 0}/5</div>
                         </div>
                         <div class="detalle-pregunta">
                             <div class="pregunta-titulo">3️⃣ Manejo del Rechazo</div>
-                            <div class="pregunta-respuesta">${ent.respuestas?.q3 || 'Sin respuesta'}</div>
+                            <div class="pregunta-texto">${PREGUNTAS_ENTREVISTA.q3}</div>
+                            <div class="pregunta-respuesta"><strong>Respuesta:</strong> ${ent.respuestas?.q3 || 'Sin respuesta'}</div>
                             <div class="pregunta-puntaje">Puntaje: ${ent.puntajes?.q3 || 0}/5</div>
                         </div>
                         <div class="detalle-pregunta">
                             <div class="pregunta-titulo">4️⃣ Energía y Actitud</div>
-                            <div class="pregunta-respuesta">${ent.respuestas?.q4 || 'Sin respuesta'}</div>
+                            <div class="pregunta-texto">${PREGUNTAS_ENTREVISTA.q4}</div>
+                            <div class="pregunta-respuesta"><strong>Respuesta:</strong> ${ent.respuestas?.q4 || 'Sin respuesta'}</div>
                             <div class="pregunta-puntaje">Puntaje: ${ent.puntajes?.q4 || 0}/5</div>
                         </div>
                         <div class="detalle-pregunta">
                             <div class="pregunta-titulo">5️⃣ Realismo del Puesto</div>
-                            <div class="pregunta-respuesta">${ent.respuestas?.q5 || 'Sin respuesta'}</div>
+                            <div class="pregunta-texto">${PREGUNTAS_ENTREVISTA.q5}</div>
+                            <div class="pregunta-respuesta"><strong>Respuesta:</strong> ${ent.respuestas?.q5 || 'Sin respuesta'}</div>
                             <div class="pregunta-puntaje">Puntaje: ${ent.puntajes?.q5 || 0}/5</div>
                         </div>
                         <div class="detalle-pregunta">
-                            <div class="pregunta-titulo">6️⃣ Cierre/Autoventa</div>
-                            <div class="pregunta-respuesta">${ent.respuestas?.q6 || 'Sin respuesta'}</div>
+                            <div class="pregunta-titulo">6️⃣ Cierre - Autoventa</div>
+                            <div class="pregunta-texto">${PREGUNTAS_ENTREVISTA.q6}</div>
+                            <div class="pregunta-respuesta"><strong>Respuesta:</strong> ${ent.respuestas?.q6 || 'Sin respuesta'}</div>
                             <div class="pregunta-puntaje">Puntaje: ${ent.puntajes?.q6 || 0}/5</div>
                         </div>
-                        ${ent.observaciones ? `<div class="detalle-pregunta"><div class="pregunta-titulo">📝 Observaciones</div><div class="pregunta-respuesta">${ent.observaciones}</div></div>` : ''}
+                        ${ent.observaciones ? `<div class="detalle-pregunta"><div class="pregunta-titulo">📝 Observaciones Generales</div><div class="pregunta-respuesta">${ent.observaciones}</div></div>` : ''}
                     </div>
                 </div>`;
             });
