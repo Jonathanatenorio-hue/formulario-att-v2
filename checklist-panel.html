@@ -206,16 +206,16 @@
                     <div class="checklist-item" id="item-domicilio"><div class="checklist-item-left"><div class="checklist-item-icon">🏠</div><div class="checklist-item-text"><h4>Comprobante de domicilio</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('domicilio', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('domicilio', false)">❌ No</button></div></div>
                     <div class="checklist-item" id="item-acta"><div class="checklist-item-left"><div class="checklist-item-icon">📜</div><div class="checklist-item-text"><h4>Acta de nacimiento</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('acta', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('acta', false)">❌ No</button></div></div>
                     <div class="checklist-item" id="item-rfc"><div class="checklist-item-left"><div class="checklist-item-icon">🏛️</div><div class="checklist-item-text"><h4>RFC</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('rfc', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('rfc', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-csf"><div class="checklist-item-left"><div class="checklist-item-icon">📋</div><div class="checklist-item-text"><h4>Constancia de Situación Fiscal</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('csf', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('csf', false)">❌ No</button></div></div>
                     <div class="checklist-item" id="item-banco"><div class="checklist-item-left"><div class="checklist-item-icon">💳</div><div class="checklist-item-text"><h4>Datos bancarios</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('banco', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('banco', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-nss"><div class="checklist-item-left"><div class="checklist-item-icon">🏥</div><div class="checklist-item-text"><h4>NSS (Seguro Social)</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('nss', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('nss', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-estudios"><div class="checklist-item-left"><div class="checklist-item-icon">🎓</div><div class="checklist-item-text"><h4>Comprobante de estudios</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('estudios', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('estudios', false)">❌ No</button></div></div>
                     <div class="checklist-item" id="item-psico"><div class="checklist-item-left"><div class="checklist-item-icon">🧠</div><div class="checklist-item-text"><h4>Psicométricos</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('psico', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('psico', false)">❌ No</button></div></div>
                 </div>
 
                 <div class="checklist-section">
                     <div class="checklist-section-title">📎 Documentos Opcionales <span class="opcional-badge">PUEDEN ENTREGARSE DESPUÉS</span></div>
-                    <div class="checklist-item" id="item-csf"><div class="checklist-item-left"><div class="checklist-item-icon">📋</div><div class="checklist-item-text"><h4>Constancia de Situación Fiscal</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('csf', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('csf', false)">❌ No</button></div></div>
-                    <div class="checklist-item" id="item-estudios"><div class="checklist-item-left"><div class="checklist-item-icon">🎓</div><div class="checklist-item-text"><h4>Comprobante de estudios</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('estudios', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('estudios', false)">❌ No</button></div></div>
-                    <div class="checklist-item" id="item-laboral"><div class="checklist-item-left"><div class="checklist-item-icon">💼</div><div class="checklist-item-text"><h4>Constancia laboral</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('laboral', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('laboral', false)">❌ No</button></div></div>
-                    <div class="checklist-item" id="item-nss"><div class="checklist-item-left"><div class="checklist-item-icon">🏥</div><div class="checklist-item-text"><h4>NSS (Seguro Social)</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('nss', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('nss', false)">❌ No</button></div></div>
+                    <div class="checklist-item" id="item-laboral"><div class="checklist-item-left"><div class="checklist-item-icon">💼</div><div class="checklist-item-text"><h4>Constancia laboral</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('laboral', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('laboral', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('laboral', 'na')">➖ N/A</button></div></div>
                     <div class="checklist-item" id="item-infonavit"><div class="checklist-item-left"><div class="checklist-item-icon">🏡</div><div class="checklist-item-text"><h4>Infonavit</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('infonavit', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('infonavit', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('infonavit', 'na')">➖ N/A</button></div></div>
                     <div class="checklist-item" id="item-fonacot"><div class="checklist-item-left"><div class="checklist-item-icon">💰</div><div class="checklist-item-text"><h4>Fonacot</h4></div></div><div class="checklist-toggle"><button class="toggle-btn" onclick="setDocStatus('fonacot', true)">✅ Sí</button><button class="toggle-btn" onclick="setDocStatus('fonacot', false)">❌ No</button><button class="toggle-btn" onclick="setDocStatus('fonacot', 'na')">➖ N/A</button></div></div>
                 </div>
@@ -703,12 +703,58 @@ async function guardarChecklist() {
 function mostrarConfirmacion(result) {
     const container = document.getElementById('confirmacion-content');
     if (result.estadoChecklist === 'Completo') {
-        container.innerHTML = `<div class="confirmation-icon success">✅</div><h2>¡Checklist Completo!</h2><p><strong>${selectedAspirante.nombre}</strong></p><p>Todos los documentos obligatorios fueron registrados.</p>${result.felicitacionEnviada ? '<p style="color: var(--success); font-weight: 600;">✉️ Email de felicitación enviado</p>' : '<p style="color: var(--warning);">⚠️ No se envió email (ya fue enviado anteriormente o sin correo)</p>'}<div class="btn-row" style="margin-top: 30px;"><button class="btn btn-primary" onclick="volverALista()">← Volver a la lista</button></div>`;
+        const primerNombre = selectedAspirante.nombre.split(' ')[0];
+        container.innerHTML = `
+            <div class="confirmation-icon success">✅</div>
+            <h2>¡Checklist Completo!</h2>
+            <p><strong>${selectedAspirante.nombre}</strong></p>
+            <p>Todos los documentos obligatorios fueron registrados.</p>
+            ${result.felicitacionEnviada ? '<p style="color: var(--success); font-weight: 600;">✉️ Email de felicitación enviado</p>' : '<p style="color: var(--warning);">⚠️ No se envió email (ya fue enviado anteriormente o sin correo)</p>'}
+            
+            <div style="background: var(--success-light); border: 2px solid var(--success); border-radius: 12px; padding: 16px; margin: 20px 0;">
+                <p style="font-weight: 600; color: var(--success); margin-bottom: 12px;">🎉 Enviar felicitación por WhatsApp</p>
+                <button class="btn" style="background: #25D366; color: white; width: 100%;" onclick="enviarFelicitacionWhatsApp()">
+                    📱 Abrir WhatsApp
+                </button>
+            </div>
+            
+            <div class="btn-row" style="margin-top: 20px;">
+                <button class="btn btn-primary" onclick="volverALista()">← Volver a la lista</button>
+            </div>`;
     } else {
         const docsList = result.docsPendientes && result.docsPendientes.length > 0 ? result.docsPendientes.map(d => `<li>${d}</li>`).join('') : '<li>Ninguno especificado</li>';
-        container.innerHTML = `<div class="confirmation-icon pending">⏳</div><h2>Checklist Guardado</h2><p><strong>${selectedAspirante.nombre}</strong></p><p>El checklist quedó en estado <strong>Pendiente</strong></p><div class="docs-list"><h4>📋 Documentos faltantes:</h4><ul>${docsList}</ul></div><p style="font-size: 13px; color: var(--gray-500);">El email de felicitación se enviará cuando todos los documentos obligatorios estén completos.</p><div class="btn-row" style="margin-top: 30px;"><button class="btn btn-primary" onclick="volverALista()">← Volver a la lista</button></div>`;
+        container.innerHTML = `
+            <div class="confirmation-icon pending">⏳</div>
+            <h2>Checklist Guardado</h2>
+            <p><strong>${selectedAspirante.nombre}</strong></p>
+            <p>El checklist quedó en estado <strong>Pendiente</strong></p>
+            <div class="docs-list"><h4>📋 Documentos faltantes:</h4><ul>${docsList}</ul></div>
+            <p style="font-size: 13px; color: var(--gray-500);">El email de felicitación se enviará cuando todos los documentos obligatorios estén completos.</p>
+            <div class="btn-row" style="margin-top: 30px;">
+                <button class="btn btn-primary" onclick="volverALista()">← Volver a la lista</button>
+            </div>`;
     }
     showSection('section-confirmacion');
+}
+
+function enviarFelicitacionWhatsApp() {
+    const primerNombre = selectedAspirante.nombre.split(' ')[0];
+    const mensaje = `¡Felicidades ${primerNombre}! 🎉🎊
+
+¡Bienvenido(a) al equipo de *ExpertCell*! Hemos recibido todos tus documentos correctamente.
+
+Recuerda que tenemos una cita este lunes para arrancar tu capacitación, puedes consultar los detalles completos de tu proceso en tu correo 📧
+
+¡Estamos muy contentos de tenerte con nosotros! 💪
+
+Saludos,
+*Tu Equipo ExpertCell*`;
+
+    let telefono = (selectedAspirante.telefono || '').replace(/\D/g, '');
+    if (telefono.length === 10) telefono = '52' + telefono;
+    
+    const urlWhatsApp = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+    window.open(urlWhatsApp, '_blank');
 }
     </script>
 </body>
