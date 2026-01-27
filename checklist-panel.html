@@ -433,28 +433,37 @@ async function confirmarRecordatorio() {
     btn.disabled = true; 
     btn.innerHTML = '<span class="loading"></span>';
     
+    // Guardar datos antes de cerrar modal
+    const datos = { ...recordatorioData };
+    const tieneEmail = datos.email && datos.email.trim() !== '';
+    
     // Generar mensaje de WhatsApp
-    const primerNombre = recordatorioData.nombre.split(' ')[0];
-    const docsLista = recordatorioData.docsPendientes.map(d => '📄 ' + d).join('\n');
-    const mensaje = `¡Hola ${primerNombre}! 👋\n\nTe recordamos que para continuar con tu proceso de ingreso a *ExpertCell* necesitamos los siguientes documentos:\n\n${docsLista}\n\nPor favor tráelos a la brevedad a nuestra sucursal *${recordatorioData.sucursal}*.\n\n¡Gracias! 🙌`;
+    const primerNombre = datos.nombre.split(' ')[0];
+    const docsLista = datos.docsPendientes.map(d => '📄 ' + d).join('\n');
+    const mensaje = `¡Hola ${primerNombre}! 👋\n\nTe recordamos que para continuar con tu proceso de ingreso a *ExpertCell* necesitamos los siguientes documentos:\n\n${docsLista}\n\nPor favor tráelos a la brevedad a nuestra sucursal *${datos.sucursal}*.\n\n¡Gracias! 🙌`;
     
     // Formatear teléfono (agregar 52 si no lo tiene)
-    let telefono = recordatorioData.telefono.replace(/\D/g, '');
+    let telefono = (datos.telefono || '').replace(/\D/g, '');
     if (telefono.length === 10) telefono = '52' + telefono;
     
     const urlWhatsApp = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
     
-    // Intentar enviar email también
-    try {
-        const params = new URLSearchParams({ action: 'enviarRecordatorio', nombre: recordatorioData.nombre, telefono: recordatorioData.telefono, email: recordatorioData.email, docsPendientes: recordatorioData.docsPendientes.join(','), sucursal: recordatorioData.sucursal });
-        await fetch(GOOGLE_SCRIPT_URL + '?' + params.toString());
-    } catch (e) { console.log('Email no enviado:', e); }
+    // Intentar enviar email también (solo si hay email)
+    if (tieneEmail) {
+        try {
+            const params = new URLSearchParams({ action: 'enviarRecordatorio', nombre: datos.nombre, telefono: datos.telefono, email: datos.email, docsPendientes: datos.docsPendientes.join(','), sucursal: datos.sucursal });
+            await fetch(GOOGLE_SCRIPT_URL + '?' + params.toString());
+        } catch (e) { console.log('Email no enviado:', e); }
+    }
     
+    // Cerrar modal y abrir WhatsApp
     cerrarModal();
-    window.open(urlWhatsApp, '_blank');
-    alert(recordatorioData.email ? '✅ Recordatorio enviado por email y WhatsApp abierto' : '✅ WhatsApp abierto (sin email registrado)');
     btn.disabled = false; 
     btn.innerHTML = '📩 Enviar';
+    
+    // Abrir WhatsApp
+    window.open(urlWhatsApp, '_blank');
+    alert(tieneEmail ? '✅ Recordatorio enviado por email y WhatsApp abierto' : '✅ WhatsApp abierto (sin email registrado)');
 }
 
 function seleccionarAspirante(asp) {
