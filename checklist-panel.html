@@ -702,31 +702,42 @@ async function guardarChecklist() {
 
 function mostrarConfirmacion(result) {
     const container = document.getElementById('confirmacion-content');
+    const nombreCompleto = selectedAspirante.nombre;
+    const primerNombre = nombreCompleto.split(' ')[0];
+    let telefono = (selectedAspirante.telefono || '').replace(/\D/g, '');
+    if (telefono.length === 10) telefono = '52' + telefono;
+    
     if (result.estadoChecklist === 'Completo') {
-        const primerNombre = selectedAspirante.nombre.split(' ')[0];
         container.innerHTML = `
             <div class="confirmation-icon success">✅</div>
             <h2>¡Checklist Completo!</h2>
-            <p><strong>${selectedAspirante.nombre}</strong></p>
+            <p><strong>${nombreCompleto}</strong></p>
             <p>Todos los documentos obligatorios fueron registrados.</p>
             ${result.felicitacionEnviada ? '<p style="color: var(--success); font-weight: 600;">✉️ Email de felicitación enviado</p>' : '<p style="color: var(--warning);">⚠️ No se envió email (ya fue enviado anteriormente o sin correo)</p>'}
             
-            <div style="background: var(--success-light); border: 2px solid var(--success); border-radius: 12px; padding: 16px; margin: 20px 0;">
-                <p style="font-weight: 600; color: var(--success); margin-bottom: 12px;">🎉 Enviar felicitación por WhatsApp</p>
-                <button class="btn" style="background: #25D366; color: white; width: 100%;" onclick="enviarFelicitacionWhatsApp()">
-                    📱 Abrir WhatsApp
-                </button>
+            <div style="background: #E8F5E9; border: 2px solid #25D366; border-radius: 12px; padding: 20px; margin: 20px 0; text-align: center;">
+                <p style="font-weight: 600; color: #1B5E20; margin-bottom: 12px; font-size: 16px;">🎉 ¡Felicita al aspirante por WhatsApp!</p>
+                <a href="https://wa.me/${telefono}?text=${encodeURIComponent(`¡Felicidades ${primerNombre}! 🎉🎊
+
+¡Bienvenido(a) al equipo de *ExpertCell*! Hemos recibido todos tus documentos correctamente.
+
+Recuerda que tenemos una cita este lunes para arrancar tu capacitación, puedes consultar los detalles completos de tu proceso en tu correo 📧
+
+¡Estamos muy contentos de tenerte con nosotros! 💪
+
+Saludos,
+*Tu Equipo ExpertCell*`)}" target="_blank" class="btn" style="background: #25D366; color: white; width: 100%; text-decoration: none; display: block; padding: 14px;">
+                    📱 Enviar Felicitación por WhatsApp
+                </a>
             </div>
             
-            <div class="btn-row" style="margin-top: 20px;">
-                <button class="btn btn-primary" onclick="volverALista()">← Volver a la lista</button>
-            </div>`;
+            <button class="btn btn-secondary" style="width: 100%;" onclick="volverALista()">← Volver a la lista</button>`;
     } else {
         const docsList = result.docsPendientes && result.docsPendientes.length > 0 ? result.docsPendientes.map(d => `<li>${d}</li>`).join('') : '<li>Ninguno especificado</li>';
         container.innerHTML = `
             <div class="confirmation-icon pending">⏳</div>
             <h2>Checklist Guardado</h2>
-            <p><strong>${selectedAspirante.nombre}</strong></p>
+            <p><strong>${nombreCompleto}</strong></p>
             <p>El checklist quedó en estado <strong>Pendiente</strong></p>
             <div class="docs-list"><h4>📋 Documentos faltantes:</h4><ul>${docsList}</ul></div>
             <p style="font-size: 13px; color: var(--gray-500);">El email de felicitación se enviará cuando todos los documentos obligatorios estén completos.</p>
