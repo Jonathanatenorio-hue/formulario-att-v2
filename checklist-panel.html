@@ -410,12 +410,41 @@ function renderizarLista(containerId, lista) {
         const statusClass = asp.estadoChecklist === 'Completo' ? 'status-completo' : asp.estadoChecklist === 'Pendiente' ? 'status-pendiente' : 'status-nuevo';
         const statusText = asp.estadoChecklist === 'Completo' ? 'Completo' : asp.estadoChecklist === 'Pendiente' ? 'Pendiente' : 'Sin iniciar';
         const badgeClass = asp.estadoChecklist === 'Completo' ? 'completo' : asp.estadoChecklist === 'Pendiente' ? 'pendiente' : 'nuevo';
+        
+        // Botón según estado
+        let botonAccion = '';
+        if (asp.estadoChecklist === 'Completo') {
+            botonAccion = `<button class="btn-recordatorio" style="background: #25D366;" onclick="event.stopPropagation(); enviarFelicitacion('${asp.nombre}', '${asp.telefono}')">🎉 Felicitar</button>`;
+        } else if (asp.estadoChecklist === 'Pendiente' && asp.docsPendientes) {
+            botonAccion = `<button class="btn-recordatorio" onclick="event.stopPropagation(); abrirModalRecordatorio('${asp.nombre}', '${asp.telefono}', '${asp.email || ''}', '${asp.docsPendientes}')">📩 Recordatorio</button>`;
+        }
+        
         const div = document.createElement('div'); 
         div.className = 'aspirante-card ' + statusClass;
-        div.innerHTML = `<div class="aspirante-avatar">${iniciales}</div><div class="aspirante-info"><h4>${asp.nombre}</h4><p>${asp.puntaje}/80 pts • ${asp.resultado}</p>${asp.docsPendientes ? `<div class="docs-pendientes">📋 Falta: ${asp.docsPendientes}</div>` : ''}</div><div class="aspirante-status"><span class="status-badge ${badgeClass}">${statusText}</span>${asp.estadoChecklist === 'Pendiente' && asp.docsPendientes ? `<button class="btn-recordatorio" onclick="event.stopPropagation(); abrirModalRecordatorio('${asp.nombre}', '${asp.telefono}', '${asp.email || ''}', '${asp.docsPendientes}')">📩 Recordatorio</button>` : ''}</div>`;
+        div.innerHTML = `<div class="aspirante-avatar">${iniciales}</div><div class="aspirante-info"><h4>${asp.nombre}</h4><p>${asp.puntaje}/80 pts • ${asp.resultado}</p>${asp.docsPendientes ? `<div class="docs-pendientes">📋 Falta: ${asp.docsPendientes}</div>` : ''}</div><div class="aspirante-status"><span class="status-badge ${badgeClass}">${statusText}</span>${botonAccion}</div>`;
         div.onclick = () => seleccionarAspirante(asp); 
         container.appendChild(div);
     });
+}
+
+function enviarFelicitacion(nombre, telefono) {
+    const primerNombre = nombre.split(' ')[0];
+    const mensaje = `¡Felicidades ${primerNombre}! 🎉🎊
+
+¡Bienvenido(a) al equipo de *ExpertCell*! Hemos recibido todos tus documentos correctamente.
+
+Recuerda que tenemos una cita este lunes para arrancar tu capacitación, puedes consultar los detalles completos de tu proceso en tu correo 📧
+
+¡Estamos muy contentos de tenerte con nosotros! 💪
+
+Saludos,
+*Tu Equipo ExpertCell*`;
+
+    let tel = (telefono || '').replace(/\D/g, '');
+    if (tel.length === 10) tel = '52' + tel;
+    
+    const urlWhatsApp = `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`;
+    window.open(urlWhatsApp, '_blank');
 }
 
 function abrirModalRecordatorio(nombre, telefono, email, docsPendientes) { 
