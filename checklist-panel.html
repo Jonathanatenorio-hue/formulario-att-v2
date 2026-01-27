@@ -276,11 +276,16 @@ async function onSucursalChange() {
     const reclutadorGroup = document.getElementById('reclutador-group');
     const selectReclutador = document.getElementById('select-reclutador');
     
+    // Resetear fecha y ocultar listas
+    selectedFecha = '';
+    selectFecha.value = '';
+    document.getElementById('aspirantes-card').style.display = 'none';
+    document.getElementById('stats-bar').style.display = 'none';
+    document.getElementById('btn-actualizar').style.display = 'none';
+    
     if (!selectedSucursal) { 
         selectFecha.disabled = true; 
         selectFecha.innerHTML = '<option value="">Primero selecciona sucursal...</option>'; 
-        document.getElementById('aspirantes-card').style.display = 'none'; 
-        document.getElementById('stats-bar').style.display = 'none';
         reclutadorGroup.style.display = 'none';
         selectedReclutador = '';
         return; 
@@ -295,16 +300,31 @@ async function onSucursalChange() {
         // Antequera tiene dos reclutadores, mostrar selector
         reclutadorGroup.style.display = 'block';
         selectReclutador.innerHTML = '<option value="">Todos los reclutadores...</option><option value="Yessica Huerta">Yessica Huerta</option><option value="Jezabel">Jezabel Monterrosas</option>';
-        selectedReclutador = '';
+        selectedReclutador = ''; // Vacío = mostrar todos
     }
     
-    selectFecha.disabled = false; selectFecha.innerHTML = '<option value="">Cargando fechas...</option>';
+    // Cargar fechas
+    selectFecha.disabled = false; 
+    selectFecha.innerHTML = '<option value="">Cargando fechas...</option>';
+    
     try {
         const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getFechasPanel&sucursal=' + encodeURIComponent(selectedSucursal));
         const data = await r.json();
-        if (data.fechas && data.fechas.length > 0) { selectFecha.innerHTML = '<option value="">Selecciona fecha...</option>'; data.fechas.forEach(f => { const opt = document.createElement('option'); opt.value = f.fecha || f.valor; opt.textContent = f.fechaLegible || f.texto; selectFecha.appendChild(opt); }); }
-        else { selectFecha.innerHTML = '<option value="">No hay fechas disponibles</option>'; }
-    } catch (e) { console.error(e); selectFecha.innerHTML = '<option value="">Error al cargar</option>'; }
+        if (data.fechas && data.fechas.length > 0) { 
+            selectFecha.innerHTML = '<option value="">Selecciona fecha...</option>'; 
+            data.fechas.forEach(f => { 
+                const opt = document.createElement('option'); 
+                opt.value = f.fecha || f.valor; 
+                opt.textContent = f.fechaLegible || f.texto; 
+                selectFecha.appendChild(opt); 
+            }); 
+        } else { 
+            selectFecha.innerHTML = '<option value="">No hay fechas disponibles</option>'; 
+        }
+    } catch (e) { 
+        console.error(e); 
+        selectFecha.innerHTML = '<option value="">Error al cargar</option>'; 
+    }
 }
 
 async function onFechaChange() { 
@@ -312,11 +332,16 @@ async function onFechaChange() {
     if (selectedFecha) { 
         cargarAspirantesAprobados(); 
         document.getElementById('btn-actualizar').style.display = 'block';
-    } 
+    } else {
+        document.getElementById('aspirantes-card').style.display = 'none';
+        document.getElementById('stats-bar').style.display = 'none';
+        document.getElementById('btn-actualizar').style.display = 'none';
+    }
 }
 
 function onReclutadorChange() {
     selectedReclutador = document.getElementById('select-reclutador').value;
+    // Solo recargar si ya hay una fecha seleccionada
     if (selectedFecha) {
         cargarAspirantesAprobados();
     }
@@ -329,8 +354,11 @@ function actualizarLista() {
 }
 
 async function cargarAspirantesAprobados() {
-    document.getElementById('aspirantes-card').style.display = 'block'; document.getElementById('stats-bar').style.display = 'flex';
-    document.getElementById('lista-pendientes').innerHTML = '<p style="text-align:center;padding:20px;"><span class="loading loading-dark"></span></p>'; document.getElementById('lista-completos').innerHTML = '';
+    document.getElementById('aspirantes-card').style.display = 'block'; 
+    document.getElementById('stats-bar').style.display = 'flex';
+    document.getElementById('lista-pendientes').innerHTML = '<p style="text-align:center;padding:20px;"><span class="loading loading-dark"></span></p>'; 
+    document.getElementById('lista-completos').innerHTML = '';
+    
     try {
         const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getAprobadosParaChecklist&fecha=' + encodeURIComponent(selectedFecha) + '&sucursal=' + encodeURIComponent(selectedSucursal));
         const data = await r.json(); 
@@ -340,7 +368,12 @@ async function cargarAspirantesAprobados() {
         if (selectedSucursal === 'Edificio Inbursa Antequera' && selectedReclutador) {
             console.log('Filtrando por reclutador:', selectedReclutador);
             console.log('Aspirantes antes del filtro:', JSON.stringify(aprobados.map(a => ({ nombre: a.nombre, reclutador: a.reclutador }))));
-            aprobados = aprobados.filter(a => a.reclutador && a.reclutador.toLowerCase().includes(selectedReclutador.toLowerCase()));
+            aprobados = aprobados.filter(a => {
+                if (!a.reclutador) return false;
+                const reclutadorLower = a.reclutador.toLowerCase();
+                const filtroLower = selectedReclutador.toLowerCase();
+                return reclutadorLower.includes(filtroLower) || filtroLower.includes(reclutadorLower);
+            });
             console.log('Aspirantes después del filtro:', aprobados.length);
         }
         
@@ -348,37 +381,57 @@ async function cargarAspirantesAprobados() {
         const completos = aspirantesList.filter(a => a.estadoChecklist === 'Completo');
         const pendientes = aspirantesList.filter(a => a.estadoChecklist === 'Pendiente');
         const sinIniciar = aspirantesList.filter(a => a.estadoChecklist === 'Sin iniciar');
+        
         document.getElementById('stat-completos').textContent = completos.length;
         document.getElementById('stat-pendientes').textContent = pendientes.length;
         document.getElementById('stat-sin-iniciar').textContent = sinIniciar.length;
         document.getElementById('tab-pendientes-count').textContent = pendientes.length + sinIniciar.length;
         document.getElementById('tab-completos-count').textContent = completos.length;
+        
         renderizarLista('lista-pendientes', [...pendientes, ...sinIniciar]);
         renderizarLista('lista-completos', completos);
-    } catch (e) { console.error(e); document.getElementById('lista-pendientes').innerHTML = '<p style="text-align:center;color:var(--danger);">Error al cargar</p>'; }
+    } catch (e) { 
+        console.error(e); 
+        document.getElementById('lista-pendientes').innerHTML = '<p style="text-align:center;color:var(--danger);">Error al cargar</p>'; 
+    }
 }
 
 function renderizarLista(containerId, lista) {
     const container = document.getElementById(containerId);
-    if (lista.length === 0) { container.innerHTML = `<div class="empty-state"><div class="icon">${containerId === 'lista-completos' ? '📭' : '🎉'}</div><h3>${containerId === 'lista-completos' ? 'Sin completos aún' : '¡Todos listos!'}</h3><p>${containerId === 'lista-completos' ? 'Los aspirantes completados aparecerán aquí' : 'No hay aspirantes pendientes'}</p></div>`; return; }
+    if (lista.length === 0) { 
+        container.innerHTML = `<div class="empty-state"><div class="icon">${containerId === 'lista-completos' ? '📭' : '🎉'}</div><h3>${containerId === 'lista-completos' ? 'Sin completos aún' : '¡Todos listos!'}</h3><p>${containerId === 'lista-completos' ? 'Los aspirantes completados aparecerán aquí' : 'No hay aspirantes pendientes'}</p></div>`; 
+        return; 
+    }
     container.innerHTML = '';
     lista.forEach(asp => {
         const iniciales = asp.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
         const statusClass = asp.estadoChecklist === 'Completo' ? 'status-completo' : asp.estadoChecklist === 'Pendiente' ? 'status-pendiente' : 'status-nuevo';
         const statusText = asp.estadoChecklist === 'Completo' ? 'Completo' : asp.estadoChecklist === 'Pendiente' ? 'Pendiente' : 'Sin iniciar';
         const badgeClass = asp.estadoChecklist === 'Completo' ? 'completo' : asp.estadoChecklist === 'Pendiente' ? 'pendiente' : 'nuevo';
-        const div = document.createElement('div'); div.className = 'aspirante-card ' + statusClass;
+        const div = document.createElement('div'); 
+        div.className = 'aspirante-card ' + statusClass;
         div.innerHTML = `<div class="aspirante-avatar">${iniciales}</div><div class="aspirante-info"><h4>${asp.nombre}</h4><p>${asp.puntaje}/80 pts • ${asp.resultado}</p>${asp.docsPendientes ? `<div class="docs-pendientes">📋 Falta: ${asp.docsPendientes}</div>` : ''}</div><div class="aspirante-status"><span class="status-badge ${badgeClass}">${statusText}</span>${asp.estadoChecklist === 'Pendiente' && asp.docsPendientes ? `<button class="btn-recordatorio" onclick="event.stopPropagation(); abrirModalRecordatorio('${asp.nombre}', '${asp.telefono}', '${asp.email || ''}', '${asp.docsPendientes}')">📩 Recordatorio</button>` : ''}</div>`;
-        div.onclick = () => seleccionarAspirante(asp); container.appendChild(div);
+        div.onclick = () => seleccionarAspirante(asp); 
+        container.appendChild(div);
     });
 }
 
-function abrirModalRecordatorio(nombre, telefono, email, docsPendientes) { recordatorioData = { nombre, telefono, email, docsPendientes: docsPendientes.split(', '), sucursal: selectedSucursal }; document.getElementById('modal-mensaje').innerHTML = `¿Enviar recordatorio a <strong>${nombre}</strong> sobre los documentos pendientes?<br><br><small>📋 ${docsPendientes}</small>`; document.getElementById('modal-recordatorio').classList.add('active'); }
-function cerrarModal() { document.getElementById('modal-recordatorio').classList.remove('active'); recordatorioData = null; }
+function abrirModalRecordatorio(nombre, telefono, email, docsPendientes) { 
+    recordatorioData = { nombre, telefono, email, docsPendientes: docsPendientes.split(', '), sucursal: selectedSucursal }; 
+    document.getElementById('modal-mensaje').innerHTML = `¿Enviar recordatorio a <strong>${nombre}</strong> sobre los documentos pendientes?<br><br><small>📋 ${docsPendientes}</small>`; 
+    document.getElementById('modal-recordatorio').classList.add('active'); 
+}
+
+function cerrarModal() { 
+    document.getElementById('modal-recordatorio').classList.remove('active'); 
+    recordatorioData = null; 
+}
 
 async function confirmarRecordatorio() {
     if (!recordatorioData) return;
-    const btn = document.querySelector('#modal-recordatorio .btn-primary'); btn.disabled = true; btn.innerHTML = '<span class="loading"></span>';
+    const btn = document.querySelector('#modal-recordatorio .btn-primary'); 
+    btn.disabled = true; 
+    btn.innerHTML = '<span class="loading"></span>';
     
     // Generar mensaje de WhatsApp
     const primerNombre = recordatorioData.nombre.split(' ')[0];
@@ -400,7 +453,8 @@ async function confirmarRecordatorio() {
     cerrarModal();
     window.open(urlWhatsApp, '_blank');
     alert(recordatorioData.email ? '✅ Recordatorio enviado por email y WhatsApp abierto' : '✅ WhatsApp abierto (sin email registrado)');
-    btn.disabled = false; btn.innerHTML = '📩 Enviar';
+    btn.disabled = false; 
+    btn.innerHTML = '📩 Enviar';
 }
 
 function seleccionarAspirante(asp) {
@@ -461,17 +515,37 @@ function seleccionarAspirante(asp) {
     showSection('section-checklist');
 }
 
-function setDocStatus(doc, status) { checklistStatus[doc] = status; updateItemUI(doc, status); }
-
-function updateItemUI(doc, status) {
-    const item = document.getElementById('item-' + doc); if (!item) return;
-    item.classList.remove('checked', 'pending');
-    if (status === true) { item.classList.add('checked'); } else if (status === false) { item.classList.add('pending'); }
-    const buttons = item.querySelectorAll('.toggle-btn');
-    buttons.forEach(btn => { btn.classList.remove('active-yes', 'active-no', 'active-na'); if (status === true && btn.textContent.includes('Sí')) { btn.classList.add('active-yes'); } else if (status === false && btn.textContent.includes('No')) { btn.classList.add('active-no'); } else if (status === 'na' && btn.textContent.includes('N/A')) { btn.classList.add('active-na'); } });
+function setDocStatus(doc, status) { 
+    checklistStatus[doc] = status; 
+    updateItemUI(doc, status); 
 }
 
-function volverALista() { showSection('section-seleccion'); cargarAspirantesAprobados(); }
+function updateItemUI(doc, status) {
+    const item = document.getElementById('item-' + doc); 
+    if (!item) return;
+    item.classList.remove('checked', 'pending');
+    if (status === true) { 
+        item.classList.add('checked'); 
+    } else if (status === false) { 
+        item.classList.add('pending'); 
+    }
+    const buttons = item.querySelectorAll('.toggle-btn');
+    buttons.forEach(btn => { 
+        btn.classList.remove('active-yes', 'active-no', 'active-na'); 
+        if (status === true && btn.textContent.includes('Sí')) { 
+            btn.classList.add('active-yes'); 
+        } else if (status === false && btn.textContent.includes('No')) { 
+            btn.classList.add('active-no'); 
+        } else if (status === 'na' && btn.textContent.includes('N/A')) { 
+            btn.classList.add('active-na'); 
+        } 
+    });
+}
+
+function volverALista() { 
+    showSection('section-seleccion'); 
+    cargarAspirantesAprobados(); 
+}
 
 async function guardarChecklist() {
     // Validaciones de contacto de emergencia
@@ -522,10 +596,11 @@ async function guardarChecklist() {
     // Validar reclutador - usar el del aspirante si no se seleccionó uno específico
     let reclutadorFinal = selectedReclutador;
     if (selectedSucursal === 'Edificio Inbursa Antequera') {
-        const reclutadorSelect = document.getElementById('select-reclutador').value;
+        const selectReclutadorEl = document.getElementById('select-reclutador');
+        const reclutadorSelect = selectReclutadorEl ? selectReclutadorEl.value : '';
         if (reclutadorSelect) {
             reclutadorFinal = reclutadorSelect;
-        } else if (selectedAspirante.reclutador) {
+        } else if (selectedAspirante && selectedAspirante.reclutador) {
             // Usar el reclutador que ya tiene el aspirante desde Entrevistas Telefónicas
             reclutadorFinal = selectedAspirante.reclutador;
         } else {
@@ -535,8 +610,39 @@ async function guardarChecklist() {
     }
     // Para JV ya está asignado automáticamente como 'Karla Flores'
     
-    const btn = document.getElementById('btn-guardar'); btn.disabled = true; btn.innerHTML = '<span class="loading"></span> Guardando...';
-    const data = { tipo: 'checklist_panel', reclutador: reclutadorFinal, sucursal: selectedSucursal, fecha: selectedFecha, aspirante_nombre: selectedAspirante.nombre, aspirante_telefono: selectedAspirante.telefono, aspirante_email: selectedAspirante.email || '', ine: checklistStatus.ine, domicilio: checklistStatus.domicilio, curp: checklistStatus.curp, rfc: checklistStatus.rfc, csf: checklistStatus.csf, acta: checklistStatus.acta, estudios: checklistStatus.estudios, laboral: checklistStatus.laboral, banco: checklistStatus.banco, nss: checklistStatus.nss, infonavit: checklistStatus.infonavit, fonacot: checklistStatus.fonacot, psico: checklistStatus.psico, emergencia_nombre: document.getElementById('emergencia-nombre').value, emergencia_parentesco: document.getElementById('emergencia-parentesco').value, emergencia_telefono: document.getElementById('emergencia-telefono').value, emergencia_fecha_nac: document.getElementById('emergencia-fecha-nac').value, observaciones: document.getElementById('observaciones').value, timestamp: new Date().toLocaleString('es-MX'), enviarFelicitacion: true };
+    const btn = document.getElementById('btn-guardar'); 
+    btn.disabled = true; 
+    btn.innerHTML = '<span class="loading"></span> Guardando...';
+    
+    const data = { 
+        tipo: 'checklist_panel', 
+        reclutador: reclutadorFinal, 
+        sucursal: selectedSucursal, 
+        fecha: selectedFecha, 
+        aspirante_nombre: selectedAspirante.nombre, 
+        aspirante_telefono: selectedAspirante.telefono, 
+        aspirante_email: selectedAspirante.email || '', 
+        ine: checklistStatus.ine, 
+        domicilio: checklistStatus.domicilio, 
+        curp: checklistStatus.curp, 
+        rfc: checklistStatus.rfc, 
+        csf: checklistStatus.csf, 
+        acta: checklistStatus.acta, 
+        estudios: checklistStatus.estudios, 
+        laboral: checklistStatus.laboral, 
+        banco: checklistStatus.banco, 
+        nss: checklistStatus.nss, 
+        infonavit: checklistStatus.infonavit, 
+        fonacot: checklistStatus.fonacot, 
+        psico: checklistStatus.psico, 
+        emergencia_nombre: document.getElementById('emergencia-nombre').value, 
+        emergencia_parentesco: document.getElementById('emergencia-parentesco').value, 
+        emergencia_telefono: document.getElementById('emergencia-telefono').value, 
+        emergencia_fecha_nac: document.getElementById('emergencia-fecha-nac').value, 
+        observaciones: document.getElementById('observaciones').value, 
+        timestamp: new Date().toLocaleString('es-MX'), 
+        enviarFelicitacion: true 
+    };
     
     console.log('Datos a enviar:', JSON.stringify(data, null, 2));
     console.log('checklistStatus:', checklistStatus);
@@ -547,8 +653,14 @@ async function guardarChecklist() {
         console.log('Respuesta del servidor:', result);
         mostrarConfirmacion(result); 
     }
-    catch (e) { console.error('Error:', e); alert('Error al guardar: ' + e.message); }
-    finally { btn.disabled = false; btn.innerHTML = '💾 Guardar'; }
+    catch (e) { 
+        console.error('Error:', e); 
+        alert('Error al guardar: ' + e.message); 
+    }
+    finally { 
+        btn.disabled = false; 
+        btn.innerHTML = '💾 Guardar'; 
+    }
 }
 
 function mostrarConfirmacion(result) {
