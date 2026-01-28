@@ -983,19 +983,27 @@ function cerrarSesion() {
         // CALENDARIO DE CITAS
         // ==========================================
         async function cargarCitasCalendario() {
+            const sucursal = document.getElementById('filtro-sucursal').value;
             const reclutadora = document.getElementById('filtro-reclutadora').value;
             const periodo = document.getElementById('filtro-periodo').value;
             
-            if (!reclutadora) {
-                document.getElementById('calendario-grid').innerHTML = `<div class="empty-state"><div class="icon">👆</div><h3>Selecciona una reclutadora</h3><p>Para ver las citas pendientes</p></div>`;
-                document.getElementById('stats-cards').style.display = 'none';
-                return;
+            // Si es reclutadora y no tiene valor, asignar su reclutadora
+            if (usuarioActual && usuarioActual.rol === 'reclutadora' && !reclutadora) {
+                document.getElementById('filtro-reclutadora').value = usuarioActual.reclutadora;
             }
+            
+            const reclutadoraFinal = document.getElementById('filtro-reclutadora').value;
             
             document.getElementById('calendario-grid').innerHTML = `<div class="loading-spinner"><div class="spinner"></div><p>Cargando citas...</p></div>`;
             
             try {
-                const url = `${GOOGLE_SCRIPT_URL}?action=getCitasCalendario&reclutadora=${encodeURIComponent(reclutadora)}&periodo=${periodo}`;
+                let url = `${GOOGLE_SCRIPT_URL}?action=getCitasCalendario&periodo=${periodo}`;
+                if (reclutadoraFinal) {
+                    url += `&reclutadora=${encodeURIComponent(reclutadoraFinal)}`;
+                }
+                if (sucursal) {
+                    url += `&sucursal=${encodeURIComponent(sucursal)}`;
+                }
                 const response = await fetch(url);
                 const data = await response.json();
                 
@@ -1010,7 +1018,6 @@ function cerrarSesion() {
                 document.getElementById('calendario-grid').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><h3>Error al cargar</h3><p>Intenta de nuevo</p></div>`;
             }
         }
-
         function renderizarCalendario(citas, stats) {
             document.getElementById('stats-cards').style.display = 'grid';
             document.getElementById('stat-hoy').textContent = stats?.hoy || 0;
@@ -1872,6 +1879,9 @@ function cerrarSesion() {
             };
             try { await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); } catch (e) {}
         }
+        
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', inicializarLogin);
     </script>
 </body>
 </html>
