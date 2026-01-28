@@ -1102,8 +1102,14 @@
             document.getElementById('result-panel').style.display = 'block';
             document.getElementById('btn-calcular').style.display = 'none';
             
-            if (total >= 20) { document.getElementById('agenda-section').style.display = 'block'; cargarViernes(); }
-            else { document.getElementById('rejected-section').style.display = 'block'; }
+            if (total >= 20) { 
+                document.getElementById('agenda-section').style.display = 'block'; 
+                cargarViernes(); 
+            } else { 
+                document.getElementById('rejected-section').style.display = 'block'; 
+                // Guardar automáticamente cuando no aprueba
+                guardarRechazo();
+            }
             
             document.getElementById('result-panel').scrollIntoView({ behavior: 'smooth' });
         }
