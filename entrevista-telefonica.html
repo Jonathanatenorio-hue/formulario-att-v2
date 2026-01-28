@@ -301,12 +301,7 @@
                             <option value="Karla Flores">Karla Flores</option>
                             <option value="Yessica Huerta">Yessica Huerta</option>
                             <option value="Jezabel Monterrosas">Jezabel Monterrosas</option>
-                        </select>
-                        <select id="filtro-fecha-historial" onchange="filtrarHistorial()">
-                            <option value="todos">Todas las fechas</option>
-                            <option value="hoy">Hoy</option>
-                            <option value="semana">Esta semana</option>
-                            <option value="mes">Este mes</option>
+                            <option value="TODAS">📊 Todas las reclutadoras</option>
                         </select>
                         <select id="filtro-resultado-historial" onchange="filtrarHistorial()">
                             <option value="todos">Todos los resultados</option>
@@ -314,6 +309,22 @@
                             <option value="NO PASA">❌ Rechazados</option>
                             <option value="RESERVAS">⚠️ Con Reservas</option>
                         </select>
+                    </div>
+                </div>
+                
+                <!-- Barra de búsqueda y filtros de fecha -->
+                <div class="historial-busqueda" style="margin-bottom: 20px;">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <input type="text" id="busqueda-historial" placeholder="🔍 Buscar por nombre o teléfono..." onkeyup="filtrarHistorial()" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <label style="font-size: 13px; color: #64748b;">Desde:</label>
+                            <input type="date" id="fecha-desde-historial" onchange="filtrarHistorial()" style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
+                            <label style="font-size: 13px; color: #64748b;">Hasta:</label>
+                            <input type="date" id="fecha-hasta-historial" onchange="filtrarHistorial()" style="padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 13px;">
+                            <button onclick="limpiarFiltrosHistorial()" style="padding: 10px 15px; border: none; background: #f1f5f9; border-radius: 8px; cursor: pointer; font-size: 13px;">🗑️ Limpiar</button>
+                        </div>
                     </div>
                 </div>
                 
@@ -828,12 +839,19 @@
             }
         }
 
+        function limpiarFiltrosHistorial() {
+            document.getElementById('busqueda-historial').value = '';
+            document.getElementById('fecha-desde-historial').value = '';
+            document.getElementById('fecha-hasta-historial').value = '';
+            document.getElementById('filtro-resultado-historial').value = 'todos';
+            filtrarHistorial();
+        }
+
         function filtrarHistorial() {
-            const filtroFecha = document.getElementById('filtro-fecha-historial').value;
             const filtroResultado = document.getElementById('filtro-resultado-historial').value;
-            
-            const hoy = new Date();
-            hoy.setHours(0, 0, 0, 0);
+            const busqueda = document.getElementById('busqueda-historial').value.toLowerCase().trim();
+            const fechaDesde = document.getElementById('fecha-desde-historial').value;
+            const fechaHasta = document.getElementById('fecha-hasta-historial').value;
             
             const entrevistasFiltradas = historialCompleto.filter(ent => {
                 // Filtrar por resultado
@@ -841,21 +859,28 @@
                     return false;
                 }
                 
-                // Filtrar por fecha
-                if (filtroFecha !== 'todos') {
+                // Filtrar por búsqueda (nombre o teléfono)
+                if (busqueda) {
+                    const nombreMatch = ent.nombre.toLowerCase().includes(busqueda);
+                    const telefonoMatch = ent.telefono.includes(busqueda);
+                    if (!nombreMatch && !telefonoMatch) return false;
+                }
+                
+                // Filtrar por rango de fechas
+                if (fechaDesde || fechaHasta) {
                     const partesFecha = ent.fecha.split('/');
+                    // Convertir DD/MM/YYYY a Date
                     const fechaEnt = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
                     
-                    if (filtroFecha === 'hoy') {
-                        if (fechaEnt.toDateString() !== hoy.toDateString()) return false;
-                    } else if (filtroFecha === 'semana') {
-                        const hace7Dias = new Date(hoy);
-                        hace7Dias.setDate(hace7Dias.getDate() - 7);
-                        if (fechaEnt < hace7Dias) return false;
-                    } else if (filtroFecha === 'mes') {
-                        const hace30Dias = new Date(hoy);
-                        hace30Dias.setDate(hace30Dias.getDate() - 30);
-                        if (fechaEnt < hace30Dias) return false;
+                    if (fechaDesde) {
+                        const desde = new Date(fechaDesde);
+                        if (fechaEnt < desde) return false;
+                    }
+                    
+                    if (fechaHasta) {
+                        const hasta = new Date(fechaHasta);
+                        hasta.setHours(23, 59, 59, 999);
+                        if (fechaEnt > hasta) return false;
                     }
                 }
                 
