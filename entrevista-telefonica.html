@@ -108,6 +108,37 @@
         .detalle-pregunta .pregunta-texto { font-size: 12px; color: #666; font-style: italic; margin-bottom: 8px; background: #e3f2fd; padding: 8px; border-radius: 4px; }
         .detalle-pregunta .pregunta-respuesta { font-size: 13px; color: #333; }
         .detalle-pregunta .pregunta-puntaje { font-size: 12px; color: #666; margin-top: 5px; }
+        
+        /* Estilos Listado Panel */
+        .panel-card { background: white; border-radius: 12px; margin-bottom: 15px; overflow: hidden; border: 2px solid #e2e8f0; }
+        .panel-card-header { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; }
+        .panel-card-header h3 { margin: 0; font-size: 16px; color: #1e293b; }
+        .panel-card-header .hora { background: #0066CC; color: white; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+        .panel-card-body { padding: 20px; }
+        .panel-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 15px; }
+        .panel-info-item { font-size: 13px; }
+        .panel-info-item strong { color: #64748b; display: block; font-size: 11px; margin-bottom: 2px; }
+        .panel-puntajes { display: flex; gap: 10px; margin: 15px 0; }
+        .panel-puntaje { background: #f1f5f9; padding: 10px 15px; border-radius: 8px; text-align: center; flex: 1; }
+        .panel-puntaje .score { font-size: 20px; font-weight: 700; color: #1e293b; }
+        .panel-puntaje .label { font-size: 11px; color: #64748b; }
+        .panel-puntaje.pasa { background: #dcfce7; }
+        .panel-puntaje.pasa .score { color: #166534; }
+        .panel-puntaje.reservas { background: #fef3c7; }
+        .panel-puntaje.reservas .score { color: #92400e; }
+        .panel-estado { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .panel-estado.confirmado { background: #dcfce7; color: #166534; }
+        .panel-estado.asignado { background: #fef3c7; color: #92400e; }
+        .panel-analisis { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin-top: 15px; border-radius: 0 8px 8px 0; }
+        .panel-analisis h4 { margin: 0 0 8px; color: #92400e; font-size: 13px; }
+        .panel-analisis p { margin: 0; font-size: 13px; color: #1e293b; line-height: 1.5; }
+        .panel-respuestas { background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .panel-respuestas h4 { margin: 0 0 12px; color: #1e293b; font-size: 14px; }
+        .panel-respuesta-item { background: white; padding: 10px; border-radius: 6px; margin-bottom: 8px; }
+        .panel-respuesta-item .q-titulo { font-size: 11px; color: #0066CC; font-weight: 600; margin-bottom: 4px; }
+        .panel-respuesta-item .q-respuesta { font-size: 13px; color: #333; }
+        .panel-toggle-respuestas { background: none; border: none; color: #0066CC; cursor: pointer; font-size: 13px; padding: 0; margin-top: 10px; }
+        .panel-toggle-respuestas:hover { text-decoration: underline; }
 
         .scoring-guide { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 2px solid #4CAF50; }
         .scoring-guide h3 { color: #2e7d32; margin-bottom: 15px; font-size: 16px; text-align: center; }
@@ -245,6 +276,9 @@
                 </button>
                 <button class="nav-tab" onclick="cambiarTab('historial')">
                     📋 Historial
+                </button>
+                <button class="nav-tab" onclick="cambiarTab('listado-panel')">
+                    📊 Listado Panel
                 </button>
             </div>
             
@@ -596,6 +630,59 @@
                     <button class="btn btn-whatsapp" onclick="enviarWhatsAppAprobado()">💬 WhatsApp</button>
                     <button class="btn btn-primary" onclick="enviarEmailAprobado()" style="margin-top:10px;">📧 Email</button>
                     <button class="btn" onclick="nuevaEvaluacion()" style="margin-top:15px; background:#666; color:white;">🔄 Nueva Evaluación</button>
+                </div>
+            </div>
+            <!-- Tab: Listado Panel -->
+            <div class="tab-content" id="tab-listado-panel">
+                <div class="calendario-header">
+                    <h2>📊 Listado Entrevistas Panel</h2>
+                    <div class="calendario-filters">
+                        <select id="filtro-viernes-panel" onchange="cargarListadoPanel()">
+                            <option value="">Selecciona un viernes...</option>
+                        </select>
+                        <select id="filtro-sucursal-panel" onchange="cargarListadoPanel()">
+                            <option value="TODAS">Todas las sucursales</option>
+                            <option value="Torre JV Juárez">Torre JV Juárez</option>
+                            <option value="Edificio Inbursa Antequera">Edificio Inbursa Antequera</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Stats del listado -->
+                <div class="stats-cards" id="stats-panel" style="display: none;">
+                    <div class="stat-card today">
+                        <div class="number" id="stat-total-panel">0</div>
+                        <div class="label">📋 Total Candidatos</div>
+                    </div>
+                    <div class="stat-card" style="border-color: #4CAF50; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);">
+                        <div class="number" id="stat-confirmados-panel">0</div>
+                        <div class="label">✅ Confirmados</div>
+                    </div>
+                    <div class="stat-card pending">
+                        <div class="number" id="stat-pendientes-panel">0</div>
+                        <div class="label">⏳ Pendientes</div>
+                    </div>
+                </div>
+                
+                <!-- Botones de acción -->
+                <div id="acciones-panel" style="display: none; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="enviarListadoCorreo()" style="flex: 1; min-width: 200px;">
+                            📧 Enviar por Correo
+                        </button>
+                        <button class="btn" onclick="generarPDFListado()" style="flex: 1; min-width: 200px; background: #666; color: white;">
+                            📄 Ver Vista Previa
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Grid del listado -->
+                <div id="listado-panel-grid">
+                    <div class="empty-state">
+                        <div class="icon">👆</div>
+                        <h3>Selecciona un viernes</h3>
+                        <p>Para ver los candidatos agendados para entrevista panel</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1009,6 +1096,304 @@
             // Scroll al inicio
             document.getElementById('section-candidato').scrollIntoView({ behavior: 'smooth' });
         }
+
+        // ==========================================
+        // LISTADO PANEL
+        // ==========================================
+        let listadoPanelData = [];
+        
+        async function cargarViernesDisponibles() {
+            try {
+                const url = `${GOOGLE_SCRIPT_URL}?action=getViernesDisponibles`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const select = document.getElementById('filtro-viernes-panel');
+                    select.innerHTML = '<option value="">Selecciona un viernes...</option>';
+                    data.viernes.forEach(v => {
+                        select.innerHTML += `<option value="${v.fecha}">${v.fechaLegible}</option>`;
+                    });
+                }
+            } catch (error) {
+                console.error('Error cargando viernes:', error);
+            }
+        }
+        
+        async function cargarListadoPanel() {
+            const fecha = document.getElementById('filtro-viernes-panel').value;
+            const sucursal = document.getElementById('filtro-sucursal-panel').value;
+            
+            if (!fecha) {
+                document.getElementById('listado-panel-grid').innerHTML = `<div class="empty-state"><div class="icon">👆</div><h3>Selecciona un viernes</h3><p>Para ver los candidatos agendados</p></div>`;
+                document.getElementById('stats-panel').style.display = 'none';
+                document.getElementById('acciones-panel').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('listado-panel-grid').innerHTML = `<div class="loading-spinner"><div class="spinner"></div><p>Cargando listado...</p></div>`;
+            
+            try {
+                const url = `${GOOGLE_SCRIPT_URL}?action=getListadoPanel&fecha=${encodeURIComponent(fecha)}&sucursal=${encodeURIComponent(sucursal)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    listadoPanelData = data.candidatos || [];
+                    renderizarListadoPanel();
+                } else {
+                    throw new Error(data.message || 'Error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('listado-panel-grid').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><h3>Error al cargar</h3><p>Intenta de nuevo</p></div>`;
+            }
+        }
+        
+        function renderizarListadoPanel() {
+            const candidatos = listadoPanelData;
+            
+            // Stats
+            const confirmados = candidatos.filter(c => c.estado === 'Confirmado').length;
+            const pendientes = candidatos.filter(c => c.estado !== 'Confirmado').length;
+            
+            document.getElementById('stat-total-panel').textContent = candidatos.length;
+            document.getElementById('stat-confirmados-panel').textContent = confirmados;
+            document.getElementById('stat-pendientes-panel').textContent = pendientes;
+            document.getElementById('stats-panel').style.display = 'grid';
+            document.getElementById('acciones-panel').style.display = candidatos.length > 0 ? 'block' : 'none';
+            
+            if (candidatos.length === 0) {
+                document.getElementById('listado-panel-grid').innerHTML = `<div class="empty-state"><div class="icon">📭</div><h3>Sin candidatos</h3><p>No hay candidatos agendados para esta fecha</p></div>`;
+                return;
+            }
+            
+            let html = '';
+            candidatos.forEach((c, index) => {
+                const estadoClass = c.estado === 'Confirmado' ? 'confirmado' : 'asignado';
+                const estadoTexto = c.estado === 'Confirmado' ? '✅ Confirmado' : '⏳ Pendiente';
+                const resultadoClass = c.resultado === 'PASA' ? 'pasa' : 'reservas';
+                
+                // Generar análisis
+                const analisis = generarAnalisisPanel(c);
+                
+                html += `
+                <div class="panel-card">
+                    <div class="panel-card-header">
+                        <div>
+                            <h3>${index + 1}. ${c.nombre}</h3>
+                            <span style="font-size: 12px; color: #64748b;">Reclutadora: ${c.reclutadora} | ${c.sucursal}</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span class="panel-estado ${estadoClass}">${estadoTexto}</span>
+                            <span class="hora">🕐 ${c.horaInicio}</span>
+                        </div>
+                    </div>
+                    <div class="panel-card-body">
+                        <div class="panel-info-grid">
+                            <div class="panel-info-item"><strong>📞 Teléfono</strong>${c.telefono}</div>
+                            <div class="panel-info-item"><strong>📧 Email</strong>${c.email}</div>
+                            <div class="panel-info-item"><strong>🎂 Edad</strong>${c.edad} años</div>
+                            <div class="panel-info-item"><strong>📍 Ubicación</strong>${c.ubicacion}</div>
+                            <div class="panel-info-item"><strong>🚗 Traslado</strong>${c.tiempoTraslado}</div>
+                            <div class="panel-info-item"><strong>💰 Ingreso esperado</strong>${c.ingresoEsperado || 'N/A'}</div>
+                        </div>
+                        
+                        <div class="panel-puntajes">
+                            <div class="panel-puntaje">
+                                <div class="score">${c.puntajePF}/45</div>
+                                <div class="label">Pre-Filtro</div>
+                            </div>
+                            <div class="panel-puntaje">
+                                <div class="score">${c.puntajeET}/30</div>
+                                <div class="label">Entrevista Tel.</div>
+                            </div>
+                            <div class="panel-puntaje ${resultadoClass}">
+                                <div class="score">${c.resultado}</div>
+                                <div class="label">Resultado</div>
+                            </div>
+                        </div>
+                        
+                        <div class="panel-analisis">
+                            <h4>🎯 Puntos a Considerar en Panel</h4>
+                            <p>${analisis}</p>
+                        </div>
+                        
+                        ${c.respuestasET && Object.keys(c.respuestasET).length > 0 ? `
+                        <button class="panel-toggle-respuestas" onclick="toggleRespuestasPanel(${index})">📝 Ver respuestas de entrevista telefónica</button>
+                        <div class="panel-respuestas" id="respuestas-panel-${index}" style="display: none;">
+                            <h4>Respuestas de Entrevista Telefónica</h4>
+                            ${c.respuestasET.q1 ? `<div class="panel-respuesta-item"><div class="q-titulo">1. Coherencia/Motivación</div><div class="q-respuesta">${c.respuestasET.q1}</div></div>` : ''}
+                            ${c.respuestasET.q2 ? `<div class="panel-respuesta-item"><div class="q-titulo">2. Comunicación (30 seg)</div><div class="q-respuesta">${c.respuestasET.q2}</div></div>` : ''}
+                            ${c.respuestasET.q3 ? `<div class="panel-respuesta-item"><div class="q-titulo">3. Manejo del Rechazo</div><div class="q-respuesta">${c.respuestasET.q3}</div></div>` : ''}
+                            ${c.respuestasET.q4 ? `<div class="panel-respuesta-item"><div class="q-titulo">4. Energía/Actitud</div><div class="q-respuesta">${c.respuestasET.q4}</div></div>` : ''}
+                            ${c.respuestasET.q5 ? `<div class="panel-respuesta-item"><div class="q-titulo">5. Realismo del Puesto</div><div class="q-respuesta">${c.respuestasET.q5}</div></div>` : ''}
+                            ${c.respuestasET.q6 ? `<div class="panel-respuesta-item"><div class="q-titulo">6. Cierre/Autoventa</div><div class="q-respuesta">${c.respuestasET.q6}</div></div>` : ''}
+                            ${c.observacionesET ? `<div class="panel-respuesta-item"><div class="q-titulo">📌 Observaciones</div><div class="q-respuesta">${c.observacionesET}</div></div>` : ''}
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>`;
+            });
+            
+            document.getElementById('listado-panel-grid').innerHTML = html;
+        }
+        
+        function generarAnalisisPanel(c) {
+            const puntos = [];
+            
+            // Análisis de puntajes
+            if (c.puntajePF >= 41) {
+                puntos.push('✅ Perfil sobresaliente en pre-filtro');
+            } else if (c.puntajePF < 35) {
+                puntos.push('⚠️ Perfil ajustado, validar motivación');
+            }
+            
+            if (c.puntajeET >= 25) {
+                puntos.push('Excelente en entrevista telefónica');
+            } else if (c.puntajeET < 23) {
+                puntos.push('⚠️ Profundizar áreas de oportunidad');
+            }
+            
+            if (c.estado !== 'Confirmado') {
+                puntos.push('⏳ PENDIENTE DE CONFIRMACIÓN');
+            }
+            
+            if (c.resultado === 'RESERVAS') {
+                puntos.push('⚠️ Candidato CON RESERVAS');
+            }
+            
+            // Análisis de respuestas
+            if (c.respuestasET) {
+                if (c.respuestasET.q3 && (c.respuestasET.q3.toLowerCase().includes('no he tenido') || c.respuestasET.q3.toLowerCase().includes('no recuerdo'))) {
+                    puntos.push('📌 Hacer roleplay de objeciones');
+                }
+                if (c.respuestasET.q5 && (c.respuestasET.q5.toLowerCase().includes('nada') || c.respuestasET.q5.toLowerCase().includes('todo'))) {
+                    puntos.push('📌 Validar expectativas realistas');
+                }
+            }
+            
+            if (c.observacionesET) {
+                puntos.push('📝 Revisar observaciones');
+            }
+            
+            return puntos.length > 0 ? puntos.join(' | ') : 'Sin observaciones especiales';
+        }
+        
+        function toggleRespuestasPanel(index) {
+            const div = document.getElementById(`respuestas-panel-${index}`);
+            div.style.display = div.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        async function enviarListadoCorreo() {
+            const fecha = document.getElementById('filtro-viernes-panel').value;
+            const sucursal = document.getElementById('filtro-sucursal-panel').value;
+            
+            if (!fecha) {
+                alert('Selecciona un viernes');
+                return;
+            }
+            
+            if (sucursal === 'TODAS') {
+                alert('Selecciona una sucursal específica para enviar el correo');
+                return;
+            }
+            
+            if (!confirm(`¿Enviar listado de ${sucursal} por correo?`)) return;
+            
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        tipo: 'enviar_listado_panel',
+                        fecha: fecha,
+                        sucursal: sucursal
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alert('✅ Correo enviado exitosamente');
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                // Intentar con no-cors
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        tipo: 'enviar_listado_panel',
+                        fecha: fecha,
+                        sucursal: sucursal
+                    })
+                });
+                alert('✅ Solicitud enviada. Revisa los correos.');
+            }
+        }
+        
+        function generarPDFListado() {
+            // Abrir en nueva ventana el listado formateado
+            const fecha = document.getElementById('filtro-viernes-panel').value;
+            const sucursal = document.getElementById('filtro-sucursal-panel').value;
+            
+            if (!fecha || listadoPanelData.length === 0) {
+                alert('No hay datos para mostrar');
+                return;
+            }
+            
+            let html = `<!DOCTYPE html><html><head><title>Listado Panel - ${fecha}</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                h1 { color: #0066CC; }
+                .candidato { border: 1px solid #ddd; padding: 15px; margin: 15px 0; border-radius: 8px; page-break-inside: avoid; }
+                .candidato h3 { margin: 0 0 10px; color: #333; }
+                .info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0; }
+                .puntajes { display: flex; gap: 20px; margin: 10px 0; }
+                .puntaje { background: #f5f5f5; padding: 10px; border-radius: 5px; text-align: center; }
+                .analisis { background: #fffbeb; padding: 10px; border-left: 3px solid #f59e0b; margin: 10px 0; }
+                @media print { .no-print { display: none; } }
+            </style></head><body>
+            <h1>📋 Listado Entrevistas Panel</h1>
+            <p><strong>Fecha:</strong> ${fecha} | <strong>Sucursal:</strong> ${sucursal}</p>
+            <p><strong>Total:</strong> ${listadoPanelData.length} candidatos</p>
+            <button class="no-print" onclick="window.print()">🖨️ Imprimir</button>
+            <hr>`;
+            
+            listadoPanelData.forEach((c, i) => {
+                html += `
+                <div class="candidato">
+                    <h3>${i+1}. ${c.nombre} - ${c.horaInicio} - ${c.estado === 'Confirmado' ? '✅' : '⏳'}</h3>
+                    <div class="info">
+                        <div><strong>Tel:</strong> ${c.telefono}</div>
+                        <div><strong>Email:</strong> ${c.email}</div>
+                        <div><strong>Edad:</strong> ${c.edad}</div>
+                        <div><strong>Ubicación:</strong> ${c.ubicacion}</div>
+                        <div><strong>Traslado:</strong> ${c.tiempoTraslado}</div>
+                        <div><strong>Reclutadora:</strong> ${c.reclutadora}</div>
+                    </div>
+                    <div class="puntajes">
+                        <div class="puntaje"><strong>Pre-Filtro:</strong> ${c.puntajePF}/45</div>
+                        <div class="puntaje"><strong>Entrevista Tel:</strong> ${c.puntajeET}/30</div>
+                        <div class="puntaje"><strong>Resultado:</strong> ${c.resultado}</div>
+                    </div>
+                    <div class="analisis"><strong>🎯 Análisis:</strong> ${generarAnalisisPanel(c)}</div>
+                </div>`;
+            });
+            
+            html += '</body></html>';
+            
+            const ventana = window.open('', '_blank');
+            ventana.document.write(html);
+            ventana.document.close();
+        }
+        
+        // Cargar viernes al iniciar la pestaña
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarViernesDisponibles();
+        });
 
         // ==========================================
         // EVALUACIÓN
