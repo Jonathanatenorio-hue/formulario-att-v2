@@ -770,7 +770,7 @@ async function cargarAspirantes() {
             
             const div = document.createElement('div');
             div.className = 'aspirante-card ' + cardClass;
-            div.innerHTML = '<div class="aspirante-info"><div class="aspirante-avatar">' + iniciales + '</div><div class="aspirante-details"><h4>' + asp.nombre + '</h4><p>🕐 ' + asp.hora + ' • ' + asp.estado + '</p></div></div><span class="status-badge ' + statusClass + '">' + statusText + '</span>';
+            div.innerHTML = '<div class="aspirante-info"><div class="aspirante-avatar">' + iniciales + '</div><div class="aspirante-details"><h4>' + asp.nombre + '</h4><p>🕐 ' + asp.hora + ' • ' + asp.estado + '</p></div></div><div style="display: flex; align-items: center; gap: 10px;">' + (asp.cvUrl ? '<button onclick="event.stopPropagation(); window.open(\'' + asp.cvUrl + '\', \'_blank\')" style="background: linear-gradient(135deg, #9333EA 0%, #7C3AED 100%); color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500;">📄 CV</button>' : '') + '<span class="status-badge ' + statusClass + '">' + statusText + '</span></div>';
             
             if (puedeEvaluar && !asp.evaluadoPorMi) {
                 div.onclick = () => iniciarEvaluacion(asp);
