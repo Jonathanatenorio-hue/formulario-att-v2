@@ -271,9 +271,146 @@
             .cita-card { flex-direction: column; align-items: flex-start; }
             .cita-acciones { width: 100%; justify-content: flex-start; }
         }
+        
+        /* Login Modal */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .login-modal {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .login-modal h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+        .login-modal p {
+            color: #64748b;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+        .login-modal .form-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+        .login-modal .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #334155;
+       }
+       .login-modal .form-group select,
+       .login-modal .form-group input {
+           width: 100%;
+           padding: 12px;
+           border: 2px solid #e2e8f0;
+           border-radius: 10px;
+           font-size: 15px;
+       }
+       .login-avatar {
+           width: 80px;
+           height: 80px;
+           background: linear-gradient(135deg, #00A8E1 0%, #0057B8 100%);
+           border-radius: 50%;
+           margin: 0 auto 20px;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           font-size: 32px;
+           color: white;
+      }
+      .login-error {
+          color: #ef4444;
+          font-size: 13px;
+          margin-top: 10px;
+          display: none;
+      }
+      .user-badge {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: white;
+          padding: 10px 16px;
+          border-radius: 30px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          z-index: 100;
+      }
+      .user-badge-avatar {
+          width: 32px;
+          height: 32px;
+          background: linear-gradient(135deg, #00A8E1 0%, #0057B8 100%);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 12px;
+          font-weight: 600;
+      }
+      .user-badge-name {
+          font-size: 14px;
+          font-weight: 600;
+          color: #334155;
+      }
+      .user-badge-logout {
+          background: none;
+          border: none;
+          color: #94a3b8;
+          cursor: pointer;
+          font-size: 16px;
+          padding: 4px;
+      }
+      .user-badge-logout:hover {
+          color: #ef4444;
+      }
     </style>
 </head>
 <body>
+    <!-- Login Modal -->
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-modal">
+            <div class="login-avatar">🔐</div>
+            <h2>Entrevista Telefónica</h2>
+            <p>Ingresa tus credenciales para acceder</p>
+            <div class="form-group">
+                <label>Usuario</label>
+                <select id="login-usuario">
+                    <option value="">Selecciona...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="login-password" placeholder="Ingresa tu contraseña">
+            </div>
+            <div class="login-error" id="login-error">Contraseña incorrecta</div>
+            <button class="btn-primary" style="width: 100%; padding: 14px; margin-top: 10px;" onclick="intentarLogin()">Ingresar →</button>
+        </div>
+    </div>
+
+    <!-- User Badge -->
+    <div class="user-badge" id="user-badge" style="display: none;">
+        <div class="user-badge-avatar" id="badge-avatar">XX</div>
+        <span class="user-badge-name" id="badge-name">Usuario</span>
+        <button class="user-badge-logout" onclick="cerrarSesion()" title="Cerrar sesión">✕</button>
+    </div>
     <div class="container">
         <div class="header">
             <h1>📞 Entrevista Telefónica</h1>
@@ -302,19 +439,24 @@
                 <div class="calendario-header">
                     <h2>📅 Agenda de Entrevistas</h2>
                     <div class="calendario-filters">
-                        <select id="filtro-reclutadora" onchange="cargarCitasCalendario()">
-                            <option value="">Selecciona reclutadora...</option>
-                            <option value="Karla Flores">Karla Flores</option>
-                            <option value="Yessica Huerta">Yessica Huerta</option>
-                            <option value="Jezabel Monterrosas">Jezabel Monterrosas</option>
-                        </select>
-                        <select id="filtro-periodo" onchange="cargarCitasCalendario()">
-                            <option value="hoy">Hoy</option>
-                            <option value="semana" selected>Esta semana</option>
-                            <option value="mes">Este mes</option>
-                        </select>
-                    </div>
+                    <select id="filtro-sucursal" onchange="cargarCitasCalendario()">
+                        <option value="">Todas las sucursales</option>
+                        <option value="Torre JV Juárez">Torre JV Juárez</option>
+                        <option value="Edificio Inbursa Antequera">Edificio Inbursa Antequera</option>
+                    </select>
+                    <select id="filtro-reclutadora" onchange="cargarCitasCalendario()">
+                        <option value="">Todas las reclutadoras</option>
+                        <option value="Karla Flores">Karla Flores</option>
+                        <option value="Yessica Huerta">Yessica Huerta</option>
+                        <option value="Jezabel Monterrosas">Jezabel Monterrosas</option>
+                    </select>
+                    <select id="filtro-periodo" onchange="cargarCitasCalendario()">
+                        <option value="hoy">Hoy</option>
+                        <option value="semana" selected>Esta semana</option>
+                        <option value="mes">Este mes</option>
+                    </select>
                 </div>
+               
                 
                 <div class="stats-cards" id="stats-cards" style="display: none;">
                     <div class="stat-card today">
@@ -710,7 +852,97 @@
 
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
-        
+        // Sistema de usuarios
+const USUARIOS = {
+    // Reclutadoras (solo ven sus candidatos)
+    'Karla Flores': { password: 'Karla2026!', rol: 'reclutadora', reclutadora: 'Karla Flores' },
+    'Yessica Huerta': { password: 'Yessica2026!', rol: 'reclutadora', reclutadora: 'Yessica Huerta' },
+    'Jezabel Monterrosas': { password: 'Jezabel2026!', rol: 'reclutadora', reclutadora: 'Jezabel Monterrosas' },
+    // Usuarios master (ven todo)
+    'Jonathan': { password: 'Jona@master26!', rol: 'master' },
+    'Pilar': { password: 'Pilar@master26!', rol: 'master' },
+    'Administrador': { password: 'Admin@expert26!', rol: 'master' }
+};
+
+let usuarioActual = null;
+
+// Funciones de login
+function inicializarLogin() {
+    const select = document.getElementById('login-usuario');
+    Object.keys(USUARIOS).sort().forEach(nombre => {
+        const opt = document.createElement('option');
+        opt.value = nombre;
+        opt.textContent = nombre;
+        select.appendChild(opt);
+    });
+    
+    // Verificar sesión guardada
+    const sesion = localStorage.getItem('entrevista_telefonica_sesion');
+    if (sesion) {
+        const data = JSON.parse(sesion);
+        if (data.nombre && data.expira > Date.now()) {
+            usuarioActual = { nombre: data.nombre, ...USUARIOS[data.nombre] };
+            mostrarSesionActiva();
+            return;
+        }
+    }
+    
+    // Enter en password
+    document.getElementById('login-password').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') intentarLogin();
+    });
+}
+
+function intentarLogin() {
+    const nombre = document.getElementById('login-usuario').value;
+    const password = document.getElementById('login-password').value;
+    
+    if (!nombre || !password) {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-error').textContent = 'Completa todos los campos.';
+        return;
+    }
+    
+    if (USUARIOS[nombre] && USUARIOS[nombre].password === password) {
+        usuarioActual = { nombre: nombre, ...USUARIOS[nombre] };
+        // Guardar sesión (8 horas)
+        localStorage.setItem('entrevista_telefonica_sesion', JSON.stringify({
+            nombre: nombre,
+            expira: Date.now() + (8 * 60 * 60 * 1000)
+        }));
+        mostrarSesionActiva();
+    } else {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-error').textContent = 'Contraseña incorrecta.';
+        document.getElementById('login-password').value = '';
+    }
+}
+
+function mostrarSesionActiva() {
+    document.getElementById('login-overlay').style.display = 'none';
+    document.getElementById('user-badge').style.display = 'flex';
+    const iniciales = usuarioActual.nombre.substring(0, 2).toUpperCase();
+    document.getElementById('badge-avatar').textContent = iniciales;
+    document.getElementById('badge-name').textContent = usuarioActual.nombre;
+    
+    // Configurar filtros según rol
+    const filtroReclutadora = document.getElementById('filtro-reclutadora');
+    if (usuarioActual.rol === 'reclutadora') {
+        // Reclutadora solo ve sus candidatos
+        filtroReclutadora.value = usuarioActual.reclutadora;
+        filtroReclutadora.disabled = true;
+    } else {
+        // Master ve todo
+        filtroReclutadora.disabled = false;
+    }
+    
+    cargarCitasCalendario();
+}
+
+function cerrarSesion() {
+    localStorage.removeItem('entrevista_telefonica_sesion');
+    location.reload();
+}
         let selectedReclutadora = null;
         let selectedCandidato = null;
         let scores = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0 };
