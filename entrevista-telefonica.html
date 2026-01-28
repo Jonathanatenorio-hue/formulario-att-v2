@@ -987,11 +987,22 @@ function cerrarSesion() {
         };
 
         function cambiarTab(tab) {
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelector(`[onclick="cambiarTab('${tab}')"]`).classList.add('active');
-            document.getElementById(`tab-${tab}`).classList.add('active');
-        }
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector(`[onclick="cambiarTab('${tab}')"]`).classList.add('active');
+    document.getElementById(`tab-${tab}`).classList.add('active');
+    
+    // Cargar datos según la pestaña
+    if (tab === 'calendario') {
+        cargarCitasCalendario();??
+    } else if (tab === 'evaluacion') {
+        cargarCandidatos();
+    } else if (tab === 'historial') {
+        cargarHistorial();
+    } else if (tab === 'listado-panel') {
+        cargarViernesDisponibles();
+    }
+}
 
         // ==========================================
         // CALENDARIO DE CITAS
