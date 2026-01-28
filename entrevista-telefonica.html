@@ -1186,17 +1186,29 @@ function cerrarSesion() {
         let historialCompleto = [];
         
         async function cargarHistorial() {
-            const reclutadora = document.getElementById('filtro-reclutadora-historial').value;
+            const filtroHistorial = document.getElementById('filtro-reclutadora-historial');
             
-            if (!reclutadora) {
-                document.getElementById('historial-grid').innerHTML = `<div class="empty-state"><div class="icon">👆</div><h3>Selecciona una reclutadora</h3><p>Para ver el historial de entrevistas</p></div>`;
-                return;
+            // Configurar filtro según rol
+            if (usuarioActual.rol === 'reclutadora') {
+                filtroHistorial.value = usuarioActual.reclutadora;
+                filtroHistorial.disabled = true;
             }
+            
+            const reclutadora = filtroHistorial.value;
+            
+            if (!reclutadora && usuarioActual.rol === 'reclutadora') {
+                filtroHistorial.value = usuarioActual.reclutadora;
+            }
+            
+            const reclutadoraFinal = filtroHistorial.value;
             
             document.getElementById('historial-grid').innerHTML = `<div class="loading-spinner"><div class="spinner"></div><p>Cargando historial...</p></div>`;
             
             try {
-                const url = `${GOOGLE_SCRIPT_URL}?action=getHistorialEntrevistas&reclutadora=${encodeURIComponent(reclutadora)}`;
+                let url = `${GOOGLE_SCRIPT_URL}?action=getHistorialEntrevistas`;
+                if (reclutadoraFinal) {
+                    url += `&reclutadora=${encodeURIComponent(reclutadoraFinal)}`;
+                }
                 const response = await fetch(url);
                 const data = await response.json();
                 
@@ -1660,8 +1672,23 @@ function cerrarSesion() {
         async function cargarCandidatos() {
             const select = document.getElementById('candidato-select');
             select.innerHTML = '<option value="">⏳ Cargando...</option>';
+            
+            // Obtener reclutadora según el rol
+            let reclutadoraNombre = '';
+            if (usuarioActual.rol === 'reclutadora') {
+                reclutadoraNombre = usuarioActual.reclutadora;
+            } else {
+                // Para master, usar el filtro seleccionado o vacío para todas
+                reclutadoraNombre = document.getElementById('filtro-reclutadora').value || '';
+            }
+            
+            if (!reclutadoraNombre) {
+                select.innerHTML = '<option value="">-- Selecciona una reclutadora en el filtro --</option>';
+                return;
+            }
+            
             try {
-                const url = `${GOOGLE_SCRIPT_URL}?action=getCandidatosPorReclutador&reclutador=${encodeURIComponent(selectedReclutadora.nombre)}`;
+                const url = `${GOOGLE_SCRIPT_URL}?action=getCandidatosPorReclutador&reclutador=${encodeURIComponent(reclutadoraNombre)}`;
                 const response = await fetch(url);
                 const data = await response.json();
                 if (data.status === 'success' && data.candidatos) {
