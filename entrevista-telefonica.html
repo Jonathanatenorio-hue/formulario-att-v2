@@ -830,6 +830,7 @@
                             </div>
                         </div>
                         <div class="cita-acciones">
+                            ${cita.cvUrl ? `<button class="btn-accion btn-cv" onclick="window.open('${cita.cvUrl}', '_blank')" title="Ver CV">📄</button>` : ''}
                             <button class="btn-accion btn-llamar" onclick="llamar('${cita.telefono}')">📞</button>
                             <button class="btn-accion btn-whatsapp" onclick="abrirWhatsApp('${cita.telefono}', '${cita.nombre}')">💬</button>
                             <button class="btn-accion btn-evaluar" onclick="iniciarEvaluacion('${cita.telefono}')">📝 Evaluar</button>
