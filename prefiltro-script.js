@@ -1,27 +1,27 @@
 const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
 let candidateData={},selectedTime=null,selectedSucursal=null,selectedDireccion=null,totalScore=0,reclutadorInfo={nombre:'',email:'',whatsapp:'',whatsappNumero:''};
-let horariosOcupados = []; // Para guardar los horarios ya tomados
+let horariosOcupados = [];
+let selectedFuente = null; // Nueva variable para fuente del candidato
+let reclutadoraAsignada = null; // Si viene de una reclutadora específica
+
 const mapsLinks={'Torre JV Juárez':'https://maps.google.com/?q=Av.+Juárez+2925,+La+Paz,+72160,+Puebla','Edificio Inbursa Antequera':'https://maps.app.goo.gl/fGn2Mz5hKdaKTkxL8'};
 
 function checkIfRejected(){const rejected=localStorage.getItem('att_rejected');if(rejected==='true'){document.getElementById('intro').style.display='none';document.getElementById('rejected-screen').classList.add('active');document.querySelector('.rejected-screen h2').textContent='Ya completaste este formulario';document.querySelector('.rejected-screen p').textContent='Detectamos que ya enviaste tu información anteriormente.'}}
 window.onload=function(){checkIfRejected()};
 
 const questions={
-    // Q1: Modificada la primera opción
     q1:[
         {text:'Tener un ingreso fijo y hacer amigos',score:0,type:'reject'},
         {text:'Que sea un trabajo sencillo sin mucha presión',score:0,type:'reject'},
         {text:'Aprender y generar ingresos adicionales con comisiones',score:3,type:'good'},
         {text:'Ganar dinero a través de resultados y superar metas',score:5,type:'ideal'}
     ],
-    // Q2: Modificada la primera opción
     q2:[
         {text:'No tengo problema mientras haya una buena base de datos',score:0,type:'reject'},
         {text:'Solo cumplo lo mínimo para no tener problemas',score:0,type:'reject'},
         {text:'Me adapto y hago mi esfuerzo',score:3,type:'good'},
         {text:'Me motiva competir conmigo mismo y con el equipo',score:5,type:'ideal'}
     ],
-    // Q3: Modificada la primera opción
     q3:[
         {text:'Si su tono no es amigable, prefiero colgar la llamada',score:0,type:'reject'},
         {text:'Insisto sin escuchar al cliente',score:1,type:'warning'},
@@ -34,7 +34,6 @@ const questions={
         {text:'Son importantes, pero no mi prioridad',score:3,type:'good'},
         {text:'Son una parte clave de mi ingreso',score:5,type:'ideal'}
     ],
-    // Q5: Modificada la segunda opción
     q5:[
         {text:'Me desmotivo y bajo el ritmo',score:0,type:'reject'},
         {text:'Normal, lo mas probable es que se deba a la base o al sistema',score:0,type:'reject'},
@@ -69,9 +68,81 @@ const questions={
 
 function shuffleArray(array){const shuffled=[...array];for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]}return shuffled}
 function renderQuestion(questionKey,containerId){const container=document.getElementById(containerId);const options=shuffleArray(questions[questionKey]);const letras=['A)','B)','C)','D)'];container.innerHTML='';options.forEach((option,index)=>{const div=document.createElement('div');div.className='option';div.textContent=letras[index]+' '+option.text;div.dataset.score=option.score;div.dataset.type=option.type;div.dataset.text=option.text;div.onclick=function(){document.querySelectorAll(`#${containerId} .option`).forEach(opt=>{opt.classList.remove('selected')});this.classList.add('selected')};container.appendChild(div)})}
-function selectSucursal(sucursal,direccion){document.querySelectorAll('#options-sucursal .option').forEach(opt=>{opt.classList.remove('selected')});event.target.closest('.option').classList.add('selected');selectedSucursal=sucursal;selectedDireccion=direccion}
+
+// =====================================================
+// FUENTE DEL CANDIDATO
+// =====================================================
+function selectFuente(fuente) {
+    // Deseleccionar todas las opciones
+    document.querySelectorAll('.fuente-option').forEach(opt => opt.classList.remove('selected'));
+    document.querySelectorAll('.fuente-suboption').forEach(sub => sub.classList.remove('visible'));
+    
+    // Seleccionar la opción clickeada
+    event.currentTarget.classList.add('selected');
+    selectedFuente = fuente;
+    
+    // Mostrar subopciones si aplica
+    const suboption = document.getElementById(`suboption-${fuente}`);
+    if (suboption) {
+        suboption.classList.add('visible');
+    }
+    
+    // Si seleccionó reclutadora específica, guardar para asignación
+    if (fuente === 'reclutadora') {
+        reclutadoraAsignada = null; // Se asignará cuando seleccione del dropdown
+    }
+}
+
+function nextStepFuente() {
+    if (!selectedFuente) {
+        alert('Por favor selecciona cómo te enteraste de esta vacante.');
+        return;
+    }
+    
+    // Validar campos según la fuente seleccionada
+    if (selectedFuente === 'recomendacion') {
+        const nombreRecomendador = document.getElementById('nombre-recomendador').value.trim();
+        if (!nombreRecomendador) {
+            alert('Por favor escribe el nombre de quien te recomendó.');
+            return;
+        }
+        candidateData.fuente = 'Recomendación';
+        candidateData.fuenteDetalle = nombreRecomendador;
+    } else if (selectedFuente === 'internet') {
+        const pagina = document.getElementById('pagina-internet').value;
+        candidateData.fuente = 'Internet';
+        candidateData.fuenteDetalle = pagina || 'No especificó';
+    } else if (selectedFuente === 'reclutadora') {
+        const reclutadora = document.getElementById('reclutadora-especifica').value;
+        if (!reclutadora) {
+            alert('Por favor selecciona qué reclutadora te contactó.');
+            return;
+        }
+        candidateData.fuente = 'Reclutadora';
+        candidateData.fuenteDetalle = reclutadora;
+        reclutadoraAsignada = reclutadora; // Guardar para asignación directa
+    } else if (selectedFuente === 'otro') {
+        const otroMedio = document.getElementById('otro-medio').value.trim();
+        candidateData.fuente = 'Otro';
+        candidateData.fuenteDetalle = otroMedio || 'No especificó';
+    }
+    
+    // Pasar al siguiente paso
+    document.getElementById('step-fuente').classList.remove('active');
+    document.getElementById('step0').classList.add('active');
+}
+
+function selectSucursal(sucursal,direccion){
+    document.querySelectorAll('#options-sucursal .option').forEach(opt=>{opt.classList.remove('selected')});
+    event.target.closest('.option').classList.add('selected');
+    selectedSucursal=sucursal;
+    selectedDireccion=direccion;
+}
 function abrirMaps(){if(selectedSucursal&&mapsLinks[selectedSucursal]){window.open(mapsLinks[selectedSucursal],'_blank')}else{alert('Por favor selecciona primero una sucursal.')}}
-function startForm(){document.getElementById('intro').style.display='none';document.getElementById('step0').classList.add('active')}
+function startForm(){
+    document.getElementById('intro').style.display='none';
+    document.getElementById('step-fuente').classList.add('active'); // Ahora inicia en fuente
+}
 
 function validateStep(step){
     if(step===0){if(!selectedSucursal)return{valid:false,message:'Por favor selecciona una sucursal.'};candidateData.sucursal=selectedSucursal;candidateData.direccionSucursal=selectedDireccion;return{valid:true}}
@@ -89,13 +160,13 @@ function saveStepData(step){
     else if(step>=4&&step<=12){const questionKey=`q${step-3}`;const containerId=`options-${questionKey}`;const selectedOption=document.querySelector(`#${containerId} .option.selected`);if(selectedOption){const score=parseInt(selectedOption.dataset.score);const text=selectedOption.dataset.text;candidateData[`pregunta${step-3}`]=text;candidateData[`puntaje${step-3}`]=score;totalScore+=score}}
 }
 
-// GUARDAR RECHAZO EN ESTADÍSTICAS
 async function guardarRechazoEstadisticas(motivo) {
     const data = {
         tipo: 'rechazo_pf',
         sucursal: candidateData.sucursal || selectedSucursal || 'No especificada',
         puntaje: totalScore,
-        motivo: motivo
+        motivo: motivo,
+        fuente: candidateData.fuente || 'No especificada'
     };
     try {
         await fetch(GOOGLE_SCRIPT_URL, {
@@ -172,76 +243,97 @@ function setupDatePicker(){
     const dateInput=document.getElementById('fecha-cita');
     const ahora = new Date();
     
-    // Calcular fecha mínima (mañana si ya pasaron las 6pm, o hoy si no)
     let fechaMinima = new Date(ahora);
     if (ahora.getHours() >= 18) {
-        // Si ya son las 6pm o más, la fecha mínima es mañana
         fechaMinima.setDate(fechaMinima.getDate() + 1);
     }
     dateInput.min = fechaMinima.toISOString().split('T')[0];
     
-    // Fecha máxima: 30 días adelante
     const maxDate = new Date();
     maxDate.setDate(maxDate.getDate() + 30);
     dateInput.max = maxDate.toISOString().split('T')[0];
     
-    // Listener para cuando cambie la fecha
     dateInput.addEventListener('change', function() {
         cargarHorariosDisponibles(this.value);
     });
     
-    // Asignar reclutadora
-    if(candidateData.sucursal==='Torre JV Juárez'){
-        reclutadorInfo.nombre='Karla Flores';
-        reclutadorInfo.email='k.flores@solucell.com.mx';
-        reclutadorInfo.whatsapp='221 349 1520';
-        reclutadorInfo.whatsappNumero='2213491520';
-        candidateData.reclutadora = 'Karla Flores';
-    } else {
-        let inbursaCounter = parseInt(localStorage.getItem('inbursaCounter') || '0');
-        if(inbursaCounter % 2 === 0) {
-            reclutadorInfo.nombre='Yessica Huerta';
-            reclutadorInfo.email='reclutamientocc2@solucell.com.mx';
+    // =====================================================
+    // ASIGNACIÓN DE RECLUTADORA CON LÓGICA MEJORADA
+    // =====================================================
+    
+    // Si el candidato fue contactado por una reclutadora específica, asignarla
+    if (reclutadoraAsignada) {
+        if (reclutadoraAsignada === 'Karla Flores') {
+            reclutadorInfo.nombre = 'Karla Flores';
+            reclutadorInfo.email = 'k.flores@solucell.com.mx';
+            reclutadorInfo.whatsapp = '221 349 1520';
+            reclutadorInfo.whatsappNumero = '2213491520';
+            candidateData.reclutadora = 'Karla Flores';
+            // Forzar sucursal si vino por Karla
+            if (!selectedSucursal || selectedSucursal !== 'Torre JV Juárez') {
+                // Mostrar aviso si seleccionó otra sucursal
+                console.log('Candidato contactado por Karla, sucursal: Torre JV Juárez');
+            }
+        } else if (reclutadoraAsignada === 'Yessica Huerta') {
+            reclutadorInfo.nombre = 'Yessica Huerta';
+            reclutadorInfo.email = 'reclutamientocc2@solucell.com.mx';
+            reclutadorInfo.whatsapp = '221 155 7027';
+            reclutadorInfo.whatsappNumero = '2211557027';
             candidateData.reclutadora = 'Yessica Huerta';
-        } else {
-            reclutadorInfo.nombre='Jezabel Monterrosas';
-            reclutadorInfo.email='reclutamientocc1@solucell.com.mx';
+        } else if (reclutadoraAsignada === 'Jezabel Monterrosas') {
+            reclutadorInfo.nombre = 'Jezabel Monterrosas';
+            reclutadorInfo.email = 'reclutamientocc1@solucell.com.mx';
+            reclutadorInfo.whatsapp = '221 155 7027';
+            reclutadorInfo.whatsappNumero = '2211557027';
             candidateData.reclutadora = 'Jezabel Monterrosas';
         }
-        reclutadorInfo.whatsapp='221 155 7027';
-        reclutadorInfo.whatsappNumero='2211557027';
-        localStorage.setItem('inbursaCounter', (inbursaCounter + 1).toString());
+    } else {
+        // Asignación normal según sucursal
+        if(candidateData.sucursal === 'Torre JV Juárez'){
+            reclutadorInfo.nombre = 'Karla Flores';
+            reclutadorInfo.email = 'k.flores@solucell.com.mx';
+            reclutadorInfo.whatsapp = '221 349 1520';
+            reclutadorInfo.whatsappNumero = '2213491520';
+            candidateData.reclutadora = 'Karla Flores';
+        } else {
+            // Edificio Inbursa - asignación aleatoria entre Yessica y Jezabel
+            let inbursaCounter = parseInt(localStorage.getItem('inbursaCounter') || '0');
+            if(inbursaCounter % 2 === 0) {
+                reclutadorInfo.nombre = 'Yessica Huerta';
+                reclutadorInfo.email = 'reclutamientocc2@solucell.com.mx';
+                candidateData.reclutadora = 'Yessica Huerta';
+            } else {
+                reclutadorInfo.nombre = 'Jezabel Monterrosas';
+                reclutadorInfo.email = 'reclutamientocc1@solucell.com.mx';
+                candidateData.reclutadora = 'Jezabel Monterrosas';
+            }
+            reclutadorInfo.whatsapp = '221 155 7027';
+            reclutadorInfo.whatsappNumero = '2211557027';
+            localStorage.setItem('inbursaCounter', (inbursaCounter + 1).toString());
+        }
     }
-    document.getElementById('reclutador-nombre').textContent=reclutadorInfo.nombre;
-    document.getElementById('reclutador-sucursal').textContent=candidateData.sucursal;
-    document.getElementById('reclutador-email').textContent=reclutadorInfo.email;
-    document.getElementById('reclutador-email').href='mailto:'+reclutadorInfo.email;
-    document.getElementById('reclutador-whatsapp').textContent=reclutadorInfo.whatsapp
+    
+    document.getElementById('reclutador-nombre').textContent = reclutadorInfo.nombre;
+    document.getElementById('reclutador-sucursal').textContent = candidateData.sucursal;
+    document.getElementById('reclutador-email').textContent = reclutadorInfo.email;
+    document.getElementById('reclutador-email').href = 'mailto:' + reclutadorInfo.email;
+    document.getElementById('reclutador-whatsapp').textContent = reclutadorInfo.whatsapp;
 }
 
-// =====================================================
-// CARGAR HORARIOS DISPONIBLES (evita duplicados)
-// =====================================================
 async function cargarHorariosDisponibles(fecha) {
     const timeSlotsContainer = document.querySelector('.time-slots');
     if (!timeSlotsContainer) return;
     
-    // Mostrar loading
     timeSlotsContainer.innerHTML = '<p style="text-align: center; color: #64748B; padding: 20px;">⏳ Cargando horarios disponibles...</p>';
     selectedTime = null;
     
     try {
-        // Obtener horarios ocupados del servidor (cuenta por horario)
         const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getHorariosOcupadosPF&fecha=${fecha}&sucursal=${encodeURIComponent(candidateData.sucursal)}`);
         const data = await response.json();
-        const conteoHorarios = data.conteo || {}; // {horario: cantidad}
+        const conteoHorarios = data.conteo || {};
         
-        // Determinar cuántos espacios hay por horario según sucursal
-        // Antequera: 2 reclutadoras = 2 espacios por horario
-        // Torre JV: 1 reclutadora = 1 espacio por horario
         const espaciosPorHorario = (candidateData.sucursal === 'Edificio Inbursa Antequera') ? 2 : 1;
         
-        // Definir todos los horarios posibles (cada 15 minutos)
         const todosLosHorarios = [
             '9:00', '9:15', '9:30', '9:45',
             '10:00', '10:15', '10:30', '10:45',
@@ -255,29 +347,25 @@ async function cargarHorariosDisponibles(fecha) {
             '18:00', '18:15', '18:30', '18:45'
         ];
         
-        // Obtener hora actual para filtrar si es hoy
         const ahora = new Date();
         const hoy = ahora.toISOString().split('T')[0];
         const horaActual = ahora.getHours();
         const minutosActuales = ahora.getMinutes();
         
-        // Renderizar horarios
         timeSlotsContainer.innerHTML = '';
         let horariosDisponibles = 0;
         
         todosLosHorarios.forEach(horario => {
             const [hora, minutos] = horario.split(':').map(Number);
             
-            // Si es hoy, solo mostrar horarios futuros (al menos 30 min después)
             if (fecha === hoy) {
                 const horarioEnMinutos = hora * 60 + minutos;
-                const actualEnMinutos = horaActual * 60 + minutosActuales + 30; // 30 min de margen
+                const actualEnMinutos = horaActual * 60 + minutosActuales + 30;
                 if (horarioEnMinutos <= actualEnMinutos) {
-                    return; // Saltar este horario
+                    return;
                 }
             }
             
-            // Verificar si el horario está lleno
             const ocupados = conteoHorarios[horario] || 0;
             const estaLleno = ocupados >= espaciosPorHorario;
             
@@ -292,7 +380,6 @@ async function cargarHorariosDisponibles(fecha) {
                 slot.style.textDecoration = 'line-through';
                 slot.title = 'Horario no disponible';
             } else {
-                // Mostrar espacios disponibles si hay más de 1
                 if (espaciosPorHorario > 1) {
                     const disponibles = espaciosPorHorario - ocupados;
                     slot.title = `${disponibles} espacio(s) disponible(s)`;
@@ -304,14 +391,12 @@ async function cargarHorariosDisponibles(fecha) {
             timeSlotsContainer.appendChild(slot);
         });
         
-        // Si no hay horarios disponibles
         if (horariosDisponibles === 0) {
             timeSlotsContainer.innerHTML = '<p style="text-align: center; color: #EF4444; padding: 20px;">❌ No hay horarios disponibles para esta fecha. Por favor selecciona otro día.</p>';
         }
         
     } catch (error) {
         console.error('Error cargando horarios:', error);
-        // En caso de error, mostrar todos los horarios
         const todosLosHorarios = [
             '9:00', '9:15', '9:30', '9:45',
             '10:00', '10:15', '10:30', '10:45',
@@ -359,7 +444,6 @@ function confirmAppointment(){
     if(!fecha){alert('Por favor selecciona una fecha.');return}
     if(!selectedTime){alert('Por favor selecciona un horario.');return}
     
-    // Validar que el horario siga disponible
     if (horariosOcupados.includes(selectedTime)) {
         alert('Este horario acaba de ser ocupado. Por favor selecciona otro.');
         cargarHorariosDisponibles(fecha);
@@ -403,6 +487,8 @@ async function sendToGoogleSheets(data){
         reclutadora:data.reclutadora,
         tiempoTraslado:data.tiempoTraslado,
         ingresoEsperado:data.ingresoEsperado,
+        fuente: data.fuente || '',
+        fuenteDetalle: data.fuenteDetalle || '',
         pregunta1:data.pregunta1,puntaje1:data.puntaje1,
         pregunta2:data.pregunta2,puntaje2:data.puntaje2,
         pregunta3:data.pregunta3,puntaje3:data.puntaje3,
@@ -416,8 +502,102 @@ async function sendToGoogleSheets(data){
         clasificacion:data.clasificacion,
         citaFecha:data.citaFecha,
         citaHora:data.citaHora,
-        estado:'Nuevo'
+        estado:'Nuevo',
+        cvUrl: data.cvUrl || ''
     };
     const response=await fetch(GOOGLE_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(formData)});
     return response
+}
+
+// =====================================================
+// SUBIDA DE CV A GOOGLE DRIVE
+// =====================================================
+async function handleCVUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+        alert('El archivo es demasiado grande. Máximo 5MB.');
+        input.value = '';
+        return;
+    }
+    
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(file.type)) {
+        alert('Formato no válido. Solo se aceptan PDF, DOC y DOCX.');
+        input.value = '';
+        return;
+    }
+    
+    const label = document.getElementById('cv-file-label');
+    const status = document.getElementById('cv-status');
+    
+    label.textContent = '⏳ Subiendo CV...';
+    label.classList.remove('has-file');
+    status.className = 'cv-status uploading';
+    status.textContent = 'Subiendo archivo, por favor espera...';
+    
+    try {
+        // Convertir archivo a base64
+        const base64 = await fileToBase64(file);
+        
+        // Enviar al servidor
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                tipo: 'subir_cv',
+                telefono: candidateData.telefono,
+                nombre: candidateData.nombre,
+                fileName: file.name,
+                fileType: file.type,
+                fileData: base64
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            label.textContent = '✅ ' + file.name;
+            label.classList.add('has-file');
+            status.className = 'cv-status success';
+            status.textContent = '¡CV subido exitosamente!';
+            candidateData.cvUrl = result.url;
+            
+            // Actualizar el registro en la hoja
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    tipo: 'actualizar_cv_prefiltro',
+                    telefono: candidateData.telefono,
+                    cvUrl: result.url
+                })
+            });
+        } else {
+            throw new Error(result.message || 'Error al subir');
+        }
+    } catch (error) {
+        console.error('Error subiendo CV:', error);
+        label.textContent = '📎 Seleccionar archivo de CV';
+        label.classList.remove('has-file');
+        status.className = 'cv-status error';
+        status.textContent = 'Error al subir el CV. Intenta de nuevo o envíalo por WhatsApp.';
+        input.value = '';
+    }
+}
+
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            // Remover el prefijo "data:application/pdf;base64," 
+            const base64 = reader.result.split(',')[1];
+            resolve(base64);
+        };
+        reader.onerror = error => reject(error);
+    });
 }
