@@ -594,7 +594,7 @@
                     </div>
                     <button class="btn btn-whatsapp" onclick="enviarWhatsAppAprobado()">💬 WhatsApp</button>
                     <button class="btn btn-primary" onclick="enviarEmailAprobado()" style="margin-top:10px;">📧 Email</button>
-                    <button class="btn" onclick="location.reload()" style="margin-top:15px; background:#666; color:white;">🔄 Nueva Evaluación</button>
+                    <button class="btn" onclick="nuevaEvaluacion()" style="margin-top:15px; background:#666; color:white;">🔄 Nueva Evaluación</button>
                 </div>
             </div>
         </div>
@@ -972,6 +972,41 @@
         function toggleDetalle(index) {
             const detalle = document.getElementById(`detalle-${index}`);
             detalle.classList.toggle('visible');
+        }
+
+        function nuevaEvaluacion() {
+            // Resetear selección de candidato
+            selectedCandidato = null;
+            scores = { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0 };
+            selectedViernes = null;
+            selectedHorario = null;
+            resultadoFinal = null;
+            
+            // Limpiar formulario
+            document.getElementById('candidato-select').value = '';
+            document.getElementById('candidate-info').style.display = 'none';
+            document.getElementById('section-evaluacion').classList.add('hidden');
+            document.getElementById('result-panel').style.display = 'none';
+            document.getElementById('agenda-section').style.display = 'none';
+            document.getElementById('rejected-section').style.display = 'none';
+            document.getElementById('confirmacion-panel').style.display = 'none';
+            document.getElementById('btn-calcular').style.display = 'block';
+            
+            // Limpiar campos
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`response-q${i}`).value = '';
+                document.querySelectorAll(`#score-options-q${i} .score-option`).forEach(opt => opt.classList.remove('selected'));
+            }
+            document.getElementById('observaciones-generales').value = '';
+            document.getElementById('email-candidato').value = '';
+            
+            // Recargar candidatos
+            if (selectedReclutadora) {
+                cargarCandidatos();
+            }
+            
+            // Scroll al inicio
+            document.getElementById('section-candidato').scrollIntoView({ behavior: 'smooth' });
         }
 
         // ==========================================
