@@ -760,14 +760,40 @@
             if (!confirm('¿Marcar como "No Contestó"? Se registrará un intento de contacto.')) return;
             
             try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST', mode: 'no-cors',
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tipo: 'actualizar_estado_pf', telefono, estado: 'No Contestó', registrarIntento: true })
+                    body: JSON.stringify({ 
+                        tipo: 'actualizar_estado_pf', 
+                        telefono: telefono, 
+                        estado: 'No Contestó', 
+                        registrarIntento: true 
+                    })
                 });
+                
                 alert('✅ Marcado como "No Contestó". Se registró el intento de contacto.');
-                setTimeout(() => cargarCitasCalendario(), 500);
-            } catch (error) { alert('Error al actualizar'); }
+                setTimeout(() => cargarCitasCalendario(), 1000);
+            } catch (error) { 
+                console.error('Error:', error);
+                // Intentar de nuevo con no-cors
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            tipo: 'actualizar_estado_pf', 
+                            telefono: telefono, 
+                            estado: 'No Contestó', 
+                            registrarIntento: true 
+                        })
+                    });
+                    alert('✅ Marcado como "No Contestó". Se registró el intento de contacto.');
+                    setTimeout(() => cargarCitasCalendario(), 1000);
+                } catch (e) {
+                    alert('Error al actualizar');
+                }
+            }
         }
 
         // ==========================================
