@@ -927,13 +927,27 @@ function mostrarSesionActiva() {
     
     // Configurar filtros según rol
     const filtroReclutadora = document.getElementById('filtro-reclutadora');
+    const filtroSucursal = document.getElementById('filtro-sucursal');
+    
     if (usuarioActual.rol === 'reclutadora') {
         // Reclutadora solo ve sus candidatos
         filtroReclutadora.value = usuarioActual.reclutadora;
         filtroReclutadora.disabled = true;
+        
+        // Ocultar filtro de sucursal para reclutadoras
+        filtroSucursal.style.display = 'none';
+        
+        // Asignar sucursal según reclutadora
+        if (usuarioActual.reclutadora === 'Karla Flores') {
+            filtroSucursal.value = 'Torre JV Juárez';
+        } else {
+            // Yessica y Jezabel son de Antequera
+            filtroSucursal.value = 'Edificio Inbursa Antequera';
+        }
     } else {
         // Master ve todo
         filtroReclutadora.disabled = false;
+        filtroSucursal.style.display = 'block';
     }
     
     cargarCitasCalendario();
