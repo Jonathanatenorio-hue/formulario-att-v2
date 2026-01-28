@@ -542,54 +542,47 @@ async function handleCVUpload(input) {
         // Convertir archivo a base64
         const base64 = await fileToBase64(file);
         
-        // Usar FormData y enviar como formulario
-        const formData = new FormData();
-        formData.append('tipo', 'subir_cv');
-        formData.append('telefono', candidateData.telefono);
-        formData.append('nombre', candidateData.nombre);
-        formData.append('fileName', file.name);
-        formData.append('fileType', file.type);
-        formData.append('fileData', base64);
+        const payload = {
+            tipo: 'subir_cv',
+            telefono: candidateData.telefono,
+            nombre: candidateData.nombre,
+            fileName: file.name,
+            fileType: file.type,
+            fileData: base64
+        };
         
-        // Intentar con fetch normal primero
-        try {
-            const response = await fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                label.textContent = '✅ ' + file.name;
-                label.classList.add('has-file');
-                status.className = 'cv-status success';
-                status.textContent = '¡CV subido exitosamente!';
-                candidateData.cvUrl = result.url;
-            } else {
-                throw new Error(result.message || 'Error');
-            }
-        } catch (fetchError) {
-            // Si falla, intentar con no-cors (no tendremos respuesta pero puede funcionar)
-            await fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    tipo: 'subir_cv',
-                    telefono: candidateData.telefono,
-                    nombre: candidateData.nombre,
-                    fileName: file.name,
-                    fileType: file.type,
-                    fileData: base64
-                })
-            });
-            
-            // Asumir éxito y mostrar mensaje
+        // Enviar como JSON con redirect: 'follow'
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8'
+            },
+            body: JSON.stringify(payload),
+            redirect: 'follow'
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
             label.textContent = '✅ ' + file.name;
             label.classList.add('has-file');
             status.className = 'cv-status success';
-            status.textContent = '¡CV enviado! Verifica en tu Drive que se haya subido.';
-            candidateData.cvUrl = 'Pendiente de verificar';
+            status.textContent = '¡CV subido exitosamente!';
+            candidateData.cvUrl = result.url;
+            
+            // Actualizar en la hoja
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    tipo: 'actualizar_cv_prefiltro',
+                    telefono: candidateData.telefono,
+                    cvUrl: result.url
+                }),
+                redirect: 'follow'
+            });
+        } else {
+            throw new Error(result.message || 'Error al subir');
         }
         
     } catch (error) {
