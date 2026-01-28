@@ -436,6 +436,11 @@
                             <div class="info-item"><strong>Tiempo traslado:</strong> <span id="info-traslado"></span></div>
                             <div class="info-item"><strong>Ingreso esperado:</strong> <span id="info-ingreso"></span></div>
                         </div>
+
+                        <!-- Botón Ver CV -->
+                        <div id="cv-container" style="margin-top: 15px; display: none;">
+                            <a id="btn-ver-cv" href="#" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #9333EA 0%, #7C3AED 100%); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 500;">📄 Ver CV</a>
+                        </div>
                     </div>
                     
                     <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 20px; border-radius: 12px; margin-top: 15px; border: 2px solid #4CAF50;">
@@ -1434,6 +1439,14 @@
             document.getElementById('info-puntaje').innerHTML = `<span class="score-badge ${puntajeClass}">${selectedCandidato.puntaje}/45 pts</span>`;
             document.getElementById('candidate-info').style.display = 'block';
             document.getElementById('section-evaluacion').classList.remove('hidden');
+
+            // Mostrar botón CV si existe
+            if (selectedCandidato.cvUrl && selectedCandidato.cvUrl !== '') {
+                document.getElementById('cv-container').style.display = 'block';
+                document.getElementById('btn-ver-cv').href = selectedCandidato.cvUrl;
+            } else {
+                document.getElementById('cv-container').style.display = 'none';
+            }
             resetEvaluacion();
         }
 
