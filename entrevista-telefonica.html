@@ -139,6 +139,21 @@
         .panel-respuesta-item .q-respuesta { font-size: 13px; color: #333; }
         .panel-toggle-respuestas { background: none; border: none; color: #0066CC; cursor: pointer; font-size: 13px; padding: 0; margin-top: 10px; }
         .panel-toggle-respuestas:hover { text-decoration: underline; }
+        
+        /* Estilos Listado Compacto */
+        .panel-card-compact { background: white; border-radius: 10px; margin-bottom: 10px; padding: 12px 15px; border: 1px solid #e2e8f0; }
+        .panel-compact-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .panel-compact-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .panel-compact-num { background: #0066CC; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
+        .panel-compact-info { flex: 1; }
+        .panel-compact-nombre { font-weight: 600; font-size: 15px; color: #1e293b; }
+        .panel-compact-detalles { font-size: 12px; color: #64748b; margin-top: 3px; }
+        .panel-compact-right { display: flex; align-items: center; gap: 15px; }
+        .panel-compact-hora { background: #0066CC; color: white; padding: 4px 10px; border-radius: 15px; font-size: 13px; font-weight: 600; }
+        .panel-compact-puntajes { display: flex; gap: 8px; }
+        .panel-mini-puntaje { background: #f1f5f9; padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; color: #475569; }
+        .panel-mini-puntaje.pasa { background: #dcfce7; color: #166534; }
+        .panel-mini-puntaje.reservas { background: #fef3c7; color: #92400e; }
 
         .scoring-guide { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 2px solid #4CAF50; }
         .scoring-guide h3 { color: #2e7d32; margin-bottom: 15px; font-size: 16px; text-align: center; }
@@ -1171,68 +1186,42 @@
             let html = '';
             candidatos.forEach((c, index) => {
                 const estadoClass = c.estado === 'Confirmado' ? 'confirmado' : 'asignado';
-                const estadoTexto = c.estado === 'Confirmado' ? '✅ Confirmado' : '⏳ Pendiente';
+                const estadoTexto = c.estado === 'Confirmado' ? '✅' : '⏳';
                 const resultadoClass = c.resultado === 'PASA' ? 'pasa' : 'reservas';
                 
-                // Generar análisis
-                const analisis = generarAnalisisPanel(c);
-                
                 html += `
-                <div class="panel-card">
-                    <div class="panel-card-header">
-                        <div>
-                            <h3>${index + 1}. ${c.nombre}</h3>
-                            <span style="font-size: 12px; color: #64748b;">Reclutadora: ${c.reclutadora} | ${c.sucursal}</span>
+                <div class="panel-card-compact">
+                    <div class="panel-compact-header">
+                        <div class="panel-compact-left">
+                            <span class="panel-compact-num">${index + 1}</span>
+                            <div class="panel-compact-info">
+                                <div class="panel-compact-nombre">${c.nombre} <span class="panel-estado ${estadoClass}">${estadoTexto}</span></div>
+                                <div class="panel-compact-detalles">
+                                    📞 ${c.telefono} | 📧 ${c.email} | 🎂 ${c.edad} años | 📍 ${c.ubicacion}
+                                </div>
+                            </div>
                         </div>
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <span class="panel-estado ${estadoClass}">${estadoTexto}</span>
-                            <span class="hora">🕐 ${c.horaInicio}</span>
+                        <div class="panel-compact-right">
+                            <span class="panel-compact-hora">🕐 ${c.horaInicio}</span>
+                            <div class="panel-compact-puntajes">
+                                <span class="panel-mini-puntaje">PF: ${c.puntajePF}/45</span>
+                                <span class="panel-mini-puntaje">ET: ${c.puntajeET}/30</span>
+                                <span class="panel-mini-puntaje ${resultadoClass}">${c.resultado}</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="panel-card-body">
-                        <div class="panel-info-grid">
-                            <div class="panel-info-item"><strong>📞 Teléfono</strong>${c.telefono}</div>
-                            <div class="panel-info-item"><strong>📧 Email</strong>${c.email}</div>
-                            <div class="panel-info-item"><strong>🎂 Edad</strong>${c.edad} años</div>
-                            <div class="panel-info-item"><strong>📍 Ubicación</strong>${c.ubicacion}</div>
-                            <div class="panel-info-item"><strong>🚗 Traslado</strong>${c.tiempoTraslado}</div>
-                            <div class="panel-info-item"><strong>💰 Ingreso esperado</strong>${c.ingresoEsperado || 'N/A'}</div>
-                        </div>
-                        
-                        <div class="panel-puntajes">
-                            <div class="panel-puntaje">
-                                <div class="score">${c.puntajePF}/45</div>
-                                <div class="label">Pre-Filtro</div>
-                            </div>
-                            <div class="panel-puntaje">
-                                <div class="score">${c.puntajeET}/30</div>
-                                <div class="label">Entrevista Tel.</div>
-                            </div>
-                            <div class="panel-puntaje ${resultadoClass}">
-                                <div class="score">${c.resultado}</div>
-                                <div class="label">Resultado</div>
-                            </div>
-                        </div>
-                        
-                        <div class="panel-analisis">
-                            <h4>🎯 Puntos a Considerar en Panel</h4>
-                            <p>${analisis}</p>
-                        </div>
-                        
-                        ${c.respuestasET && Object.keys(c.respuestasET).length > 0 ? `
-                        <button class="panel-toggle-respuestas" onclick="toggleRespuestasPanel(${index})">📝 Ver respuestas de entrevista telefónica</button>
-                        <div class="panel-respuestas" id="respuestas-panel-${index}" style="display: none;">
-                            <h4>Respuestas de Entrevista Telefónica</h4>
-                            ${c.respuestasET.q1 ? `<div class="panel-respuesta-item"><div class="q-titulo">1. Coherencia/Motivación</div><div class="q-respuesta">${c.respuestasET.q1}</div></div>` : ''}
-                            ${c.respuestasET.q2 ? `<div class="panel-respuesta-item"><div class="q-titulo">2. Comunicación (30 seg)</div><div class="q-respuesta">${c.respuestasET.q2}</div></div>` : ''}
-                            ${c.respuestasET.q3 ? `<div class="panel-respuesta-item"><div class="q-titulo">3. Manejo del Rechazo</div><div class="q-respuesta">${c.respuestasET.q3}</div></div>` : ''}
-                            ${c.respuestasET.q4 ? `<div class="panel-respuesta-item"><div class="q-titulo">4. Energía/Actitud</div><div class="q-respuesta">${c.respuestasET.q4}</div></div>` : ''}
-                            ${c.respuestasET.q5 ? `<div class="panel-respuesta-item"><div class="q-titulo">5. Realismo del Puesto</div><div class="q-respuesta">${c.respuestasET.q5}</div></div>` : ''}
-                            ${c.respuestasET.q6 ? `<div class="panel-respuesta-item"><div class="q-titulo">6. Cierre/Autoventa</div><div class="q-respuesta">${c.respuestasET.q6}</div></div>` : ''}
-                            ${c.observacionesET ? `<div class="panel-respuesta-item"><div class="q-titulo">📌 Observaciones</div><div class="q-respuesta">${c.observacionesET}</div></div>` : ''}
-                        </div>
-                        ` : ''}
+                    ${c.respuestasET && Object.keys(c.respuestasET).length > 0 ? `
+                    <button class="panel-toggle-respuestas" onclick="toggleRespuestasPanel(${index})">📝 Ver respuestas</button>
+                    <div class="panel-respuestas" id="respuestas-panel-${index}" style="display: none;">
+                        ${c.respuestasET.q1 ? `<div class="panel-respuesta-item"><div class="q-titulo">1. Coherencia:</div><div class="q-respuesta">${c.respuestasET.q1}</div></div>` : ''}
+                        ${c.respuestasET.q2 ? `<div class="panel-respuesta-item"><div class="q-titulo">2. Comunicación:</div><div class="q-respuesta">${c.respuestasET.q2}</div></div>` : ''}
+                        ${c.respuestasET.q3 ? `<div class="panel-respuesta-item"><div class="q-titulo">3. Manejo Rechazo:</div><div class="q-respuesta">${c.respuestasET.q3}</div></div>` : ''}
+                        ${c.respuestasET.q4 ? `<div class="panel-respuesta-item"><div class="q-titulo">4. Energía/Actitud:</div><div class="q-respuesta">${c.respuestasET.q4}</div></div>` : ''}
+                        ${c.respuestasET.q5 ? `<div class="panel-respuesta-item"><div class="q-titulo">5. Realismo:</div><div class="q-respuesta">${c.respuestasET.q5}</div></div>` : ''}
+                        ${c.respuestasET.q6 ? `<div class="panel-respuesta-item"><div class="q-titulo">6. Autoventa:</div><div class="q-respuesta">${c.respuestasET.q6}</div></div>` : ''}
+                        ${c.observacionesET ? `<div class="panel-respuesta-item"><div class="q-titulo">📌 Observaciones:</div><div class="q-respuesta">${c.observacionesET}</div></div>` : ''}
                     </div>
+                    ` : ''}
                 </div>`;
             });
             
