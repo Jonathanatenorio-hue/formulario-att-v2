@@ -20,6 +20,8 @@
         .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,102,204,0.3); }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .btn-maps { background: linear-gradient(135deg, #34A853 0%, #0F9D58 100%); margin-top: 10px; margin-bottom: 15px; }
+        .btn-cv { background: linear-gradient(135deg, #9333EA 0%, #7C3AED 100%); margin-top: 15px; }
+        .btn-cv:hover { box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3); }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; color: #333; font-weight: 500; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 15px; transition: border-color 0.3s; }
@@ -53,6 +55,28 @@
         .location-box h4 { color: #2e7d32; margin-bottom: 10px; font-size: 16px; }
         .location-box p { color: #333; font-size: 14px; margin-bottom: 5px; }
         .location-box .address { color: #666; font-size: 13px; }
+        
+        /* Estilos para subir CV */
+        .cv-upload-section { margin-top: 25px; padding: 20px; background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 12px; border: 2px dashed #9333EA; }
+        .cv-upload-section h4 { color: #7C3AED; margin-bottom: 10px; }
+        .cv-upload-section p { color: #666; font-size: 14px; margin-bottom: 15px; }
+        .cv-file-input { display: none; }
+        .cv-file-label { display: block; padding: 15px; background: white; border: 2px solid #9333EA; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.3s; color: #7C3AED; font-weight: 500; }
+        .cv-file-label:hover { background: #9333EA; color: white; }
+        .cv-file-label.has-file { background: #22C55E; border-color: #22C55E; color: white; }
+        .cv-status { margin-top: 10px; padding: 10px; border-radius: 8px; font-size: 14px; display: none; }
+        .cv-status.uploading { display: block; background: #FEF3C7; color: #92400E; }
+        .cv-status.success { display: block; background: #D1FAE5; color: #065F46; }
+        .cv-status.error { display: block; background: #FEE2E2; color: #991B1B; }
+        
+        /* Estilos para fuente del candidato */
+        .fuente-option { padding: 14px 18px; border: 2px solid #e0e0e0; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; background: white; margin-bottom: 10px; }
+        .fuente-option:hover { border-color: #00A8E1; background: #f0f8ff; }
+        .fuente-option.selected { border-color: #0066CC; background: linear-gradient(135deg, #e6f2ff 0%, #cce5ff 100%); }
+        .fuente-suboption { margin-left: 20px; margin-top: 10px; padding: 10px 15px; background: #f8f9fa; border-radius: 8px; display: none; }
+        .fuente-suboption.visible { display: block; }
+        .fuente-suboption input, .fuente-suboption select { margin-top: 8px; }
+        
         @media (max-width: 600px) { .container { margin: 10px; } .header h1 { font-size: 20px; } .intro, .form-section { padding: 20px; } .time-slots { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
@@ -74,13 +98,74 @@
                 <p style="margin: 0 0 10px 0;"><strong style="color: #00aa00;">✅ Si te gusta hablar por teléfono, trabajar con objetivos claros y ganar más según tu desempeño, continúa.</strong></p>
                 <p style="margin: 0;"><strong style="color: #cc0000;">❌ Si prefieres un empleo sin metas, comisiones o presión por resultados, este proceso no es compatible contigo.</strong></p>
             </div>
-            <p>El proceso dura <strong>5-7 minutos</strong> y consta de 13 preguntas sobre tu perfil, preferencias laborales y disponibilidad.</p>
+            <p>El proceso dura <strong>5-7 minutos</strong> y consta de 14 preguntas sobre tu perfil, preferencias laborales y disponibilidad.</p>
             <p style="margin-top: 20px; color: #0066CC; font-weight: 600;">¿Listo para comenzar?</p>
             <button class="btn" onclick="startForm()">Comenzar Pre-evaluación →</button>
         </div>
+        
+        <!-- NUEVO: Paso 0 - Fuente del candidato -->
+        <div class="form-section step" id="step-fuente">
+            <div class="progress-bar"><div class="progress-fill" style="width: 5%"></div></div>
+            <div class="question-number">Paso 1 de 14</div>
+            <h2 style="margin-bottom: 25px; color: #333;">¿Cómo te enteraste de esta vacante?</h2>
+            <div class="question-text">📢 Selecciona la opción que aplique:</div>
+            
+            <div class="fuente-option" onclick="selectFuente('recomendacion')">
+                <strong>👥 Recomendación de un colaborador</strong>
+                <p style="font-size: 13px; color: #666; margin-top: 5px;">Alguien que trabaja aquí me recomendó</p>
+            </div>
+            <div class="fuente-suboption" id="suboption-recomendacion">
+                <label style="font-size: 14px; color: #333;">¿Quién te recomendó? <span class="required">*</span></label>
+                <input type="text" id="nombre-recomendador" placeholder="Nombre del colaborador que te recomendó">
+            </div>
+            
+            <div class="fuente-option" onclick="selectFuente('internet')">
+                <strong>🌐 Página de internet</strong>
+                <p style="font-size: 13px; color: #666; margin-top: 5px;">Indeed, OCC, Computrabajo, Facebook, etc.</p>
+            </div>
+            <div class="fuente-suboption" id="suboption-internet">
+                <label style="font-size: 14px; color: #333;">¿En qué página nos encontraste?</label>
+                <select id="pagina-internet">
+                    <option value="">Selecciona una opción</option>
+                    <option value="Indeed">Indeed</option>
+                    <option value="OCC Mundial">OCC Mundial</option>
+                    <option value="Computrabajo">Computrabajo</option>
+                    <option value="Facebook">Facebook</option>
+                    <option value="LinkedIn">LinkedIn</option>
+                    <option value="Google">Google</option>
+                    <option value="Otra">Otra</option>
+                </select>
+            </div>
+            
+            <div class="fuente-option" onclick="selectFuente('reclutadora')">
+                <strong>📞 Me contactó una reclutadora</strong>
+                <p style="font-size: 13px; color: #666; margin-top: 5px;">Una reclutadora específica me invitó a aplicar</p>
+            </div>
+            <div class="fuente-suboption" id="suboption-reclutadora">
+                <label style="font-size: 14px; color: #333;">¿Qué reclutadora te contactó? <span class="required">*</span></label>
+                <select id="reclutadora-especifica">
+                    <option value="">Selecciona la reclutadora</option>
+                    <option value="Karla Flores">Karla Flores (Torre JV Juárez)</option>
+                    <option value="Yessica Huerta">Yessica Huerta (Ed. Inbursa Antequera)</option>
+                    <option value="Jezabel Monterrosas">Jezabel Monterrosas (Ed. Inbursa Antequera)</option>
+                </select>
+            </div>
+            
+            <div class="fuente-option" onclick="selectFuente('otro')">
+                <strong>📋 Otro</strong>
+                <p style="font-size: 13px; color: #666; margin-top: 5px;">Volante, espectacular, otro medio</p>
+            </div>
+            <div class="fuente-suboption" id="suboption-otro">
+                <label style="font-size: 14px; color: #333;">Especifica cómo te enteraste:</label>
+                <input type="text" id="otro-medio" placeholder="Describe el medio">
+            </div>
+            
+            <button class="btn" onclick="nextStepFuente()">Continuar →</button>
+        </div>
+        
         <div class="form-section step" id="step0">
-            <div class="progress-bar"><div class="progress-fill" style="width: 7%"></div></div>
-            <div class="question-number">Paso 1 de 13</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 10%"></div></div>
+            <div class="question-number">Paso 2 de 14</div>
             <h2 style="margin-bottom: 25px; color: #333;">Selección de Sucursal</h2>
             <div class="question-text">📍 ¿En qué sucursal te gustaría trabajar?</div>
             <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Selecciona la sucursal más cercana a tu ubicación</p>
@@ -91,8 +176,8 @@
             <button class="btn" onclick="nextStep(0)">Continuar →</button>
         </div>
         <div class="form-section step" id="step1">
-            <div class="progress-bar"><div class="progress-fill" style="width: 15%"></div></div>
-            <div class="question-number">Paso 2 de 13</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 17%"></div></div>
+            <div class="question-number">Paso 3 de 14</div>
             <h2 style="margin-bottom: 25px; color: #333;">Información Personal</h2>
             <div class="form-group"><label>Nombre Completo <span class="required">*</span></label><input type="text" id="nombre" required placeholder="Ej: Juan Pérez García"></div>
             <div class="form-group"><label>Teléfono <span class="required">*</span></label><input type="tel" id="telefono" required placeholder="Ej: 5512345678" maxlength="10"></div>
@@ -108,8 +193,8 @@
             <button class="btn" onclick="nextStep(1)">Continuar →</button>
         </div>
         <div class="form-section step" id="step2">
-            <div class="progress-bar"><div class="progress-fill" style="width: 23%"></div></div>
-            <div class="question-number">Paso 3 de 13</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 24%"></div></div>
+            <div class="question-number">Paso 4 de 14</div>
             <div class="question-text">🚗 ¿Cuánto tiempo te tomaría llegar al centro seleccionado?</div>
             <div class="location-box"><h4>📍 Centro seleccionado: <span id="centro-nombre"></span></h4><p class="address">📌 <span id="centro-direccion"></span></p></div>
             <button class="btn btn-maps" onclick="abrirMaps()" type="button">🗺️ Ver ubicación en Google Maps</button>
@@ -120,8 +205,8 @@
             <button class="btn" onclick="nextStep(2)">Continuar →</button>
         </div>
         <div class="form-section step" id="step3">
-            <div class="progress-bar"><div class="progress-fill" style="width: 30%"></div></div>
-            <div class="question-number">Paso 4 de 13</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 31%"></div></div>
+            <div class="question-number">Paso 5 de 14</div>
             <div class="question-text">💰 En promedio, ¿qué ingreso mensual buscas considerando sueldo base + comisiones?</div>
             <div class="form-group">
                 <label>Expectativa de ingreso mensual <span class="required">*</span></label>
@@ -129,15 +214,15 @@
             </div>
             <button class="btn" onclick="nextStep(3)">Continuar →</button>
         </div>
-        <div class="form-section step" id="step4"><div class="progress-bar"><div class="progress-fill" style="width: 38%"></div></div><div class="question-number">Paso 5 de 13</div><div class="question-text">1️⃣ ¿Qué te motiva principalmente a trabajar en un call center?</div><div class="options" id="options-q1"></div><button class="btn" onclick="nextStep(4)">Continuar →</button></div>
-        <div class="form-section step" id="step5"><div class="progress-bar"><div class="progress-fill" style="width: 46%"></div></div><div class="question-number">Paso 6 de 13</div><div class="question-text">2️⃣ ¿Cómo te sientes trabajando bajo metas diarias de ventas?</div><div class="options" id="options-q2"></div><button class="btn" onclick="nextStep(5)">Continuar →</button></div>
-        <div class="form-section step" id="step6"><div class="progress-bar"><div class="progress-fill" style="width: 54%"></div></div><div class="question-number">Paso 7 de 13</div><div class="question-text">3️⃣ Si un cliente te dice "no me interesa", ¿qué haces?</div><div class="options" id="options-q3"></div><button class="btn" onclick="nextStep(6)">Continuar →</button></div>
-        <div class="form-section step" id="step7"><div class="progress-bar"><div class="progress-fill" style="width: 62%"></div></div><div class="question-number">Paso 8 de 13</div><div class="question-text">4️⃣ ¿Qué tan importante es para ti el tema de comisiones?</div><div class="options" id="options-q4"></div><button class="btn" onclick="nextStep(7)">Continuar →</button></div>
-        <div class="form-section step" id="step8"><div class="progress-bar"><div class="progress-fill" style="width: 69%"></div></div><div class="question-number">Paso 9 de 13</div><div class="question-text">5️⃣ ¿Cómo reaccionas cuando tienes varios días sin cerrar ventas?</div><div class="options" id="options-q5"></div><button class="btn" onclick="nextStep(8)">Continuar →</button></div>
-        <div class="form-section step" id="step9"><div class="progress-bar"><div class="progress-fill" style="width: 77%"></div></div><div class="question-number">Paso 10 de 13</div><div class="question-text">6️⃣ ¿Cómo te describes en temas de puntualidad y asistencia?</div><div class="options" id="options-q6"></div><button class="btn" onclick="nextStep(9)">Continuar →</button></div>
-        <div class="form-section step" id="step10"><div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div><div class="question-number">Paso 11 de 13</div><div class="question-text">7️⃣ ¿Qué esperas de un supervisor o coordinador?</div><div class="options" id="options-q7"></div><button class="btn" onclick="nextStep(10)">Continuar →</button></div>
-        <div class="form-section step" id="step11"><div class="progress-bar"><div class="progress-fill" style="width: 92%"></div></div><div class="question-number">Paso 12 de 13</div><div class="question-text">8️⃣ ¿Cómo manejas la retroalimentación cuando te dicen que algo no lo estás haciendo bien?</div><div class="options" id="options-q8"></div><button class="btn" onclick="nextStep(11)">Continuar →</button></div>
-        <div class="form-section step" id="step12"><div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div><div class="question-number">Paso 13 de 13</div><div class="question-text">9️⃣ ¿Cuánto tiempo planeas quedarte si obtienes buenos ingresos y estabilidad?</div><div class="options" id="options-q9"></div><button class="btn" onclick="submitForm()">Enviar Pre-evaluación →</button></div>
+        <div class="form-section step" id="step4"><div class="progress-bar"><div class="progress-fill" style="width: 38%"></div></div><div class="question-number">Paso 6 de 14</div><div class="question-text">1️⃣ ¿Qué te motiva principalmente a trabajar en un call center?</div><div class="options" id="options-q1"></div><button class="btn" onclick="nextStep(4)">Continuar →</button></div>
+        <div class="form-section step" id="step5"><div class="progress-bar"><div class="progress-fill" style="width: 45%"></div></div><div class="question-number">Paso 7 de 14</div><div class="question-text">2️⃣ ¿Cómo te sientes trabajando bajo metas diarias de ventas?</div><div class="options" id="options-q2"></div><button class="btn" onclick="nextStep(5)">Continuar →</button></div>
+        <div class="form-section step" id="step6"><div class="progress-bar"><div class="progress-fill" style="width: 52%"></div></div><div class="question-number">Paso 8 de 14</div><div class="question-text">3️⃣ Si un cliente te dice "no me interesa", ¿qué haces?</div><div class="options" id="options-q3"></div><button class="btn" onclick="nextStep(6)">Continuar →</button></div>
+        <div class="form-section step" id="step7"><div class="progress-bar"><div class="progress-fill" style="width: 59%"></div></div><div class="question-number">Paso 9 de 14</div><div class="question-text">4️⃣ ¿Qué tan importante es para ti el tema de comisiones?</div><div class="options" id="options-q4"></div><button class="btn" onclick="nextStep(7)">Continuar →</button></div>
+        <div class="form-section step" id="step8"><div class="progress-bar"><div class="progress-fill" style="width: 66%"></div></div><div class="question-number">Paso 10 de 14</div><div class="question-text">5️⃣ ¿Cómo reaccionas cuando tienes varios días sin cerrar ventas?</div><div class="options" id="options-q5"></div><button class="btn" onclick="nextStep(8)">Continuar →</button></div>
+        <div class="form-section step" id="step9"><div class="progress-bar"><div class="progress-fill" style="width: 73%"></div></div><div class="question-number">Paso 11 de 14</div><div class="question-text">6️⃣ ¿Cómo te describes en temas de puntualidad y asistencia?</div><div class="options" id="options-q6"></div><button class="btn" onclick="nextStep(9)">Continuar →</button></div>
+        <div class="form-section step" id="step10"><div class="progress-bar"><div class="progress-fill" style="width: 80%"></div></div><div class="question-number">Paso 12 de 14</div><div class="question-text">7️⃣ ¿Qué esperas de un supervisor o coordinador?</div><div class="options" id="options-q7"></div><button class="btn" onclick="nextStep(10)">Continuar →</button></div>
+        <div class="form-section step" id="step11"><div class="progress-bar"><div class="progress-fill" style="width: 87%"></div></div><div class="question-number">Paso 13 de 14</div><div class="question-text">8️⃣ ¿Cómo manejas la retroalimentación cuando te dicen que algo no lo estás haciendo bien?</div><div class="options" id="options-q8"></div><button class="btn" onclick="nextStep(11)">Continuar →</button></div>
+        <div class="form-section step" id="step12"><div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div><div class="question-number">Paso 14 de 14</div><div class="question-text">9️⃣ ¿Cuánto tiempo planeas quedarte si obtienes buenos ingresos y estabilidad?</div><div class="options" id="options-q9"></div><button class="btn" onclick="submitForm()">Enviar Pre-evaluación →</button></div>
         <div class="rejected-screen" id="rejected-screen"><div class="icon">😔</div><h2>Gracias por tu tiempo</h2><p>Lamentablemente, en base a tus respuestas, este puesto no es compatible con tu perfil actual.</p><p>Te recomendamos buscar oportunidades que se ajusten mejor a tus preferencias laborales.</p><p style="margin-top: 30px; color: #0066CC; font-weight: 600;">Te deseamos mucho éxito en tu búsqueda laboral. 🙌</p></div>
         <div class="approved-screen" id="approved-screen">
             <div class="icon">🎉</div>
@@ -155,7 +240,32 @@
                 <div class="form-group"><label>Horario disponible <span class="required">*</span></label><div class="time-slots" id="time-slots"><div class="time-slot" onclick="selectTime('09:00')">09:00 AM</div><div class="time-slot" onclick="selectTime('09:30')">09:30 AM</div><div class="time-slot" onclick="selectTime('10:00')">10:00 AM</div><div class="time-slot" onclick="selectTime('10:30')">10:30 AM</div><div class="time-slot" onclick="selectTime('11:00')">11:00 AM</div><div class="time-slot" onclick="selectTime('11:30')">11:30 AM</div><div class="time-slot" onclick="selectTime('12:00')">12:00 PM</div><div class="time-slot" onclick="selectTime('12:30')">12:30 PM</div><div class="time-slot" onclick="selectTime('13:00')">01:00 PM</div><div class="time-slot" onclick="selectTime('13:30')">01:30 PM</div><div class="time-slot" onclick="selectTime('14:00')">02:00 PM</div><div class="time-slot" onclick="selectTime('14:30')">02:30 PM</div><div class="time-slot" onclick="selectTime('15:00')">03:00 PM</div><div class="time-slot" onclick="selectTime('15:30')">03:30 PM</div><div class="time-slot" onclick="selectTime('16:00')">04:00 PM</div><div class="time-slot" onclick="selectTime('16:30')">04:30 PM</div><div class="time-slot" onclick="selectTime('17:00')">05:00 PM</div><div class="time-slot" onclick="selectTime('17:30')">05:30 PM</div></div></div>
                 <button class="btn" onclick="confirmAppointment()">Confirmar Cita →</button>
             </div>
-            <div id="seccion-post-cita" style="display: none; margin-top: 30px;"><div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 25px; border-radius: 12px; text-align: center; border: 2px solid #4CAF50;"><div style="font-size: 50px; margin-bottom: 15px;">✅</div><h3 style="color: #2e7d32; margin-bottom: 10px;">¡Cita Agendada Exitosamente!</h3><p style="color: #333; margin-bottom: 5px;"><strong>📅 Fecha:</strong> <span id="cita-confirmada-fecha"></span></p><p style="color: #333; margin-bottom: 15px;"><strong>🕐 Hora:</strong> <span id="cita-confirmada-hora"></span></p></div><div style="background: #fff3cd; padding: 18px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #ffc107;"><p style="margin: 0; color: #856404; font-weight: 600; font-size: 16px;">📄 ÚLTIMO PASO:</p><p style="margin: 10px 0 0 0; color: #856404; font-size: 14px;">Envía tu CV al reclutador <strong>ANTES de tu cita</strong> por WhatsApp o correo electrónico.</p></div><button class="btn" onclick="sendCVWhatsApp()" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); margin-top: 10px;">📄 Enviar CV por WhatsApp →</button><p style="color: #666; font-size: 13px; margin-top: 15px;">O envíalo por email: <a href="#" id="email-link-final" style="color: #0066CC;"></a></p></div>
+            <div id="seccion-post-cita" style="display: none; margin-top: 30px;">
+                <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 25px; border-radius: 12px; text-align: center; border: 2px solid #4CAF50;">
+                    <div style="font-size: 50px; margin-bottom: 15px;">✅</div>
+                    <h3 style="color: #2e7d32; margin-bottom: 10px;">¡Cita Agendada Exitosamente!</h3>
+                    <p style="color: #333; margin-bottom: 5px;"><strong>📅 Fecha:</strong> <span id="cita-confirmada-fecha"></span></p>
+                    <p style="color: #333; margin-bottom: 15px;"><strong>🕐 Hora:</strong> <span id="cita-confirmada-hora"></span></p>
+                </div>
+                
+                <!-- SECCIÓN SUBIR CV -->
+                <div class="cv-upload-section">
+                    <h4>📄 Sube tu CV (Recomendado)</h4>
+                    <p>Sube tu CV ahora para agilizar tu proceso de selección. Formatos aceptados: PDF, DOC, DOCX (máx. 5MB)</p>
+                    <input type="file" id="cv-file" class="cv-file-input" accept=".pdf,.doc,.docx" onchange="handleCVUpload(this)">
+                    <label for="cv-file" class="cv-file-label" id="cv-file-label">
+                        📎 Seleccionar archivo de CV
+                    </label>
+                    <div class="cv-status" id="cv-status"></div>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 18px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                    <p style="margin: 0; color: #856404; font-weight: 600; font-size: 16px;">📄 ¿Prefieres enviar tu CV por WhatsApp?</p>
+                    <p style="margin: 10px 0 0 0; color: #856404; font-size: 14px;">Si ya lo tienes en tu celular, también puedes enviarlo directamente al reclutador.</p>
+                </div>
+                <button class="btn" onclick="sendCVWhatsApp()" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); margin-top: 10px;">📄 Enviar CV por WhatsApp →</button>
+                <p style="color: #666; font-size: 13px; margin-top: 15px;">O envíalo por email: <a href="#" id="email-link-final" style="color: #0066CC;"></a></p>
+            </div>
         </div>
     </div>
     <script src="prefiltro-script.js"></script>
