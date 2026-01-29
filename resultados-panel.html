@@ -39,25 +39,27 @@
         .live-dot { width: 8px; height: 8px; background: #10B981; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         
-        .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 24px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 24px; }
         .stat-card { background: var(--white); border-radius: 14px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--gray-200); text-align: center; }
         .stat-card.blue { border-left: 4px solid var(--att-blue); }
         .stat-card.green { border-left: 4px solid var(--success); }
         .stat-card.yellow { border-left: 4px solid var(--warning); }
         .stat-card.red { border-left: 4px solid var(--danger); }
         .stat-card.gray { border-left: 4px solid var(--gray-400); }
+        .stat-card.purple { border-left: 4px solid #8B5CF6; }
         .stat-number { font-size: 36px; font-weight: 700; margin-bottom: 4px; }
         .stat-card.blue .stat-number { color: var(--att-blue); }
         .stat-card.green .stat-number { color: var(--success); }
         .stat-card.yellow .stat-number { color: var(--warning); }
         .stat-card.red .stat-number { color: var(--danger); }
         .stat-card.gray .stat-number { color: var(--gray-500); }
+        .stat-card.purple .stat-number { color: #8B5CF6; }
         .stat-label { font-size: 13px; color: var(--gray-500); font-weight: 500; }
         
         .filters { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
         .filter-group { display: flex; align-items: center; gap: 8px; }
         .filter-group label { font-size: 14px; font-weight: 500; color: var(--gray-600); }
-        .filter-group select { padding: 10px 16px; border: 2px solid var(--gray-200); border-radius: 10px; font-size: 14px; font-family: inherit; background: var(--white); min-width: 200px; }
+        .filter-group select { padding: 10px 16px; border: 2px solid var(--gray-200); border-radius: 10px; font-size: 14px; font-family: inherit; background: var(--white); min-width: 180px; }
         .filter-group select:focus { outline: none; border-color: var(--att-blue); }
         .btn { padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; }
         .btn-primary { background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); color: white; }
@@ -81,6 +83,7 @@
         .badge-warning { background: var(--warning-light); color: #92400E; }
         .badge-danger { background: var(--danger-light); color: #991B1B; }
         .badge-gray { background: var(--gray-100); color: var(--gray-600); }
+        .badge-purple { background: #EDE9FE; color: #6D28D9; }
         
         .puntaje { font-size: 18px; font-weight: 700; }
         .puntaje.high { color: var(--success); }
@@ -164,6 +167,10 @@
                 <div class="stat-number" id="stat-rechazados">0</div>
                 <div class="stat-label">❌ Rechazados</div>
             </div>
+            <div class="stat-card purple">
+                <div class="stat-number" id="stat-listos">0</div>
+                <div class="stat-label">🎯 Listos</div>
+            </div>
             <div class="stat-card gray">
                 <div class="stat-number" id="stat-confirmados">0</div>
                 <div class="stat-label">📋 Confirmados</div>
@@ -183,6 +190,16 @@
                     <option value="">Todas</option>
                     <option value="Torre JV Juárez">Torre JV Juárez</option>
                     <option value="Edificio Inbursa Antequera">Edificio Inbursa Antequera</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>🎯 Estado:</label>
+                <select id="select-estado" onchange="filtrarResultados()">
+                    <option value="">Todos</option>
+                    <option value="listo">✅ Listos para capacitar</option>
+                    <option value="pendiente">⏳ Pendientes</option>
+                    <option value="rechazado">❌ Rechazados</option>
+                    <option value="no_show">🚫 No se presentaron</option>
                 </select>
             </div>
             <button class="btn btn-primary" onclick="cargarResultados()">🔄 Actualizar</button>
@@ -238,6 +255,7 @@
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
 
 let resultadosData = [];
+let resultadosFiltrados = [];
 let aspiranteSeleccionado = null;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -268,6 +286,37 @@ async function cargarFechas() {
     } catch (e) { console.error(e); }
 }
 
+// Función para determinar si un aspirante está "Listo" para capacitar
+function estaListo(r) {
+    const esAprobado = r.resultado === 'Aprobado (muy bien)' || r.resultado === 'Aprobado (regular)';
+    const tieneDocsCompletos = r.checklistCompleto === true;
+    const tienePsico = r.psicometricos === true;
+    const tieneEmail = r.felicitacionEnviada === true;
+    
+    return esAprobado && tieneDocsCompletos && tienePsico && tieneEmail;
+}
+
+// Función para determinar el estado general del aspirante
+function obtenerEstadoGeneral(r) {
+    if (r.resultado === 'No se presentó') return 'no_show';
+    if (r.resultado && r.resultado.includes('No aprobó')) return 'rechazado';
+    if (estaListo(r)) return 'listo';
+    if (r.resultado === 'Aprobado (muy bien)' || r.resultado === 'Aprobado (regular)') return 'pendiente';
+    return 'sin_evaluar';
+}
+
+function filtrarResultados() {
+    const estadoFiltro = document.getElementById('select-estado').value;
+    
+    if (!estadoFiltro) {
+        resultadosFiltrados = [...resultadosData];
+    } else {
+        resultadosFiltrados = resultadosData.filter(r => obtenerEstadoGeneral(r) === estadoFiltro);
+    }
+    
+    renderizarTabla();
+}
+
 async function cargarResultados(silencioso = false) {
     const fecha = document.getElementById('select-fecha').value;
     const sucursal = document.getElementById('select-sucursal').value;
@@ -285,98 +334,154 @@ async function cargarResultados(silencioso = false) {
         
         resultadosData = data.resultados || [];
         
+        // Calcular estadísticas
         document.getElementById('stat-total').textContent = data.stats?.total || 0;
         document.getElementById('stat-aprobados').textContent = data.stats?.aprobados || 0;
         document.getElementById('stat-regulares').textContent = data.stats?.regulares || 0;
         document.getElementById('stat-rechazados').textContent = data.stats?.rechazados || 0;
+        
+        // Contar "Listos" (docs completos + psico + email enviado)
+        const listos = resultadosData.filter(r => estaListo(r)).length;
+        document.getElementById('stat-listos').textContent = listos;
         
         const confirmados = resultadosData.filter(r => r.confirmacionAsistencia === 'Confirmado').length;
         document.getElementById('stat-confirmados').textContent = confirmados;
         
         document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-MX');
         
-        if (resultadosData.length === 0) {
-            container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><h3>Sin resultados</h3><p>No hay evaluaciones para esta fecha</p></div>';
-            return;
-        }
-        
-        let html = `<table class="results-table"><thead><tr>
-            <th>Aspirante</th>
-            <th class="hide-mobile">Sucursal</th>
-            <th style="text-align:center;">Puntaje</th>
-            <th style="text-align:center;">Resultado</th>
-            <th style="text-align:center;">Docs</th>
-            <th style="text-align:center;">Psico</th>
-            <th style="text-align:center;">Email</th>
-            <th style="text-align:center;">Confirmó</th>
-            <th style="text-align:center;">Acción</th>
-        </tr></thead><tbody>`;
-        
-        resultadosData.forEach((r, idx) => {
-            const iniciales = r.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
-            
-            let puntajeClass = 'low';
-            if (r.puntaje >= 64) puntajeClass = 'high';
-            else if (r.puntaje >= 48) puntajeClass = 'medium';
-            
-            let resultadoBadge = '<span class="badge badge-gray">⏳ Pendiente</span>';
-            if (r.resultado === 'Aprobado (muy bien)') resultadoBadge = '<span class="badge badge-success">✅ Muy bien</span>';
-            else if (r.resultado === 'Aprobado (regular)') resultadoBadge = '<span class="badge badge-warning">⚠️ Regular</span>';
-            else if (r.resultado.includes('No aprobó')) resultadoBadge = '<span class="badge badge-danger">❌ No aprobó</span>';
-            else if (r.resultado === 'No se presentó') resultadoBadge = '<span class="badge badge-gray">🚫 No show</span>';
-            
-            const docsTotal = 12;
-            const docsOk = r.docsOk || 0;
-            const docsPercent = Math.round((docsOk / docsTotal) * 100);
-            let docsHTML = r.tieneChecklist 
-                ? `<div class="docs-progress"><div class="docs-bar"><div class="docs-bar-fill" style="width:${docsPercent}%"></div></div><span class="docs-text">${docsOk}/${docsTotal}</span></div>`
-                : '<span class="badge badge-gray">Sin llenar</span>';
-            
-            let psicoHTML = '⏳';
-            if (r.psicometricos === true) psicoHTML = '✅';
-            else if (r.tieneChecklist && !r.psicometricos) psicoHTML = '❌';
-            
-            let emailHTML = r.felicitacionEnviada ? '✅' : '⏳';
-            
-            let confirmoHTML = '<span class="badge badge-gray">-</span>';
-            if (r.confirmacionAsistencia === 'Confirmado') confirmoHTML = '<span class="badge badge-success">✅ Sí</span>';
-            else if (r.felicitacionEnviada) confirmoHTML = '<span class="badge badge-warning">⏳ Pendiente</span>';
-            
-            let accionHTML = '-';
-            const esAprobado = r.resultado === 'Aprobado (muy bien)' || r.resultado === 'Aprobado (regular)';
-            
-            if (esAprobado && !r.felicitacionEnviada) {
-                if (r.checklistCompleto) {
-                    accionHTML = `<button class="action-btn send" onclick="abrirModalEnvio(${idx})">📧 Enviar</button>`;
-                } else if (r.tieneChecklist) {
-                    accionHTML = `<button class="action-btn send" onclick="abrirModalEnvio(${idx})" style="background:var(--warning);">⚠️ Enviar</button>`;
-                } else {
-                    accionHTML = `<span class="badge badge-gray">Falta checklist</span>`;
-                }
-            } else if (esAprobado && r.felicitacionEnviada) {
-                accionHTML = `<button class="action-btn sent" disabled>✅ Enviado</button>`;
-            }
-            
-            html += `<tr>
-                <td><div class="aspirante-info"><div class="aspirante-avatar">${iniciales}</div><div><div class="aspirante-name">${r.nombre}</div><div class="aspirante-hora">🕐 ${r.hora}</div></div></div></td>
-                <td class="hide-mobile">${r.sucursal}</td>
-                <td style="text-align:center;"><span class="puntaje ${puntajeClass}">${r.puntaje || '-'}</span></td>
-                <td style="text-align:center;">${resultadoBadge}</td>
-                <td style="text-align:center;">${docsHTML}</td>
-                <td class="status-cell">${psicoHTML}</td>
-                <td class="status-cell">${emailHTML}</td>
-                <td style="text-align:center;">${confirmoHTML}</td>
-                <td style="text-align:center;">${accionHTML}</td>
-            </tr>`;
-        });
-        
-        html += '</tbody></table>';
-        container.innerHTML = html;
+        // Aplicar filtro actual
+        filtrarResultados();
         
     } catch (e) {
         console.error(e);
         container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><h3>Error al cargar</h3><p>Intenta de nuevo</p></div>';
     }
+}
+
+function renderizarTabla() {
+    const container = document.getElementById('results-container');
+    
+    if (resultadosFiltrados.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><h3>Sin resultados</h3><p>No hay evaluaciones que coincidan con los filtros</p></div>';
+        return;
+    }
+    
+    let html = `<table class="results-table"><thead><tr>
+        <th>Aspirante</th>
+        <th class="hide-mobile">Sucursal</th>
+        <th style="text-align:center;">Puntaje</th>
+        <th style="text-align:center;">Resultado</th>
+        <th style="text-align:center;">Docs</th>
+        <th style="text-align:center;">Psico</th>
+        <th style="text-align:center;">Email</th>
+        <th style="text-align:center;">Confirmó</th>
+        <th style="text-align:center;">Listo</th>
+        <th style="text-align:center;">Acción</th>
+    </tr></thead><tbody>`;
+    
+    resultadosFiltrados.forEach((r, idx) => {
+        // Encontrar el índice real en resultadosData para el modal
+        const realIdx = resultadosData.findIndex(item => item.nombre === r.nombre && item.hora === r.hora);
+        
+        const iniciales = r.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+        
+        let puntajeClass = 'low';
+        if (r.puntaje >= 64) puntajeClass = 'high';
+        else if (r.puntaje >= 48) puntajeClass = 'medium';
+        
+        let resultadoBadge = '<span class="badge badge-gray">⏳ Pendiente</span>';
+        if (r.resultado === 'Aprobado (muy bien)') resultadoBadge = '<span class="badge badge-success">✅ Muy bien</span>';
+        else if (r.resultado === 'Aprobado (regular)') resultadoBadge = '<span class="badge badge-warning">⚠️ Regular</span>';
+        else if (r.resultado && r.resultado.includes('No aprobó')) resultadoBadge = '<span class="badge badge-danger">❌ No aprobó</span>';
+        else if (r.resultado === 'No se presentó') resultadoBadge = '<span class="badge badge-gray">🚫 No show</span>';
+        
+        // DOCS - Corregido para mostrar estado real
+        const docsTotal = 12;
+        const docsOk = r.docsOk || 0;
+        const docsPercent = Math.round((docsOk / docsTotal) * 100);
+        let docsHTML;
+        
+        if (r.checklistCompleto) {
+            // Si está completo, mostrar check verde
+            docsHTML = '<span style="color: var(--success); font-size: 18px;">✅</span>';
+        } else if (r.tieneChecklist) {
+            // Si tiene checklist pero no está completo, mostrar barra de progreso
+            docsHTML = `<div class="docs-progress"><div class="docs-bar"><div class="docs-bar-fill" style="width:${docsPercent}%"></div></div><span class="docs-text">${docsOk}/${docsTotal}</span></div>`;
+        } else {
+            // Si no tiene checklist, mostrar "Sin llenar"
+            docsHTML = '<span class="badge badge-gray">Sin llenar</span>';
+        }
+        
+        // PSICO - Corregido para mostrar estado real
+        let psicoHTML;
+        if (r.psicometricos === true) {
+            psicoHTML = '<span style="color: var(--success); font-size: 18px;">✅</span>';
+        } else if (r.tieneChecklist && r.psicometricos === false) {
+            psicoHTML = '<span style="color: var(--danger); font-size: 18px;">❌</span>';
+        } else {
+            psicoHTML = '<span style="color: var(--gray-400); font-size: 18px;">⏳</span>';
+        }
+        
+        // EMAIL
+        let emailHTML = r.felicitacionEnviada 
+            ? '<span style="color: var(--success); font-size: 18px;">✅</span>' 
+            : '<span style="color: var(--gray-400); font-size: 18px;">⏳</span>';
+        
+        // CONFIRMÓ
+        let confirmoHTML = '<span class="badge badge-gray">-</span>';
+        if (r.confirmacionAsistencia === 'Confirmado') {
+            confirmoHTML = '<span class="badge badge-success">✅ Sí</span>';
+        } else if (r.felicitacionEnviada) {
+            confirmoHTML = '<span class="badge badge-warning">⏳ Pendiente</span>';
+        }
+        
+        // LISTO - Nueva columna
+        let listoHTML;
+        if (estaListo(r)) {
+            listoHTML = '<span class="badge badge-purple">🎯 Listo</span>';
+        } else {
+            const esAprobado = r.resultado === 'Aprobado (muy bien)' || r.resultado === 'Aprobado (regular)';
+            if (esAprobado) {
+                listoHTML = '<span class="badge badge-warning">⏳ Pendiente</span>';
+            } else if (r.resultado && (r.resultado.includes('No aprobó') || r.resultado === 'No se presentó')) {
+                listoHTML = '<span class="badge badge-danger">❌ No</span>';
+            } else {
+                listoHTML = '<span class="badge badge-gray">-</span>';
+            }
+        }
+        
+        // ACCIÓN
+        let accionHTML = '-';
+        const esAprobado = r.resultado === 'Aprobado (muy bien)' || r.resultado === 'Aprobado (regular)';
+        
+        if (esAprobado && !r.felicitacionEnviada) {
+            if (r.checklistCompleto) {
+                accionHTML = `<button class="action-btn send" onclick="abrirModalEnvio(${realIdx})">📧 Enviar</button>`;
+            } else if (r.tieneChecklist) {
+                accionHTML = `<button class="action-btn send" onclick="abrirModalEnvio(${realIdx})" style="background:var(--warning);">⚠️ Enviar</button>`;
+            } else {
+                accionHTML = `<span class="badge badge-gray">Falta checklist</span>`;
+            }
+        } else if (esAprobado && r.felicitacionEnviada) {
+            accionHTML = `<button class="action-btn sent" disabled>✅ Enviado</button>`;
+        }
+        
+        html += `<tr>
+            <td><div class="aspirante-info"><div class="aspirante-avatar">${iniciales}</div><div><div class="aspirante-name">${r.nombre}</div><div class="aspirante-hora">🕐 ${r.hora}</div></div></div></td>
+            <td class="hide-mobile">${r.sucursal}</td>
+            <td style="text-align:center;"><span class="puntaje ${puntajeClass}">${r.puntaje || '-'}</span></td>
+            <td style="text-align:center;">${resultadoBadge}</td>
+            <td style="text-align:center;">${docsHTML}</td>
+            <td class="status-cell">${psicoHTML}</td>
+            <td class="status-cell">${emailHTML}</td>
+            <td style="text-align:center;">${confirmoHTML}</td>
+            <td style="text-align:center;">${listoHTML}</td>
+            <td style="text-align:center;">${accionHTML}</td>
+        </tr>`;
+    });
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
 }
 
 function abrirModalEnvio(idx) {
@@ -418,7 +523,7 @@ async function confirmarEnvio() {
             body: JSON.stringify({
                 tipo: 'enviar_felicitacion',
                 nombre: aspiranteSeleccionado.nombre,
-                telefono: aspiranteSeleccionado.telefono,
+                telefono: String(aspiranteSeleccionado.telefono || ''),
                 sucursal: aspiranteSeleccionado.sucursal,
                 puntaje: aspiranteSeleccionado.puntaje,
                 fecha: document.getElementById('select-fecha').value
