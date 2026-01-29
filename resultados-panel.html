@@ -5,27 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Resultados Panel | AT&T - ExpertCell</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --att-blue: #00A8E1;
-            --att-blue-dark: #0057B8;
-            --att-blue-deeper: #003A70;
-            --white: #FFFFFF;
-            --gray-50: #F8FAFC;
-            --gray-100: #F1F5F9;
-            --gray-200: #E2E8F0;
-            --gray-300: #CBD5E1;
-            --gray-400: #94A3B8;
-            --gray-500: #64748B;
-            --gray-600: #475569;
-            --gray-700: #334155;
-            --gray-800: #1E293B;
-            --success: #10B981;
-            --success-light: #D1FAE5;
-            --warning: #F59E0B;
-            --warning-light: #FEF3C7;
-            --danger: #EF4444;
-            --danger-light: #FEE2E2;
+            --att-blue: #00A8E1; --att-blue-dark: #0057B8; --att-blue-deeper: #003A70;
+            --white: #FFFFFF; --gray-50: #F8FAFC; --gray-100: #F1F5F9; --gray-200: #E2E8F0;
+            --gray-300: #CBD5E1; --gray-400: #94A3B8; --gray-500: #64748B; --gray-600: #475569;
+            --gray-700: #334155; --gray-800: #1E293B;
+            --success: #10B981; --success-light: #D1FAE5;
+            --warning: #F59E0B; --warning-light: #FEF3C7;
+            --danger: #EF4444; --danger-light: #FEE2E2;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'IBM Plex Sans', sans-serif; background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%); min-height: 100vh; color: var(--gray-800); }
@@ -38,7 +27,12 @@
         .header-badge { background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; color: white; font-size: 13px; display: flex; align-items: center; gap: 8px; }
         .live-dot { width: 8px; height: 8px; background: #10B981; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        
+        .main-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+        .main-tab { padding: 14px 28px; border: 2px solid var(--gray-200); border-radius: 12px; background: var(--white); font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; font-family: inherit; }
+        .main-tab:hover { border-color: var(--att-blue); }
+        .main-tab.active { background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-color: var(--att-blue); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         .stats-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 24px; }
         .stat-card { background: var(--white); border-radius: 14px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--gray-200); text-align: center; }
         .stat-card.blue { border-left: 4px solid var(--att-blue); }
@@ -55,7 +49,6 @@
         .stat-card.gray .stat-number { color: var(--gray-500); }
         .stat-card.purple .stat-number { color: #8B5CF6; }
         .stat-label { font-size: 13px; color: var(--gray-500); font-weight: 500; }
-        
         .filters { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
         .filter-group { display: flex; align-items: center; gap: 8px; }
         .filter-group label { font-size: 14px; font-weight: 500; color: var(--gray-600); }
@@ -64,54 +57,43 @@
         .btn { padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; }
         .btn-primary { background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); color: white; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,168,225,0.3); }
-        
-        .card { background: var(--white); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid var(--gray-200); }
+        .card { background: var(--white); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid var(--gray-200); margin-bottom: 20px; }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
         .card-title { font-size: 18px; font-weight: 600; color: var(--gray-800); display: flex; align-items: center; gap: 10px; }
         .results-table { width: 100%; border-collapse: collapse; font-size: 14px; }
         .results-table th { text-align: left; padding: 14px 12px; background: var(--gray-50); color: var(--gray-600); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--gray-200); }
         .results-table td { padding: 14px 12px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
         .results-table tr:hover { background: var(--gray-50); }
-        
         .aspirante-info { display: flex; align-items: center; gap: 12px; }
         .aspirante-avatar { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; color: white; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); }
         .aspirante-name { font-weight: 600; color: var(--gray-800); }
         .aspirante-hora { font-size: 12px; color: var(--gray-500); }
-        
         .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
         .badge-success { background: var(--success-light); color: #065F46; }
         .badge-warning { background: var(--warning-light); color: #92400E; }
         .badge-danger { background: var(--danger-light); color: #991B1B; }
         .badge-gray { background: var(--gray-100); color: var(--gray-600); }
         .badge-purple { background: #EDE9FE; color: #6D28D9; }
-        
         .puntaje { font-size: 18px; font-weight: 700; }
         .puntaje.high { color: var(--success); }
         .puntaje.medium { color: var(--warning); }
         .puntaje.low { color: var(--danger); }
-        
         .status-cell { text-align: center; }
-        .status-icon { font-size: 18px; }
-        
         .docs-progress { display: flex; align-items: center; gap: 8px; }
         .docs-bar { width: 60px; height: 6px; background: var(--gray-200); border-radius: 3px; overflow: hidden; }
         .docs-bar-fill { height: 100%; background: var(--success); transition: width 0.3s; }
         .docs-text { font-size: 12px; color: var(--gray-500); }
-        
         .action-btn { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px; }
         .action-btn.send { background: var(--att-blue); color: white; }
         .action-btn.send:hover { background: var(--att-blue-dark); }
         .action-btn.sent { background: var(--gray-100); color: var(--gray-500); cursor: default; }
         .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        
         .empty-state { text-align: center; padding: 60px 20px; }
         .empty-state .icon { font-size: 64px; margin-bottom: 16px; }
         .empty-state h3 { color: var(--gray-700); margin-bottom: 8px; }
         .empty-state p { color: var(--gray-500); }
-        
         .loading { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--gray-200); border-radius: 50%; border-top-color: var(--att-blue); animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
         .modal-overlay.active { display: flex; }
         .modal { background: white; border-radius: 16px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; }
@@ -121,18 +103,35 @@
         .modal-body { padding: 24px; }
         .modal-footer { padding: 16px 24px; border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end; gap: 12px; flex-wrap: wrap; }
         .btn-success { background: linear-gradient(135deg, var(--success) 0%, #059669 100%); color: white; }
-        
-        @media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 768px) {
-            .container { padding: 12px; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .filters { flex-direction: column; align-items: stretch; }
-            .filter-group select { width: 100%; }
-            .results-table { font-size: 12px; }
-            .hide-mobile { display: none; }
-            .modal-footer { flex-direction: column; }
-            .modal-footer .btn { width: 100%; justify-content: center; }
-        }
+        .analytics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        .analytics-card { background: var(--white); border-radius: 14px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--gray-200); }
+        .analytics-card.full-width { grid-column: span 2; }
+        .analytics-card h3 { font-size: 14px; color: var(--gray-500); font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .analytics-big-number { font-size: 48px; font-weight: 700; color: var(--att-blue); }
+        .analytics-subtitle { font-size: 14px; color: var(--gray-500); margin-top: 4px; }
+        .analytics-trend { display: flex; align-items: center; gap: 6px; font-size: 13px; margin-top: 8px; }
+        .analytics-trend.up { color: var(--success); }
+        .analytics-trend.down { color: var(--danger); }
+        .chart-container { position: relative; height: 250px; }
+        .chart-container-small { position: relative; height: 200px; }
+        .ranking-list { list-style: none; }
+        .ranking-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--gray-100); }
+        .ranking-item:last-child { border-bottom: none; }
+        .ranking-position { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; margin-right: 12px; }
+        .ranking-position.gold { background: #FEF3C7; color: #92400E; }
+        .ranking-position.silver { background: var(--gray-200); color: var(--gray-600); }
+        .ranking-position.bronze { background: #FED7AA; color: #9A3412; }
+        .ranking-position.normal { background: var(--gray-100); color: var(--gray-500); }
+        .ranking-info { flex: 1; }
+        .ranking-name { font-weight: 600; color: var(--gray-800); font-size: 14px; }
+        .ranking-detail { font-size: 12px; color: var(--gray-500); }
+        .ranking-value { font-weight: 700; color: var(--att-blue); font-size: 16px; }
+        .kpi-row { display: flex; gap: 24px; margin-top: 16px; }
+        .kpi-item { flex: 1; text-align: center; padding: 16px; background: var(--gray-50); border-radius: 10px; }
+        .kpi-value { font-size: 24px; font-weight: 700; color: var(--gray-800); }
+        .kpi-label { font-size: 12px; color: var(--gray-500); margin-top: 4px; }
+        @media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } .analytics-grid { grid-template-columns: repeat(2, 1fr); } .analytics-card.full-width { grid-column: span 2; } }
+        @media (max-width: 768px) { .container { padding: 12px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } .analytics-grid { grid-template-columns: 1fr; } .analytics-card.full-width { grid-column: span 1; } .filters { flex-direction: column; align-items: stretch; } .filter-group select { width: 100%; } .results-table { font-size: 12px; } .hide-mobile { display: none; } .modal-footer { flex-direction: column; } .modal-footer .btn { width: 100%; justify-content: center; } .main-tabs { flex-direction: column; } .kpi-row { flex-direction: column; gap: 12px; } }
     </style>
 </head>
 <body>
@@ -149,99 +148,56 @@
                 </div>
             </div>
         </div>
-
-        <div class="stats-grid">
-            <div class="stat-card blue">
-                <div class="stat-number" id="stat-total">0</div>
-                <div class="stat-label">Total Evaluados</div>
-            </div>
-            <div class="stat-card green">
-                <div class="stat-number" id="stat-aprobados">0</div>
-                <div class="stat-label">✅ Aprobados</div>
-            </div>
-            <div class="stat-card yellow">
-                <div class="stat-number" id="stat-regulares">0</div>
-                <div class="stat-label">⚠️ Regulares</div>
-            </div>
-            <div class="stat-card red">
-                <div class="stat-number" id="stat-rechazados">0</div>
-                <div class="stat-label">❌ Rechazados</div>
-            </div>
-            <div class="stat-card purple">
-                <div class="stat-number" id="stat-listos">0</div>
-                <div class="stat-label">🎯 Listos</div>
-            </div>
-            <div class="stat-card gray">
-                <div class="stat-number" id="stat-confirmados">0</div>
-                <div class="stat-label">📋 Confirmados</div>
-            </div>
+        <div class="main-tabs">
+            <button class="main-tab active" onclick="showMainTab('resultados')">📋 Resultados del Panel</button>
+            <button class="main-tab" onclick="showMainTab('analytics')">📈 Analytics & Estadísticas</button>
         </div>
-
-        <div class="filters">
-            <div class="filter-group">
-                <label>📅 Fecha:</label>
-                <select id="select-fecha" onchange="cargarResultados()">
-                    <option value="">Selecciona fecha</option>
-                </select>
+        <div class="tab-content active" id="tab-resultados">
+            <div class="stats-grid">
+                <div class="stat-card blue"><div class="stat-number" id="stat-total">0</div><div class="stat-label">Total Evaluados</div></div>
+                <div class="stat-card green"><div class="stat-number" id="stat-aprobados">0</div><div class="stat-label">✅ Aprobados</div></div>
+                <div class="stat-card yellow"><div class="stat-number" id="stat-regulares">0</div><div class="stat-label">⚠️ Regulares</div></div>
+                <div class="stat-card red"><div class="stat-number" id="stat-rechazados">0</div><div class="stat-label">❌ Rechazados</div></div>
+                <div class="stat-card purple"><div class="stat-number" id="stat-listos">0</div><div class="stat-label">🎯 Listos</div></div>
+                <div class="stat-card gray"><div class="stat-number" id="stat-confirmados">0</div><div class="stat-label">📋 Confirmados</div></div>
             </div>
-            <div class="filter-group">
-                <label>📍 Sucursal:</label>
-                <select id="select-sucursal" onchange="cargarResultados()">
-                    <option value="">Todas</option>
-                    <option value="Torre JV Juárez">Torre JV Juárez</option>
-                    <option value="Edificio Inbursa Antequera">Edificio Inbursa Antequera</option>
-                </select>
+            <div class="filters">
+                <div class="filter-group"><label>📅 Fecha:</label><select id="select-fecha" onchange="cargarResultados()"><option value="">Selecciona fecha</option></select></div>
+                <div class="filter-group"><label>📍 Sucursal:</label><select id="select-sucursal" onchange="cargarResultados()"><option value="">Todas</option><option value="Torre JV Juárez">Torre JV Juárez</option><option value="Edificio Inbursa Antequera">Edificio Inbursa Antequera</option></select></div>
+                <div class="filter-group"><label>🎯 Estado:</label><select id="select-estado" onchange="filtrarResultados()"><option value="todos">📊 Todos</option><option value="listo">✅ Listos para capacitar</option><option value="pendiente">⏳ Pendientes</option><option value="rechazado">❌ Rechazados</option><option value="no_show">🚫 No se presentaron</option></select></div>
+                <button class="btn btn-primary" onclick="cargarResultados()">🔄 Actualizar</button>
             </div>
-            <div class="filter-group">
-                <label>🎯 Estado:</label>
-                <select id="select-estado" onchange="filtrarResultados()">
-                    <option value="">Todos</option>
-                    <option value="listo">✅ Listos para capacitar</option>
-                    <option value="pendiente">⏳ Pendientes</option>
-                    <option value="rechazado">❌ Rechazados</option>
-                    <option value="no_show">🚫 No se presentaron</option>
-                </select>
-            </div>
-            <button class="btn btn-primary" onclick="cargarResultados()">🔄 Actualizar</button>
+            <div class="card"><div class="card-header"><div class="card-title">📋 Resultados del Panel</div></div><div id="results-container"><div class="empty-state"><div class="icon">📅</div><h3>Selecciona una fecha</h3><p>Elige una fecha de panel para ver los resultados</p></div></div></div>
         </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">📋 Resultados del Panel</div>
+        <div class="tab-content" id="tab-analytics">
+            <div class="filters">
+                <div class="filter-group"><label>📍 Sucursal:</label><select id="analytics-sucursal" onchange="cargarAnalytics()"><option value="">Todas las sucursales</option><option value="Torre JV Juárez">Torre JV Juárez</option><option value="Edificio Inbursa Antequera">Edificio Inbursa Antequera</option></select></div>
+                <div class="filter-group"><label>📅 Período:</label><select id="analytics-periodo" onchange="cargarAnalytics()"><option value="mes">Último mes</option><option value="trimestre">Último trimestre</option><option value="semestre">Último semestre</option><option value="anio">Último año</option></select></div>
+                <button class="btn btn-primary" onclick="cargarAnalytics()">🔄 Actualizar</button>
             </div>
-            <div id="results-container">
-                <div class="empty-state">
-                    <div class="icon">📅</div>
-                    <h3>Selecciona una fecha</h3>
-                    <p>Elige una fecha de panel para ver los resultados</p>
-                </div>
+            <div class="analytics-grid">
+                <div class="analytics-card"><h3>👥 Total Evaluados</h3><div class="analytics-big-number" id="analytics-total">0</div><div class="analytics-subtitle">en el período seleccionado</div><div class="analytics-trend up" id="analytics-total-trend"><span>↑</span> <span>vs período anterior</span></div></div>
+                <div class="analytics-card"><h3>✅ Tasa de Aprobación</h3><div class="analytics-big-number" id="analytics-tasa" style="color: var(--success);">0%</div><div class="analytics-subtitle">aprobados del total</div><div class="analytics-trend up" id="analytics-tasa-trend"><span>↑</span> <span>vs período anterior</span></div></div>
+                <div class="analytics-card"><h3>🎯 Tasa de Conversión</h3><div class="analytics-big-number" id="analytics-conversion" style="color: #8B5CF6;">0%</div><div class="analytics-subtitle">listos para capacitar</div><div class="analytics-trend up" id="analytics-conversion-trend"><span>↑</span> <span>vs período anterior</span></div></div>
+                <div class="analytics-card"><h3>📊 Puntaje Promedio</h3><div class="analytics-big-number" id="analytics-puntaje" style="color: var(--warning);">0</div><div class="analytics-subtitle">de 80 puntos posibles</div><div class="analytics-trend up" id="analytics-puntaje-trend"><span>↑</span> <span>vs período anterior</span></div></div>
+                <div class="analytics-card full-width"><h3>📈 Aprobados por Semana</h3><div class="chart-container"><canvas id="chart-semanal"></canvas></div></div>
+                <div class="analytics-card"><h3>🎯 Distribución de Resultados</h3><div class="chart-container-small"><canvas id="chart-resultados"></canvas></div></div>
+                <div class="analytics-card"><h3>📍 Comparativa por Sucursal</h3><div class="chart-container-small"><canvas id="chart-sucursales"></canvas></div></div>
+                <div class="analytics-card"><h3>🏆 Top Reclutadores</h3><ul class="ranking-list" id="ranking-reclutadores"><li class="ranking-item"><span class="ranking-position gold">1</span><div class="ranking-info"><div class="ranking-name">Cargando...</div><div class="ranking-detail">-</div></div><span class="ranking-value">-</span></li></ul></div>
+                <div class="analytics-card"><h3>📊 Métricas de Proceso</h3><div class="kpi-row"><div class="kpi-item"><div class="kpi-value" id="kpi-noshow">0%</div><div class="kpi-label">No Show</div></div><div class="kpi-item"><div class="kpi-value" id="kpi-confirmacion">0%</div><div class="kpi-label">Confirmación</div></div></div><div class="kpi-row" style="margin-top: 12px;"><div class="kpi-item"><div class="kpi-value" id="kpi-docs">0%</div><div class="kpi-label">Docs Completos</div></div><div class="kpi-item"><div class="kpi-value" id="kpi-psico">0%</div><div class="kpi-label">Psicométricos</div></div></div></div>
+                <div class="analytics-card full-width"><h3>📅 Histórico Mensual</h3><div class="chart-container"><canvas id="chart-mensual"></canvas></div></div>
             </div>
         </div>
     </div>
-
     <div class="modal-overlay" id="modal-envio">
         <div class="modal">
-            <div class="modal-header">
-                <h3>📧 Enviar Felicitación</h3>
-                <button class="modal-close" onclick="cerrarModal()">&times;</button>
-            </div>
+            <div class="modal-header"><h3>📧 Enviar Felicitación</h3><button class="modal-close" onclick="cerrarModal()">&times;</button></div>
             <div class="modal-body">
                 <p style="margin-bottom: 16px;">¿Deseas enviar el email de felicitación con feedback a:</p>
-                <div style="background: var(--gray-50); padding: 16px; border-radius: 10px; margin-bottom: 16px;">
-                    <strong id="modal-nombre">Nombre del aspirante</strong>
-                    <p style="font-size: 13px; color: var(--gray-500); margin-top: 4px;" id="modal-info">Sucursal • Puntaje</p>
-                </div>
+                <div style="background: var(--gray-50); padding: 16px; border-radius: 10px; margin-bottom: 16px;"><strong id="modal-nombre">Nombre del aspirante</strong><p style="font-size: 13px; color: var(--gray-500); margin-top: 4px;" id="modal-info">Sucursal • Puntaje</p></div>
                 <div id="modal-docs-pendientes"></div>
                 <p style="font-size: 13px; color: var(--gray-500);">El email incluirá:</p>
-                <ul style="font-size: 13px; color: var(--gray-500); margin: 8px 0 0 20px;">
-                    <li>Felicitación personalizada</li>
-                    <li>Puntaje y resultado</li>
-                    <li>Fortalezas detectadas</li>
-                    <li>Áreas de oportunidad</li>
-                    <li>Documentos pendientes (si hay)</li>
-                    <li>Fecha y hora de capacitación (9:50 AM)</li>
-                    <li>Botón para confirmar asistencia</li>
-                </ul>
+                <ul style="font-size: 13px; color: var(--gray-500); margin: 8px 0 0 20px;"><li>Felicitación personalizada</li><li>Puntaje y resultado</li><li>Fortalezas detectadas</li><li>Áreas de oportunidad</li><li>Documentos pendientes (si hay)</li><li>Fecha y hora de capacitación (9:50 AM)</li><li>Botón para confirmar asistencia</li></ul>
             </div>
             <div class="modal-footer">
                 <button class="btn" style="background: var(--gray-100); color: var(--gray-700);" onclick="cerrarModal()">Cancelar</button>
@@ -250,22 +206,20 @@
             </div>
         </div>
     </div>
-
     <script>
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
+let resultadosData = [], resultadosFiltrados = [], aspiranteSeleccionado = null;
+let chartSemanal, chartResultados, chartSucursales, chartMensual;
 
-let resultadosData = [];
-let resultadosFiltrados = [];
-let aspiranteSeleccionado = null;
+document.addEventListener('DOMContentLoaded', () => { cargarFechas(); setInterval(() => { if (document.getElementById('select-fecha').value) cargarResultados(true); }, 30000); });
 
-document.addEventListener('DOMContentLoaded', () => {
-    cargarFechas();
-    setInterval(() => {
-        if (document.getElementById('select-fecha').value) {
-            cargarResultados(true);
-        }
-    }, 30000);
-});
+function showMainTab(tab) {
+    document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector(`[onclick="showMainTab('${tab}')"]`).classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+    if (tab === 'analytics') cargarAnalytics();
+}
 
 async function cargarFechas() {
     const select = document.getElementById('select-fecha');
@@ -274,29 +228,17 @@ async function cargarFechas() {
         const data = await r.json();
         select.innerHTML = '<option value="">Selecciona fecha</option>';
         if (data.fechas && data.fechas.length > 0) {
-            data.fechas.forEach(f => {
-                const opt = document.createElement('option');
-                opt.value = f.fecha;
-                opt.textContent = f.fechaLegible;
-                if (f.esHoy) opt.selected = true;
-                select.appendChild(opt);
-            });
+            data.fechas.forEach(f => { const opt = document.createElement('option'); opt.value = f.fecha; opt.textContent = f.fechaLegible; if (f.esHoy) opt.selected = true; select.appendChild(opt); });
             if (select.value) cargarResultados();
         }
     } catch (e) { console.error(e); }
 }
 
-// Función para determinar si un aspirante está "Listo" para capacitar
 function estaListo(r) {
     const esAprobado = r.resultado === 'Aprobado (muy bien)' || r.resultado === 'Aprobado (regular)';
-    const tieneDocsCompletos = r.checklistCompleto === true;
-    const tienePsico = r.psicometricos === true;
-    const tieneEmail = r.felicitacionEnviada === true;
-    
-    return esAprobado && tieneDocsCompletos && tienePsico && tieneEmail;
+    return esAprobado && r.checklistCompleto === true && r.psicometricos === true && r.felicitacionEnviada === true;
 }
 
-// Función para determinar el estado general del aspirante
 function obtenerEstadoGeneral(r) {
     if (r.resultado === 'No se presentó') return 'no_show';
     if (r.resultado && r.resultado.includes('No aprobó')) return 'rechazado';
@@ -307,13 +249,8 @@ function obtenerEstadoGeneral(r) {
 
 function filtrarResultados() {
     const estadoFiltro = document.getElementById('select-estado').value;
-    
-    if (!estadoFiltro) {
-        resultadosFiltrados = [...resultadosData];
-    } else {
-        resultadosFiltrados = resultadosData.filter(r => obtenerEstadoGeneral(r) === estadoFiltro);
-    }
-    
+    if (estadoFiltro === 'todos' || !estadoFiltro) { resultadosFiltrados = [...resultadosData]; }
+    else { resultadosFiltrados = resultadosData.filter(r => obtenerEstadoGeneral(r) === estadoFiltro); }
     renderizarTabla();
 }
 
@@ -321,166 +258,102 @@ async function cargarResultados(silencioso = false) {
     const fecha = document.getElementById('select-fecha').value;
     const sucursal = document.getElementById('select-sucursal').value;
     if (!fecha) return;
-    
     const container = document.getElementById('results-container');
-    if (!silencioso) {
-        container.innerHTML = '<div style="text-align:center;padding:40px;"><span class="loading"></span></div>';
-    }
-    
+    if (!silencioso) container.innerHTML = '<div style="text-align:center;padding:40px;"><span class="loading"></span></div>';
     try {
         const url = GOOGLE_SCRIPT_URL + '?action=getResultadosConChecklist&fecha=' + encodeURIComponent(fecha) + '&sucursal=' + encodeURIComponent(sucursal);
         const r = await fetch(url);
         const data = await r.json();
-        
         resultadosData = data.resultados || [];
-        
-        // Calcular estadísticas
         document.getElementById('stat-total').textContent = data.stats?.total || 0;
         document.getElementById('stat-aprobados').textContent = data.stats?.aprobados || 0;
         document.getElementById('stat-regulares').textContent = data.stats?.regulares || 0;
         document.getElementById('stat-rechazados').textContent = data.stats?.rechazados || 0;
-        
-        // Contar "Listos" (docs completos + psico + email enviado)
-        const listos = resultadosData.filter(r => estaListo(r)).length;
-        document.getElementById('stat-listos').textContent = listos;
-        
-        const confirmados = resultadosData.filter(r => r.confirmacionAsistencia === 'Confirmado').length;
-        document.getElementById('stat-confirmados').textContent = confirmados;
-        
+        document.getElementById('stat-listos').textContent = resultadosData.filter(r => estaListo(r)).length;
+        document.getElementById('stat-confirmados').textContent = resultadosData.filter(r => r.confirmacionAsistencia === 'Confirmado').length;
         document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-MX');
-        
-        // Aplicar filtro actual
         filtrarResultados();
-        
-    } catch (e) {
-        console.error(e);
-        container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><h3>Error al cargar</h3><p>Intenta de nuevo</p></div>';
-    }
+    } catch (e) { console.error(e); container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><h3>Error al cargar</h3><p>Intenta de nuevo</p></div>'; }
 }
 
 function renderizarTabla() {
     const container = document.getElementById('results-container');
-    
-    if (resultadosFiltrados.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><h3>Sin resultados</h3><p>No hay evaluaciones que coincidan con los filtros</p></div>';
-        return;
-    }
-    
-    let html = `<table class="results-table"><thead><tr>
-        <th>Aspirante</th>
-        <th class="hide-mobile">Sucursal</th>
-        <th style="text-align:center;">Puntaje</th>
-        <th style="text-align:center;">Resultado</th>
-        <th style="text-align:center;">Docs</th>
-        <th style="text-align:center;">Psico</th>
-        <th style="text-align:center;">Email</th>
-        <th style="text-align:center;">Confirmó</th>
-        <th style="text-align:center;">Listo</th>
-        <th style="text-align:center;">Acción</th>
-    </tr></thead><tbody>`;
-    
+    if (resultadosFiltrados.length === 0) { container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><h3>Sin resultados</h3><p>No hay evaluaciones que coincidan con los filtros</p></div>'; return; }
+    let html = `<table class="results-table"><thead><tr><th>Aspirante</th><th class="hide-mobile">Sucursal</th><th style="text-align:center;">Puntaje</th><th style="text-align:center;">Resultado</th><th style="text-align:center;">Docs</th><th style="text-align:center;">Psico</th><th style="text-align:center;">Email</th><th style="text-align:center;">Confirmó</th><th style="text-align:center;">Listo</th><th style="text-align:center;">Acción</th></tr></thead><tbody>`;
     resultadosFiltrados.forEach((r, idx) => {
-        // Encontrar el índice real en resultadosData para el modal
         const realIdx = resultadosData.findIndex(item => item.nombre === r.nombre && item.hora === r.hora);
-        
         const iniciales = r.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
-        
-        let puntajeClass = 'low';
-        if (r.puntaje >= 64) puntajeClass = 'high';
-        else if (r.puntaje >= 48) puntajeClass = 'medium';
-        
+        let puntajeClass = r.puntaje >= 64 ? 'high' : r.puntaje >= 48 ? 'medium' : 'low';
         let resultadoBadge = '<span class="badge badge-gray">⏳ Pendiente</span>';
         if (r.resultado === 'Aprobado (muy bien)') resultadoBadge = '<span class="badge badge-success">✅ Muy bien</span>';
         else if (r.resultado === 'Aprobado (regular)') resultadoBadge = '<span class="badge badge-warning">⚠️ Regular</span>';
         else if (r.resultado && r.resultado.includes('No aprobó')) resultadoBadge = '<span class="badge badge-danger">❌ No aprobó</span>';
         else if (r.resultado === 'No se presentó') resultadoBadge = '<span class="badge badge-gray">🚫 No show</span>';
-        
-        // DOCS - Corregido para mostrar estado real
-        const docsTotal = 12;
-        const docsOk = r.docsOk || 0;
-        const docsPercent = Math.round((docsOk / docsTotal) * 100);
-        let docsHTML;
-        
-        if (r.checklistCompleto) {
-            // Si está completo, mostrar check verde
-            docsHTML = '<span style="color: var(--success); font-size: 18px;">✅</span>';
-        } else if (r.tieneChecklist) {
-            // Si tiene checklist pero no está completo, mostrar barra de progreso
-            docsHTML = `<div class="docs-progress"><div class="docs-bar"><div class="docs-bar-fill" style="width:${docsPercent}%"></div></div><span class="docs-text">${docsOk}/${docsTotal}</span></div>`;
-        } else {
-            // Si no tiene checklist, mostrar "Sin llenar"
-            docsHTML = '<span class="badge badge-gray">Sin llenar</span>';
-        }
-        
-        // PSICO - Corregido para mostrar estado real
-        let psicoHTML;
-        if (r.psicometricos === true) {
-            psicoHTML = '<span style="color: var(--success); font-size: 18px;">✅</span>';
-        } else if (r.tieneChecklist && r.psicometricos === false) {
-            psicoHTML = '<span style="color: var(--danger); font-size: 18px;">❌</span>';
-        } else {
-            psicoHTML = '<span style="color: var(--gray-400); font-size: 18px;">⏳</span>';
-        }
-        
-        // EMAIL
-        let emailHTML = r.felicitacionEnviada 
-            ? '<span style="color: var(--success); font-size: 18px;">✅</span>' 
-            : '<span style="color: var(--gray-400); font-size: 18px;">⏳</span>';
-        
-        // CONFIRMÓ
-        let confirmoHTML = '<span class="badge badge-gray">-</span>';
-        if (r.confirmacionAsistencia === 'Confirmado') {
-            confirmoHTML = '<span class="badge badge-success">✅ Sí</span>';
-        } else if (r.felicitacionEnviada) {
-            confirmoHTML = '<span class="badge badge-warning">⏳ Pendiente</span>';
-        }
-        
-        // LISTO - Nueva columna
-        let listoHTML;
-        if (estaListo(r)) {
-            listoHTML = '<span class="badge badge-purple">🎯 Listo</span>';
-        } else {
-            const esAprobado = r.resultado === 'Aprobado (muy bien)' || r.resultado === 'Aprobado (regular)';
-            if (esAprobado) {
-                listoHTML = '<span class="badge badge-warning">⏳ Pendiente</span>';
-            } else if (r.resultado && (r.resultado.includes('No aprobó') || r.resultado === 'No se presentó')) {
-                listoHTML = '<span class="badge badge-danger">❌ No</span>';
-            } else {
-                listoHTML = '<span class="badge badge-gray">-</span>';
-            }
-        }
-        
-        // ACCIÓN
+        const docsTotal = 12, docsOk = r.docsOk || 0, docsPercent = Math.round((docsOk / docsTotal) * 100);
+        let docsHTML = r.checklistCompleto ? '<span style="color: var(--success); font-size: 18px;">✅</span>' : r.tieneChecklist ? `<div class="docs-progress"><div class="docs-bar"><div class="docs-bar-fill" style="width:${docsPercent}%"></div></div><span class="docs-text">${docsOk}/${docsTotal}</span></div>` : '<span class="badge badge-gray">Sin llenar</span>';
+        let psicoHTML = r.psicometricos === true ? '<span style="color: var(--success); font-size: 18px;">✅</span>' : (r.tieneChecklist && r.psicometricos === false) ? '<span style="color: var(--danger); font-size: 18px;">❌</span>' : '<span style="color: var(--gray-400); font-size: 18px;">⏳</span>';
+        let emailHTML = r.felicitacionEnviada ? '<span style="color: var(--success); font-size: 18px;">✅</span>' : '<span style="color: var(--gray-400); font-size: 18px;">⏳</span>';
+        let confirmoHTML = r.confirmacionAsistencia === 'Confirmado' ? '<span class="badge badge-success">✅ Sí</span>' : r.felicitacionEnviada ? '<span class="badge badge-warning">⏳ Pendiente</span>' : '<span class="badge badge-gray">-</span>';
+        let listoHTML = estaListo(r) ? '<span class="badge badge-purple">🎯 Listo</span>' : (r.resultado === 'Aprobado (muy bien)' || r.resultado === 'Aprobado (regular)') ? '<span class="badge badge-warning">⏳ Pendiente</span>' : (r.resultado && (r.resultado.includes('No aprobó') || r.resultado === 'No se presentó')) ? '<span class="badge badge-danger">❌ No</span>' : '<span class="badge badge-gray">-</span>';
         let accionHTML = '-';
         const esAprobado = r.resultado === 'Aprobado (muy bien)' || r.resultado === 'Aprobado (regular)';
-        
-        if (esAprobado && !r.felicitacionEnviada) {
-            if (r.checklistCompleto) {
-                accionHTML = `<button class="action-btn send" onclick="abrirModalEnvio(${realIdx})">📧 Enviar</button>`;
-            } else if (r.tieneChecklist) {
-                accionHTML = `<button class="action-btn send" onclick="abrirModalEnvio(${realIdx})" style="background:var(--warning);">⚠️ Enviar</button>`;
-            } else {
-                accionHTML = `<span class="badge badge-gray">Falta checklist</span>`;
-            }
-        } else if (esAprobado && r.felicitacionEnviada) {
-            accionHTML = `<button class="action-btn sent" disabled>✅ Enviado</button>`;
-        }
-        
-        html += `<tr>
-            <td><div class="aspirante-info"><div class="aspirante-avatar">${iniciales}</div><div><div class="aspirante-name">${r.nombre}</div><div class="aspirante-hora">🕐 ${r.hora}</div></div></div></td>
-            <td class="hide-mobile">${r.sucursal}</td>
-            <td style="text-align:center;"><span class="puntaje ${puntajeClass}">${r.puntaje || '-'}</span></td>
-            <td style="text-align:center;">${resultadoBadge}</td>
-            <td style="text-align:center;">${docsHTML}</td>
-            <td class="status-cell">${psicoHTML}</td>
-            <td class="status-cell">${emailHTML}</td>
-            <td style="text-align:center;">${confirmoHTML}</td>
-            <td style="text-align:center;">${listoHTML}</td>
-            <td style="text-align:center;">${accionHTML}</td>
-        </tr>`;
+        if (esAprobado && !r.felicitacionEnviada) { accionHTML = r.checklistCompleto ? `<button class="action-btn send" onclick="abrirModalEnvio(${realIdx})">📧 Enviar</button>` : r.tieneChecklist ? `<button class="action-btn send" onclick="abrirModalEnvio(${realIdx})" style="background:var(--warning);">⚠️ Enviar</button>` : '<span class="badge badge-gray">Falta checklist</span>'; }
+        else if (esAprobado && r.felicitacionEnviada) { accionHTML = '<button class="action-btn sent" disabled>✅ Enviado</button>'; }
+        html += `<tr><td><div class="aspirante-info"><div class="aspirante-avatar">${iniciales}</div><div><div class="aspirante-name">${r.nombre}</div><div class="aspirante-hora">🕐 ${r.hora}</div></div></div></td><td class="hide-mobile">${r.sucursal}</td><td style="text-align:center;"><span class="puntaje ${puntajeClass}">${r.puntaje || '-'}</span></td><td style="text-align:center;">${resultadoBadge}</td><td style="text-align:center;">${docsHTML}</td><td class="status-cell">${psicoHTML}</td><td class="status-cell">${emailHTML}</td><td style="text-align:center;">${confirmoHTML}</td><td style="text-align:center;">${listoHTML}</td><td style="text-align:center;">${accionHTML}</td></tr>`;
     });
-    
     html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+async function cargarAnalytics() {
+    const sucursal = document.getElementById('analytics-sucursal').value;
+    const periodo = document.getElementById('analytics-periodo').value;
+    try {
+        const url = GOOGLE_SCRIPT_URL + '?action=getAnalyticsDashboard&sucursal=' + encodeURIComponent(sucursal) + '&periodo=' + encodeURIComponent(periodo);
+        const r = await fetch(url);
+        const data = await r.json();
+        if (data.status === 'success') { actualizarKPIs(data); actualizarGraficas(data); actualizarRanking(data); }
+        else { usarDatosDemo(); }
+    } catch (e) { console.error('Error cargando analytics:', e); usarDatosDemo(); }
+}
+
+function usarDatosDemo() {
+    const demoData = { total: 127, aprobados: 89, rechazados: 25, noShow: 13, puntajePromedio: 62, tasaAprobacion: 70, tasaConversion: 58, tasaNoShow: 10, tasaConfirmacion: 82, tasaDocs: 75, tasaPsico: 88, muyBien: 55, regular: 34,
+        semanal: { labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'], aprobados: [18, 22, 25, 24], rechazados: [5, 7, 6, 7], noShow: [3, 2, 4, 4] },
+        mensual: { labels: ['Sep', 'Oct', 'Nov', 'Dic', 'Ene'], aprobados: [65, 78, 82, 89, 94], total: [95, 110, 115, 120, 127] },
+        sucursales: { labels: ['Torre JV Juárez', 'Edificio Inbursa'], aprobados: [52, 37], total: [72, 55] },
+        reclutadores: [ { nombre: 'Karla Flores', sucursal: 'Torre JV Juárez', aprobados: 32 }, { nombre: 'Yessica Huerta', sucursal: 'Edificio Inbursa', aprobados: 28 }, { nombre: 'Jezabel Monterrosas', sucursal: 'Edificio Inbursa', aprobados: 21 } ]
+    };
+    actualizarKPIs(demoData); actualizarGraficas(demoData); actualizarRanking(demoData);
+}
+
+function actualizarKPIs(data) {
+    document.getElementById('analytics-total').textContent = data.total || 0;
+    document.getElementById('analytics-tasa').textContent = (data.tasaAprobacion || 0) + '%';
+    document.getElementById('analytics-conversion').textContent = (data.tasaConversion || 0) + '%';
+    document.getElementById('analytics-puntaje').textContent = data.puntajePromedio || 0;
+    document.getElementById('kpi-noshow').textContent = (data.tasaNoShow || 0) + '%';
+    document.getElementById('kpi-confirmacion').textContent = (data.tasaConfirmacion || 0) + '%';
+    document.getElementById('kpi-docs').textContent = (data.tasaDocs || 0) + '%';
+    document.getElementById('kpi-psico').textContent = (data.tasaPsico || 0) + '%';
+}
+
+function actualizarGraficas(data) {
+    if (chartSemanal) chartSemanal.destroy();
+    chartSemanal = new Chart(document.getElementById('chart-semanal').getContext('2d'), { type: 'line', data: { labels: data.semanal?.labels || ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'], datasets: [{ label: 'Aprobados', data: data.semanal?.aprobados || [18, 22, 25, 24], borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4 }, { label: 'Rechazados', data: data.semanal?.rechazados || [5, 7, 6, 7], borderColor: '#EF4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.4 }, { label: 'No Show', data: data.semanal?.noShow || [3, 2, 4, 4], borderColor: '#94A3B8', backgroundColor: 'rgba(148, 163, 184, 0.1)', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } } });
+    if (chartResultados) chartResultados.destroy();
+    chartResultados = new Chart(document.getElementById('chart-resultados').getContext('2d'), { type: 'doughnut', data: { labels: ['Muy bien', 'Regular', 'Rechazados', 'No Show'], datasets: [{ data: [data.muyBien || 55, data.regular || 34, data.rechazados || 25, data.noShow || 13], backgroundColor: ['#10B981', '#F59E0B', '#EF4444', '#94A3B8'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } } });
+    if (chartSucursales) chartSucursales.destroy();
+    chartSucursales = new Chart(document.getElementById('chart-sucursales').getContext('2d'), { type: 'bar', data: { labels: data.sucursales?.labels || ['JV Juárez', 'Inbursa'], datasets: [{ label: 'Aprobados', data: data.sucursales?.aprobados || [52, 37], backgroundColor: '#10B981' }, { label: 'Total', data: data.sucursales?.total || [72, 55], backgroundColor: '#E2E8F0' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }, scales: { y: { beginAtZero: true } } } });
+    if (chartMensual) chartMensual.destroy();
+    chartMensual = new Chart(document.getElementById('chart-mensual').getContext('2d'), { type: 'bar', data: { labels: data.mensual?.labels || ['Sep', 'Oct', 'Nov', 'Dic', 'Ene'], datasets: [{ label: 'Aprobados', data: data.mensual?.aprobados || [65, 78, 82, 89, 94], backgroundColor: '#00A8E1' }, { label: 'Total Evaluados', data: data.mensual?.total || [95, 110, 115, 120, 127], backgroundColor: '#E2E8F0' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } } });
+}
+
+function actualizarRanking(data) {
+    const container = document.getElementById('ranking-reclutadores');
+    const reclutadores = data.reclutadores || [{ nombre: 'Karla Flores', sucursal: 'Torre JV Juárez', aprobados: 32 }, { nombre: 'Yessica Huerta', sucursal: 'Edificio Inbursa', aprobados: 28 }, { nombre: 'Jezabel Monterrosas', sucursal: 'Edificio Inbursa', aprobados: 21 }];
+    let html = '';
+    reclutadores.forEach((r, idx) => { const posClass = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : 'normal'; html += `<li class="ranking-item"><span class="ranking-position ${posClass}">${idx + 1}</span><div class="ranking-info"><div class="ranking-name">${r.nombre}</div><div class="ranking-detail">${r.sucursal}</div></div><span class="ranking-value">${r.aprobados}</span></li>`; });
     container.innerHTML = html;
 }
 
@@ -488,149 +361,49 @@ function abrirModalEnvio(idx) {
     aspiranteSeleccionado = resultadosData[idx];
     document.getElementById('modal-nombre').textContent = aspiranteSeleccionado.nombre;
     document.getElementById('modal-info').textContent = `${aspiranteSeleccionado.sucursal} • ${aspiranteSeleccionado.puntaje}/80 pts • ${aspiranteSeleccionado.resultado}`;
-    
     const docsDiv = document.getElementById('modal-docs-pendientes');
-    if (aspiranteSeleccionado.docsPendientes && aspiranteSeleccionado.docsPendientes.length > 0) {
-        docsDiv.innerHTML = `<div style="background: var(--warning-light); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
-            <p style="font-size: 13px; color: #92400E; font-weight: 600; margin-bottom: 8px;">⚠️ Documentos pendientes:</p>
-            <ul style="font-size: 12px; color: #92400E; margin: 0 0 0 16px;">${aspiranteSeleccionado.docsPendientes.map(d => `<li>${d}</li>`).join('')}</ul>
-            <p style="font-size: 11px; color: #92400E; margin-top: 8px; font-style: italic;">Se incluirán como recordatorio en el email.</p>
-        </div>`;
-    } else {
-        docsDiv.innerHTML = '';
-    }
-    
+    if (aspiranteSeleccionado.docsPendientes && aspiranteSeleccionado.docsPendientes.length > 0) { docsDiv.innerHTML = `<div style="background: var(--warning-light); padding: 12px; border-radius: 8px; margin-bottom: 16px;"><p style="font-size: 13px; color: #92400E; font-weight: 600; margin-bottom: 8px;">⚠️ Documentos pendientes:</p><ul style="font-size: 12px; color: #92400E; margin: 0 0 0 16px;">${aspiranteSeleccionado.docsPendientes.map(d => `<li>${d}</li>`).join('')}</ul><p style="font-size: 11px; color: #92400E; margin-top: 8px; font-style: italic;">Se incluirán como recordatorio en el email.</p></div>`; }
+    else { docsDiv.innerHTML = ''; }
     document.getElementById('modal-envio').classList.add('active');
 }
 
-function cerrarModal() {
-    document.getElementById('modal-envio').classList.remove('active');
-    aspiranteSeleccionado = null;
-}
+function cerrarModal() { document.getElementById('modal-envio').classList.remove('active'); aspiranteSeleccionado = null; }
 
 async function confirmarEnvio() {
     if (!aspiranteSeleccionado) return;
-    
     const btn = document.getElementById('btn-confirmar-envio');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="loading" style="width:14px;height:14px;border-width:2px;"></span> Enviando...';
-    
+    btn.disabled = true; btn.innerHTML = '<span class="loading" style="width:14px;height:14px;border-width:2px;"></span> Enviando...';
     try {
-        await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                tipo: 'enviar_felicitacion',
-                nombre: aspiranteSeleccionado.nombre,
-                telefono: String(aspiranteSeleccionado.telefono || ''),
-                sucursal: aspiranteSeleccionado.sucursal,
-                puntaje: aspiranteSeleccionado.puntaje,
-                fecha: document.getElementById('select-fecha').value
-            })
-        });
-        
-        cerrarModal();
-        alert('✅ Email enviado correctamente a ' + aspiranteSeleccionado.nombre);
-        setTimeout(() => cargarResultados(), 2000);
-        
-    } catch (e) {
-        alert('Error al enviar. Intenta de nuevo.');
-    }
-    
-    btn.disabled = false;
-    btn.innerHTML = '📧 Enviar Email';
+        await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tipo: 'enviar_felicitacion', nombre: aspiranteSeleccionado.nombre, telefono: String(aspiranteSeleccionado.telefono || ''), sucursal: aspiranteSeleccionado.sucursal, puntaje: aspiranteSeleccionado.puntaje, fecha: document.getElementById('select-fecha').value }) });
+        cerrarModal(); alert('✅ Email enviado correctamente a ' + aspiranteSeleccionado.nombre); setTimeout(() => cargarResultados(), 2000);
+    } catch (e) { alert('Error al enviar. Intenta de nuevo.'); }
+    btn.disabled = false; btn.innerHTML = '📧 Enviar Email';
 }
 
 async function descargarImagen() {
     if (!aspiranteSeleccionado) return;
-    
     const btn = document.getElementById('btn-descargar-imagen');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="loading" style="width:14px;height:14px;border-width:2px;"></span> Generando...';
-    
-    // Crear imagen usando canvas
-    const canvas = document.createElement('canvas');
-    canvas.width = 800;
-    canvas.height = 1200;
+    btn.disabled = true; btn.innerHTML = '<span class="loading" style="width:14px;height:14px;border-width:2px;"></span> Generando...';
+    const canvas = document.createElement('canvas'); canvas.width = 800; canvas.height = 1000;
     const ctx = canvas.getContext('2d');
-    
-    // Fondo
-    const gradient = ctx.createLinearGradient(0, 0, 800, 1200);
-    gradient.addColorStop(0, '#0057B8');
-    gradient.addColorStop(1, '#003A70');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 800, 1200);
-    
-    // Header
-    ctx.fillStyle = 'rgba(255,255,255,0.1)';
-    ctx.fillRect(0, 0, 800, 280);
-    
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 48px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('🎉 ¡FELICIDADES!', 400, 100);
-    
-    ctx.font = '32px Arial';
-    ctx.fillText(aspiranteSeleccionado.nombre.split(' ')[0].toUpperCase(), 400, 160);
-    
-    ctx.font = '24px Arial';
-    ctx.fillStyle = 'rgba(255,255,255,0.9)';
-    ctx.fillText('Has sido seleccionado para el equipo AT&T', 400, 210);
-    
-    // Resultado
-    ctx.fillStyle = aspiranteSeleccionado.puntaje >= 64 ? '#10B981' : '#F59E0B';
-    ctx.fillRect(0, 280, 800, 120);
-    
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 56px Arial';
-    ctx.fillText(aspiranteSeleccionado.puntaje + '/80', 400, 350);
-    
-    ctx.font = '24px Arial';
-    ctx.fillText('✅ ' + aspiranteSeleccionado.resultado.toUpperCase(), 400, 385);
-    
-    // Contenido
-    ctx.fillStyle = 'white';
-    ctx.fillRect(40, 420, 720, 560);
-    
-    ctx.fillStyle = '#334155';
-    ctx.font = 'bold 28px Arial';
-    ctx.textAlign = 'left';
-    ctx.fillText('📅 PRÓXIMO PASO: CAPACITACIÓN', 80, 480);
-    
-    ctx.font = '22px Arial';
-    ctx.fillStyle = '#64748b';
-    ctx.fillText('📆 Fecha: Próximo lunes', 80, 530);
-    ctx.fillText('🕐 Hora: 9:50 AM (llegada)', 80, 570);
-    ctx.fillText('📍 Lugar: ' + aspiranteSeleccionado.sucursal, 80, 610);
-    
-    // Mensaje motivacional
-    ctx.fillStyle = '#e0f2fe';
-    ctx.fillRect(60, 660, 680, 100);
-    
-    ctx.fillStyle = '#0369a1';
-    ctx.font = 'italic 18px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('"El éxito no se mide solo por lo que logras,', 400, 700);
-    ctx.fillText('sino por los obstáculos que superas para lograrlo."', 400, 730);
-    
-    // Footer
-    ctx.fillStyle = '#0057B8';
-    ctx.font = 'bold 20px Arial';
-    ctx.fillText('Confirma tu asistencia respondiendo a este mensaje', 400, 820);
-    
-    ctx.fillStyle = '#64748b';
-    ctx.font = '16px Arial';
-    ctx.fillText('Equipo de Reclutamiento AT&T | ExpertCell', 400, 950);
-    
-    // Descargar
-    const link = document.createElement('a');
-    link.download = 'felicitacion_' + aspiranteSeleccionado.nombre.replace(/\s+/g, '_') + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    
-    btn.disabled = false;
-    btn.innerHTML = '📱 Descargar WhatsApp';
+    const gradient = ctx.createLinearGradient(0, 0, 800, 1000); gradient.addColorStop(0, '#0057B8'); gradient.addColorStop(1, '#003A70');
+    ctx.fillStyle = gradient; ctx.fillRect(0, 0, 800, 1000);
+    ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fillRect(0, 0, 800, 280);
+    ctx.fillStyle = 'white'; ctx.font = 'bold 48px Arial'; ctx.textAlign = 'center'; ctx.fillText('🎉 ¡FELICIDADES!', 400, 100);
+    ctx.font = '32px Arial'; ctx.fillText(aspiranteSeleccionado.nombre.split(' ')[0].toUpperCase(), 400, 160);
+    ctx.font = '24px Arial'; ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fillText('Has sido seleccionado para el equipo AT&T', 400, 210);
+    ctx.fillStyle = aspiranteSeleccionado.puntaje >= 64 ? '#10B981' : '#F59E0B'; ctx.fillRect(0, 280, 800, 120);
+    ctx.fillStyle = 'white'; ctx.font = 'bold 56px Arial'; ctx.fillText(aspiranteSeleccionado.puntaje + '/80', 400, 350);
+    ctx.font = '24px Arial'; ctx.fillText('✅ ' + aspiranteSeleccionado.resultado.toUpperCase(), 400, 385);
+    ctx.fillStyle = 'white'; ctx.fillRect(40, 420, 720, 400);
+    ctx.fillStyle = '#334155'; ctx.font = 'bold 28px Arial'; ctx.textAlign = 'left'; ctx.fillText('📅 PRÓXIMO PASO: CAPACITACIÓN', 80, 480);
+    ctx.font = '22px Arial'; ctx.fillStyle = '#64748b'; ctx.fillText('📆 Fecha: Próximo lunes', 80, 530); ctx.fillText('🕐 Hora: 9:50 AM (llegada)', 80, 570); ctx.fillText('📍 Lugar: ' + aspiranteSeleccionado.sucursal, 80, 610);
+    ctx.fillStyle = '#e0f2fe'; ctx.fillRect(60, 660, 680, 80);
+    ctx.fillStyle = '#0369a1'; ctx.font = 'italic 16px Arial'; ctx.textAlign = 'center'; ctx.fillText('"El éxito no se mide solo por lo que logras, sino por los obstáculos que superas."', 400, 710);
+    ctx.fillStyle = '#0057B8'; ctx.font = 'bold 18px Arial'; ctx.fillText('Confirma tu asistencia respondiendo a este mensaje', 400, 800);
+    ctx.fillStyle = '#64748b'; ctx.font = '14px Arial'; ctx.fillText('Equipo de Reclutamiento AT&T | ExpertCell', 400, 950);
+    const link = document.createElement('a'); link.download = 'felicitacion_' + aspiranteSeleccionado.nombre.replace(/\s+/g, '_') + '.png'; link.href = canvas.toDataURL('image/png'); link.click();
+    btn.disabled = false; btn.innerHTML = '📱 Descargar WhatsApp';
 }
     </script>
 </body>
