@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpertCell - Sistema de Reclutamiento</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --att-blue: #00A8E1;
+            --att-blue-dark: #0057B8;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+            --white: #FFFFFF;
+            --gray-50: #F8FAFC;
+            --gray-100: #F1F5F9;
+            --gray-200: #E2E8F0;
+            --gray-300: #CBD5E1;
+            --gray-500: #64748B;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1E293B;
+            --gray-900: #0F172A;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --purple: #8B5CF6;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'IBM Plex Sans', sans-serif; background: var(--gray-100); min-height: 100vh; }
+        
+        /* ===== LOGIN ===== */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-logo h1 {
+            font-size: 28px;
+            color: var(--gray-800);
+            margin-bottom: 5px;
+        }
+        
+        .login-logo p {
+            color: var(--gray-500);
+            font-size: 14px;
+        }
+        
+        .login-logo .brand {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .login-field {
+            margin-bottom: 20px;
+        }
+        
+        .login-field label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+        
+        .login-field input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+        
+        .login-field input:focus {
+            outline: none;
+            border-color: var(--att-blue);
+            box-shadow: 0 0 0 4px rgba(0,168,225,0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,168,225,0.3);
+        }
+        
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .login-error {
+            background: #FEE2E2;
+            color: #DC2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .login-error.show {
+            display: block;
+        }
+        
+        /* ===== DASHBOARD ===== */
+        .dashboard-container {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .dashboard-container.active {
+            display: flex;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--gray-900) 0%, var(--gray-800) 100%);
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 25px 0;
+            z-index: 100;
+            transition: transform 0.3s;
+        }
+        
+        .sidebar-header {
+            padding: 0 25px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header h2 {
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-header p {
+            color: var(--gray-500);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .menu-section {
+            padding: 15px 25px 10px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gray-500);
+            font-weight: 600;
+        }
+        
+        .menu-item {
+            display: block;
+            padding: 14px 25px;
+            color: var(--gray-300);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+        
+        .menu-item.active {
+            background: rgba(0,168,225,0.15);
+            color: var(--att-blue);
+            border-left-color: var(--att-blue);
+        }
+        
+        .menu-item .icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: white;
+            height: var(--header-height);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        
+        .header-left h1 {
+            font-size: 20px;
+            color: var(--gray-800);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .user-details h4 {
+            font-size: 14px;
+            color: var(--gray-800);
+        }
+        
+        .user-details p {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+        
+        .btn-logout {
+            background: var(--gray-100);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--gray-600);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .btn-logout:hover {
+            background: var(--gray-200);
+            color: var(--danger);
+        }
+        
+        .content-area {
+            padding: 30px;
+        }
+        
+        .iframe-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            height: calc(100vh - var(--header-height) - 60px);
+        }
+        
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Welcome Screen */
+        .welcome-screen {
+            text-align: center;
+            padding: 80px 40px;
+        }
+        
+        .welcome-screen .emoji {
+            font-size: 80px;
+            margin-bottom: 30px;
+        }
+        
+        .welcome-screen h2 {
+            font-size: 28px;
+            color: var(--gray-800);
+            margin-bottom: 15px;
+        }
+        
+        .welcome-screen p {
+            font-size: 16px;
+            color: var(--gray-500);
+            max-width: 500px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+        
+        .quick-access {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .quick-card {
+            background: var(--gray-50);
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-card:hover {
+            border-color: var(--att-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,168,225,0.15);
+        }
+        
+        .quick-card .icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+        
+        .quick-card h4 {
+            font-size: 16px;
+            color: var(--gray-800);
+            margin-bottom: 5px;
+        }
+        
+        .quick-card p {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin: 0;
+        }
+        
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray-700);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 90;
+            }
+            
+            .overlay.active {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .login-box {
+                padding: 40px 25px;
+            }
+            
+            .header {
+                padding: 0 15px;
+            }
+            
+            .content-area {
+                padding: 15px;
+            }
+            
+            .user-details {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div class="login-container" id="login-screen">
+        <div class="login-box">
+            <div class="login-logo">
+                <div class="brand">📊 ExpertCell</div>
+                <h1>Sistema de Reclutamiento</h1>
+                <p>Ingresa tus credenciales para continuar</p>
+            </div>
+            
+            <div class="login-error" id="login-error"></div>
+            
+            <div class="login-field">
+                <label>Usuario</label>
+                <input type="text" id="login-usuario" placeholder="nombre.apellido">
+            </div>
+            
+            <div class="login-field">
+                <label>Contraseña</label>
+                <input type="password" id="login-password" placeholder="••••••••">
+            </div>
+            
+            <button class="login-btn" id="login-btn" onclick="iniciarSesion()">
+                Iniciar Sesión
+            </button>
+        </div>
+    </div>
+    
+    <!-- DASHBOARD -->
+    <div class="dashboard-container" id="dashboard">
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>📊 ExpertCell</h2>
+                <p>Sistema de Reclutamiento AT&T</p>
+            </div>
+            
+            <ul class="sidebar-menu" id="sidebar-menu">
+                <!-- Menu items se cargan dinámicamente -->
+            </ul>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left" style="display: flex; align-items: center; gap: 15px;">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h1 id="page-title">Inicio</h1>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-avatar" id="user-avatar">JT</div>
+                        <div class="user-details">
+                            <h4 id="user-name">Usuario</h4>
+                            <p id="user-role">Rol</p>
+                        </div>
+                    </div>
+                    <button class="btn-logout" onclick="cerrarSesion()">
+                        🚪 Salir
+                    </button>
+                </div>
+            </header>
+            
+            <div class="content-area">
+                <div class="iframe-container" id="content-frame">
+                    <!-- Contenido se carga aquí -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
+
+// URLs de los módulos
+const MODULOS = {
+    // Pre-Filtro
+    'estadisticas-campana': 'https://jonathanatenorio-hue.github.io/formulario-att-v2/estadisticas-campana.html',
+    
+    // Entrevista Telefónica
+    'entrevista-telefonica': 'https://jonathanatenorio-hue.github.io/formulario-att-v2/entrevista-telefonica.html',
+    
+    // Panel
+    'evaluacion-panel': 'https://jonathanatenorio-hue.github.io/formulario-att-v2/entrevista-panel.html',
+    'resultados-panel': 'https://jonathanatenorio-hue.github.io/formulario-att-v2/resultados-panel.html',
+    
+    // Post-Panel
+    'checklist': 'https://jonathanatenorio-hue.github.io/formulario-att-v2/checklist-panel.html'
+};
+
+// Definir menús por rol
+const MENUS_POR_ROL = {
+    'Director': [
+        { section: 'Pre-Filtro' },
+        { id: 'estadisticas-campana', icon: '📊', label: 'Estadísticas de Campaña' },
+        { section: 'Entrevista Telefónica' },
+        { id: 'entrevista-telefonica', icon: '📞', label: 'Evaluación Telefónica' },
+        { section: 'Panel' },
+        { id: 'evaluacion-panel', icon: '👥', label: 'Evaluación Panel' },
+        { id: 'resultados-panel', icon: '📋', label: 'Resultados y Analytics' },
+        { section: 'Post-Panel' },
+        { id: 'checklist', icon: '✅', label: 'Checklist Documentos' }
+    ],
+    'Jefe': [
+        { section: 'Pre-Filtro' },
+        { id: 'estadisticas-campana', icon: '📊', label: 'Estadísticas de Campaña' },
+        { section: 'Entrevista Telefónica' },
+        { id: 'entrevista-telefonica', icon: '📞', label: 'Evaluación Telefónica' },
+        { section: 'Post-Panel' },
+        { id: 'checklist', icon: '✅', label: 'Checklist Documentos' }
+    ],
+    'Reclutadora': [
+        { section: 'Mi Trabajo' },
+        { id: 'entrevista-telefonica', icon: '📞', label: 'Entrevista Telefónica' },
+        { id: 'checklist', icon: '✅', label: 'Checklist Documentos' }
+    ],
+    'Coordinador': [
+        { section: 'Panel' },
+        { id: 'evaluacion-panel', icon: '👥', label: 'Evaluación Panel' },
+        { id: 'resultados-panel', icon: '📋', label: 'Resultados y Analytics' }
+    ],
+    'Supervisor': [
+        { section: 'Panel' },
+        { id: 'evaluacion-panel', icon: '👥', label: 'Evaluación Panel' },
+        { id: 'resultados-panel', icon: '📋', label: 'Resultados Panel' }
+    ]
+};
+
+let usuarioActual = null;
+
+// Verificar sesión al cargar
+document.addEventListener('DOMContentLoaded', function() {
+    const sesion = localStorage.getItem('expertcell_sesion');
+    if (sesion) {
+        usuarioActual = JSON.parse(sesion);
+        mostrarDashboard();
+    }
+    
+    // Enter para login
+    document.getElementById('login-password').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') iniciarSesion();
+    });
+    document.getElementById('login-usuario').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') document.getElementById('login-password').focus();
+    });
+});
+
+async function iniciarSesion() {
+    const usuario = document.getElementById('login-usuario').value.trim();
+    const password = document.getElementById('login-password').value;
+    const errorDiv = document.getElementById('login-error');
+    const btn = document.getElementById('login-btn');
+    
+    if (!usuario || !password) {
+        errorDiv.textContent = 'Por favor ingresa usuario y contraseña';
+        errorDiv.classList.add('show');
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.textContent = 'Verificando...';
+    errorDiv.classList.remove('show');
+    
+    try {
+        const url = GOOGLE_SCRIPT_URL + '?action=login&usuario=' + encodeURIComponent(usuario) + '&password=' + encodeURIComponent(password);
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            usuarioActual = {
+                usuario: data.usuario,
+                nombre: data.nombre,
+                rol: data.rol
+            };
+            localStorage.setItem('expertcell_sesion', JSON.stringify(usuarioActual));
+            mostrarDashboard();
+        } else {
+            errorDiv.textContent = data.message || 'Error al iniciar sesión';
+            errorDiv.classList.add('show');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        errorDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+        errorDiv.classList.add('show');
+    }
+    
+    btn.disabled = false;
+    btn.textContent = 'Iniciar Sesión';
+}
+
+function mostrarDashboard() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').classList.add('active');
+    
+    // Actualizar info de usuario
+    document.getElementById('user-name').textContent = usuarioActual.nombre;
+    document.getElementById('user-role').textContent = usuarioActual.rol;
+    
+    const iniciales = usuarioActual.nombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    document.getElementById('user-avatar').textContent = iniciales;
+    
+    // Cargar menú según rol
+    cargarMenu();
+    
+    // Mostrar pantalla de bienvenida
+    mostrarBienvenida();
+}
+
+function cargarMenu() {
+    const menu = document.getElementById('sidebar-menu');
+    const items = MENUS_POR_ROL[usuarioActual.rol] || [];
+    
+    menu.innerHTML = '<li class="menu-item active" onclick="mostrarBienvenida()"><span class="icon">🏠</span> Inicio</li>';
+    
+    items.forEach(item => {
+        if (item.section) {
+            menu.innerHTML += '<li class="menu-section">' + item.section + '</li>';
+        } else {
+            menu.innerHTML += '<li class="menu-item" data-id="' + item.id + '" onclick="cargarModulo(\'' + item.id + '\', \'' + item.label + '\')"><span class="icon">' + item.icon + '</span> ' + item.label + '</li>';
+        }
+    });
+}
+
+function cargarModulo(id, label) {
+    // Actualizar menú activo
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+    document.querySelector('.menu-item[data-id="' + id + '"]').classList.add('active');
+    
+    // Actualizar título
+    document.getElementById('page-title').textContent = label;
+    
+    // Cargar iframe
+    const url = MODULOS[id];
+    if (url) {
+        document.getElementById('content-frame').innerHTML = '<iframe src="' + url + '" allowfullscreen></iframe>';
+    } else {
+        document.getElementById('content-frame').innerHTML = '<div class="welcome-screen"><div class="emoji">🚧</div><h2>Módulo en construcción</h2><p>Este módulo estará disponible próximamente.</p></div>';
+    }
+    
+    // Cerrar sidebar en móvil
+    if (window.innerWidth <= 1024) {
+        toggleSidebar();
+    }
+}
+
+function mostrarBienvenida() {
+    document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+    document.querySelector('.menu-item').classList.add('active');
+    document.getElementById('page-title').textContent = 'Inicio';
+    
+    const items = MENUS_POR_ROL[usuarioActual.rol] || [];
+    const quickItems = items.filter(i => i.id).slice(0, 4);
+    
+    let quickHTML = '';
+    quickItems.forEach(item => {
+        quickHTML += '<div class="quick-card" onclick="cargarModulo(\'' + item.id + '\', \'' + item.label + '\')"><div class="icon">' + item.icon + '</div><h4>' + item.label + '</h4><p>Acceso rápido</p></div>';
+    });
+    
+    document.getElementById('content-frame').innerHTML = 
+        '<div class="welcome-screen">' +
+            '<div class="emoji">👋</div>' +
+            '<h2>¡Bienvenido, ' + usuarioActual.nombre.split(' ')[0] + '!</h2>' +
+            '<p>Selecciona una opción del menú o usa los accesos rápidos para comenzar.</p>' +
+            '<div class="quick-access">' + quickHTML + '</div>' +
+        '</div>';
+}
+
+function cerrarSesion() {
+    if (confirm('¿Seguro que deseas cerrar sesión?')) {
+        localStorage.removeItem('expertcell_sesion');
+        usuarioActual = null;
+        document.getElementById('dashboard').classList.remove('active');
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('login-usuario').value = '';
+        document.getElementById('login-password').value = '';
+    }
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('active');
+}
+    </script>
+</body>
+</html>
