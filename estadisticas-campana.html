@@ -512,9 +512,13 @@ function renderEstadisticas(aprobados, rechazados, filtros) {
     const total = totalApr + totalRej;
     const tasa = total > 0 ? Math.round((totalApr / total) * 100) : 0;
     
-    // Contar por estado (embudo)
-    const entrevistaTel = aprobados.filter(r => r.estado === 'Entrevista Tel.' || r.estado === 'Panel' || r.estado === 'Contratado').length;
-    const panel = aprobados.filter(r => r.estado === 'Panel' || r.estado === 'Contratado').length;
+    // Datos del embudo desde el backend
+    const entrevistaTelAprobada = datosGlobales.embudo ? datosGlobales.embudo.entrevistaTelAprobada : 0;
+    const panelAprobado = datosGlobales.embudo ? datosGlobales.embudo.panelAprobado : 0;
+    const capacitacionConfirmada = datosGlobales.embudo ? datosGlobales.embudo.capacitacionConfirmada : 0;
+    
+    // Conteo de estados para la gráfica
+    const conteoEstados = datosGlobales.conteoEstados || {};
     
     let progClass = tasa >= 70 ? 'good' : tasa >= 50 ? 'medium' : 'bad';
     
@@ -577,29 +581,74 @@ function renderEstadisticas(aprobados, rechazados, filtros) {
                 <div class="funnel-arrow">→</div>
                 <div class="funnel-stage">
                     <div class="funnel-bar stage-2" style="height: ${Math.max(totalApr * 2, 60)}px">${totalApr}</div>
-                    <div class="funnel-label">Aprobados</div>
+                    <div class="funnel-label">Aprobados PF</div>
                     <div class="funnel-pct">${tasa}%</div>
                 </div>
                 <div class="funnel-arrow">→</div>
                 <div class="funnel-stage">
-                    <div class="funnel-bar stage-2" style="height: ${Math.max(entrevistaTel * 2, 40)}px">${entrevistaTel}</div>
-                    <div class="funnel-label">Entrevista Tel.</div>
-                    <div class="funnel-pct">${total > 0 ? Math.round((entrevistaTel/total)*100) : 0}%</div>
+                    <div class="funnel-bar stage-2" style="height: ${Math.max(entrevistaTelAprobada * 2, 40)}px">${entrevistaTelAprobada}</div>
+                    <div class="funnel-label">Entrev. Tel. ✓</div>
+                    <div class="funnel-pct">${total > 0 ? Math.round((entrevistaTelAprobada/total)*100) : 0}%</div>
                 </div>
                 <div class="funnel-arrow">→</div>
                 <div class="funnel-stage">
-                    <div class="funnel-bar stage-3" style="height: ${Math.max(panel * 2, 30)}px">${panel}</div>
-                    <div class="funnel-label">Panel</div>
-                    <div class="funnel-pct">${total > 0 ? Math.round((panel/total)*100) : 0}%</div>
+                    <div class="funnel-bar stage-3" style="height: ${Math.max(panelAprobado * 2, 30)}px">${panelAprobado}</div>
+                    <div class="funnel-label">Panel ✓</div>
+                    <div class="funnel-pct">${total > 0 ? Math.round((panelAprobado/total)*100) : 0}%</div>
+                </div>
+                <div class="funnel-arrow">→</div>
+                <div class="funnel-stage">
+                    <div class="funnel-bar stage-3" style="height: ${Math.max(capacitacionConfirmada * 2, 25)}px">${capacitacionConfirmada}</div>
+                    <div class="funnel-label">Capacitación ✓</div>
+                    <div class="funnel-pct">${total > 0 ? Math.round((capacitacionConfirmada/total)*100) : 0}%</div>
                 </div>
             </div>
         </div>
         
-        <div class="rate-card">
-            <h3>📈 Tasa de Aprobación Pre-Filtro</h3>
-            <div class="progress-container"><div class="progress-bar ${progClass}" style="width:${Math.max(tasa,5)}%">${tasa}%</div></div>
-            <div class="rate-legend"><span>0% - Baja</span><span>100% - Alta</span></div>
+        <div class="charts-grid" style="margin-bottom: 24px;">
+            <div class="chart-card">
+                <h3>📊 Estado de Candidatos Pre-Filtro</h3>
+                <div class="chart-container"><canvas id="chart-estados-pf"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>📈 Tasa de Aprobación Pre-Filtro</h3>
+                <div style="padding: 20px;">
+                    <div class="progress-container"><div class="progress-bar ${progClass}" style="width:${Math.max(tasa,5)}%">${tasa}%</div></div>
+                    <div class="rate-legend"><span>0% - Baja</span><span>100% - Alta</span></div>
+                </div>
+            </div>
         </div>
+        
+        <script>
+            // Gráfica de estados Pre-Filtro
+            setTimeout(() => {
+                const ctxEstados = document.getElementById('chart-estados-pf');
+                if (ctxEstados) {
+                    new Chart(ctxEstados, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Nuevo', 'No Contestó', 'Entrev. Tel. Aprobada', 'Rechazado ET'],
+                            datasets: [{
+                                label: 'Candidatos',
+                                data: [
+                                    ${conteoEstados['Nuevo'] || 0},
+                                    ${conteoEstados['No Contestó'] || 0},
+                                    ${conteoEstados['Entrevista Tel. Aprobada'] || 0},
+                                    ${conteoEstados['Rechazado ET'] || 0}
+                                ],
+                                backgroundColor: ['#6366F1', '#F59E0B', '#10B981', '#EF4444']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    });
+                }
+            }, 100);
+        </script>
         
         <div class="breakdown-grid">
             <div class="breakdown-card"><h3>🏢 Por Sucursal</h3>${sucHTML||'<div class="empty-state">Sin datos</div>'}</div>
@@ -736,29 +785,27 @@ function renderGraficas() {
     });
     
     // 4. Por Clasificación
-const clasificacionData = { 'SOBRESALIENTE': 0, 'EXCELENTE': 0, 'MUY BUENO': 0 };
-todos.forEach(r => {
-    const c = r.clasificacion || '';
-    if (c.includes('SOBRESALIENTE')) clasificacionData['SOBRESALIENTE']++;
-    else if (c.includes('EXCELENTE')) clasificacionData['EXCELENTE']++;
-    else if (c.includes('MUY BUENO') || c.includes('BUENO')) clasificacionData['MUY BUENO']++;
-});
-
-chartInstances.clasificacion = new Chart(document.getElementById('chart-clasificacion'), {
-    type: 'doughnut',
-    data: {
-        labels: ['🌟 Sobresaliente', '⭐ Excelente', '✅ Muy Bueno'],
-        datasets: [{
-            data: Object.values(clasificacionData),
-            backgroundColor: ['#10B981', '#F59E0B', '#EF4444']
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { position: 'right' } }
-    }
-});
+    const clasificacionData = { 'EXCELENTE': 0, 'MUY BUENO': 0, 'BUENO': 0, 'REGULAR': 0, 'NO APTO': 0 };
+    todos.forEach(r => {
+        const c = r.clasificacion || 'Sin clasificar';
+        if (clasificacionData.hasOwnProperty(c)) clasificacionData[c]++;
+    });
+    
+    chartInstances.clasificacion = new Chart(document.getElementById('chart-clasificacion'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(clasificacionData),
+            datasets: [{
+                data: Object.values(clasificacionData),
+                backgroundColor: ['#10B981', '#22C55E', '#F59E0B', '#FB923C', '#EF4444']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'right' } }
+        }
+    });
     
     // 5. Por Sucursal (Aprobados vs Rechazados)
     const sucursales = ['Torre JV Juárez', 'Edificio Inbursa Antequera'];
