@@ -501,7 +501,17 @@ async function enviarWhatsApp() {
     // Generar mensaje de WhatsApp
     const primerNombre = datos.nombre.split(' ')[0];
     const docsLista = datos.docsPendientes.map(d => '📄 ' + d).join('\n');
-    const mensaje = `¡Hola ${primerNombre}! 👋\n\nTe recordamos que para continuar con tu proceso de ingreso a *ExpertCell* necesitamos los siguientes documentos:\n\n${docsLista}\n\nPor favor tráelos a la brevedad a nuestra sucursal *${datos.sucursal}*.\n\n¡Gracias! 🙌`;
+    const mensaje = `¡Hola ${primerNombre}! 👋
+
+Te escribe el equipo de reclutamiento de *ExpertCell* solo para recordarte que aún tenemos pendientes los siguientes documentos:
+
+${docsLista}
+
+Los puedes compartir por este medio para anexarlos a tu expediente y recibas tu pase de capacitación el próximo lunes.
+
+Estamos a nada de comenzar esta magnífica historia, quedamos pendientes.
+
+¡Gracias! 🙌`;
     
     // Formatear teléfono (agregar 52 si no lo tiene)
     let telefono = String(datos.telefono || '').replace(/\D/g, '');
