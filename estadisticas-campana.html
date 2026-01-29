@@ -736,27 +736,29 @@ function renderGraficas() {
     });
     
     // 4. Por Clasificación
-    const clasificacionData = { 'EXCELENTE': 0, 'MUY BUENO': 0, 'BUENO': 0, 'REGULAR': 0, 'NO APTO': 0 };
-    todos.forEach(r => {
-        const c = r.clasificacion || 'Sin clasificar';
-        if (clasificacionData.hasOwnProperty(c)) clasificacionData[c]++;
-    });
-    
-    chartInstances.clasificacion = new Chart(document.getElementById('chart-clasificacion'), {
-        type: 'doughnut',
-        data: {
-            labels: Object.keys(clasificacionData),
-            datasets: [{
-                data: Object.values(clasificacionData),
-                backgroundColor: ['#10B981', '#22C55E', '#F59E0B', '#FB923C', '#EF4444']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { position: 'right' } }
-        }
-    });
+const clasificacionData = { 'SOBRESALIENTE': 0, 'EXCELENTE': 0, 'MUY BUENO': 0 };
+todos.forEach(r => {
+    const c = r.clasificacion || '';
+    if (c.includes('SOBRESALIENTE')) clasificacionData['SOBRESALIENTE']++;
+    else if (c.includes('EXCELENTE')) clasificacionData['EXCELENTE']++;
+    else if (c.includes('MUY BUENO') || c.includes('BUENO')) clasificacionData['MUY BUENO']++;
+});
+
+chartInstances.clasificacion = new Chart(document.getElementById('chart-clasificacion'), {
+    type: 'doughnut',
+    data: {
+        labels: ['🌟 Sobresaliente', '⭐ Excelente', '✅ Muy Bueno'],
+        datasets: [{
+            data: Object.values(clasificacionData),
+            backgroundColor: ['#10B981', '#F59E0B', '#EF4444']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'right' } }
+    }
+});
     
     // 5. Por Sucursal (Aprobados vs Rechazados)
     const sucursales = ['Torre JV Juárez', 'Edificio Inbursa Antequera'];
