@@ -432,12 +432,15 @@ function renderizarLista(containerId, lista) {
         const statusText = asp.estadoChecklist === 'Completo' ? 'Completo' : asp.estadoChecklist === 'Pendiente' ? 'Pendiente' : 'Sin iniciar';
         const badgeClass = asp.estadoChecklist === 'Completo' ? 'completo' : asp.estadoChecklist === 'Pendiente' ? 'pendiente' : 'nuevo';
         
+        // Normalizar teléfono a string para evitar errores
+        const telefonoStr = String(asp.telefono || '');
+        
         // Botón según estado
         let botonAccion = '';
         if (asp.estadoChecklist === 'Completo') {
-            botonAccion = `<button class="btn-recordatorio" style="background: #25D366;" onclick="event.stopPropagation(); enviarFelicitacion('${asp.nombre}', '${asp.telefono}')">🎉 Felicitar</button>`;
+            botonAccion = `<button class="btn-recordatorio" style="background: #25D366;" onclick="event.stopPropagation(); enviarFelicitacion('${asp.nombre}', '${telefonoStr}')">🎉 Felicitar</button>`;
         } else if (asp.estadoChecklist === 'Pendiente' && asp.docsPendientes) {
-            botonAccion = `<button class="btn-recordatorio" onclick="event.stopPropagation(); abrirModalRecordatorio('${asp.nombre}', '${asp.telefono}', '${asp.email || ''}', '${asp.docsPendientes}')">📩 Recordatorio</button>`;
+            botonAccion = `<button class="btn-recordatorio" onclick="event.stopPropagation(); abrirModalRecordatorio('${asp.nombre}', '${telefonoStr}', '${asp.email || ''}', '${asp.docsPendientes}')">📩 Recordatorio</button>`;
         }
         
         const div = document.createElement('div'); 
@@ -461,7 +464,7 @@ Recuerda que tenemos una cita este lunes para arrancar tu capacitación, puedes 
 Saludos,
 *Tu Equipo ExpertCell*`;
 
-    let tel = (telefono || '').replace(/\D/g, '');
+    let tel = String(telefono || '').replace(/\D/g, '');
     if (tel.length === 10) tel = '52' + tel;
     
     const urlWhatsApp = `https://wa.me/${tel}?text=${encodeURIComponent(mensaje)}`;
@@ -469,7 +472,7 @@ Saludos,
 }
 
 function abrirModalRecordatorio(nombre, telefono, email, docsPendientes) { 
-    recordatorioData = { nombre, telefono, email: email || '', docsPendientes: docsPendientes.split(', '), sucursal: selectedSucursal }; 
+    recordatorioData = { nombre, telefono: String(telefono || ''), email: email || '', docsPendientes: docsPendientes.split(', '), sucursal: selectedSucursal }; 
     document.getElementById('modal-mensaje').innerHTML = `Enviar recordatorio a <strong>${nombre}</strong>`;
     document.getElementById('modal-docs-lista').innerHTML = `📋 Documentos pendientes:<br>${docsPendientes}`;
     
@@ -501,7 +504,7 @@ async function enviarWhatsApp() {
     const mensaje = `¡Hola ${primerNombre}! 👋\n\nTe recordamos que para continuar con tu proceso de ingreso a *ExpertCell* necesitamos los siguientes documentos:\n\n${docsLista}\n\nPor favor tráelos a la brevedad a nuestra sucursal *${datos.sucursal}*.\n\n¡Gracias! 🙌`;
     
     // Formatear teléfono (agregar 52 si no lo tiene)
-    let telefono = (datos.telefono || '').replace(/\D/g, '');
+    let telefono = String(datos.telefono || '').replace(/\D/g, '');
     if (telefono.length === 10) telefono = '52' + telefono;
     
     const urlWhatsApp = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
@@ -527,7 +530,7 @@ async function enviarEmail() {
         const params = new URLSearchParams({ 
             action: 'enviarRecordatorio', 
             nombre: datos.nombre, 
-            telefono: datos.telefono, 
+            telefono: String(datos.telefono || ''), 
             email: datos.email, 
             docsPendientes: datos.docsPendientes.join(','), 
             sucursal: datos.sucursal 
@@ -545,6 +548,16 @@ async function enviarEmail() {
 }
 
 function seleccionarAspirante(asp) {
+    // Normalizar teléfono y email a string para evitar errores
+    if (asp.telefono !== undefined && asp.telefono !== null) {
+        asp.telefono = String(asp.telefono);
+    } else {
+        asp.telefono = '';
+    }
+    if (asp.email === undefined || asp.email === null) {
+        asp.email = '';
+    }
+    
     selectedAspirante = asp;
     const iniciales = asp.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
     document.getElementById('aspirante-iniciales').textContent = iniciales;
@@ -587,7 +600,7 @@ function seleccionarAspirante(asp) {
     if (asp.emergencia) { 
         document.getElementById('emergencia-nombre').value = asp.emergencia.nombre || ''; 
         document.getElementById('emergencia-parentesco').value = asp.emergencia.parentesco || ''; 
-        document.getElementById('emergencia-telefono').value = asp.emergencia.telefono || ''; 
+        document.getElementById('emergencia-telefono').value = String(asp.emergencia.telefono || ''); 
         document.getElementById('emergencia-fecha-nac').value = asp.emergencia.fechaNac || ''; 
     }
     
@@ -707,8 +720,8 @@ async function guardarChecklist() {
         sucursal: selectedSucursal, 
         fecha: selectedFecha, 
         aspirante_nombre: selectedAspirante.nombre, 
-        aspirante_telefono: selectedAspirante.telefono, 
-        aspirante_email: selectedAspirante.email || '', 
+        aspirante_telefono: String(selectedAspirante.telefono || ''), 
+        aspirante_email: String(selectedAspirante.email || ''), 
         ine: checklistStatus.ine, 
         domicilio: checklistStatus.domicilio, 
         curp: checklistStatus.curp, 
@@ -754,7 +767,7 @@ function mostrarConfirmacion(result) {
     const container = document.getElementById('confirmacion-content');
     const nombreCompleto = selectedAspirante.nombre;
     const primerNombre = nombreCompleto.split(' ')[0];
-    let telefono = (selectedAspirante.telefono || '').replace(/\D/g, '');
+    let telefono = String(selectedAspirante.telefono || '').replace(/\D/g, '');
     if (telefono.length === 10) telefono = '52' + telefono;
     
     if (result.estadoChecklist === 'Completo') {
@@ -811,7 +824,7 @@ Recuerda que tenemos una cita este lunes para arrancar tu capacitación, puedes 
 Saludos,
 *Tu Equipo ExpertCell*`;
 
-    let telefono = (selectedAspirante.telefono || '').replace(/\D/g, '');
+    let telefono = String(selectedAspirante.telefono || '').replace(/\D/g, '');
     if (telefono.length === 10) telefono = '52' + telefono;
     
     const urlWhatsApp = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
