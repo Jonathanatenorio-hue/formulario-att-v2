@@ -381,6 +381,13 @@
       .user-badge-logout:hover {
           color: #ef4444;
       }
+      
+      /* Modal Subir CV */
+      .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+      .modal-overlay.active { display: flex; }
+      .modal-content { background: white; border-radius: 16px; padding: 30px; max-width: 500px; width: 100%; }
+      .btn-subir-cv { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; }
+      .btn-subir-cv:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -404,6 +411,27 @@
             <button class="btn-primary" style="width: 100%; padding: 14px; margin-top: 10px;" onclick="intentarLogin()">Ingresar →</button>
         </div>
     </div>
+
+    <!-- Modal Subir CV -->
+<div class="modal-overlay" id="modal-subir-cv">
+    <div class="modal-content" style="position: relative;">
+        <h3>📤 Subir CV</h3>
+        <p style="color: #64748b; text-align: center; margin-bottom: 20px;" id="modal-cv-candidato"></p>
+        <div class="upload-area" id="upload-area" onclick="document.getElementById('cv-file-input').click()" style="border: 3px dashed #e2e8f0; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer;">
+            <div style="font-size: 48px; margin-bottom: 15px;">📄</div>
+            <p style="color: #64748b;">Haz clic o arrastra el archivo aquí</p>
+            <p style="font-size: 12px; color: #94a3b8;">PDF, DOC, DOCX, JPG, PNG (máx. 10MB)</p>
+            <div id="file-name-display" style="color: #0066CC; font-weight: 600; margin-top: 10px;"></div>
+        </div>
+        <input type="file" id="cv-file-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;" onchange="mostrarArchivo(this)">
+        <input type="hidden" id="cv-telefono">
+        <input type="hidden" id="cv-nombre">
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button class="btn" style="flex: 1; background: #f1f5f9; color: #475569;" onclick="cerrarModalCV()">Cancelar</button>
+            <button class="btn btn-primary" style="flex: 1;" id="btn-subir-cv-confirm" onclick="subirCVManual()" disabled>📤 Subir CV</button>
+        </div>
+    </div>
+</div>
 
     <!-- User Badge -->
     <div class="user-badge" id="user-badge" style="display: none;">
@@ -456,7 +484,17 @@
                         <option value="mes">Este mes</option>
                     </select>
                 </div>
-                </div>    
+                </div>
+                <!-- Barra de actualización -->
+                <div class="refresh-bar" style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e2e8f0; flex-wrap: wrap; gap: 10px;">
+                    <span style="font-size: 12px; color: #64748b;">Última actualización: <span id="last-update-time">--:--</span></span>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <label style="font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox" id="auto-refresh-toggle" checked onchange="toggleAutoRefresh()"> Auto (30s)
+                        </label>
+                        <button onclick="cargarCitasCalendario()" style="background: linear-gradient(135deg, #00A8E1 0%, #0066CC 100%); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">🔄 Actualizar</button>
+                    </div>
+                </div>
                
                 
                 <div class="stats-cards" id="stats-cards" style="display: none;">
@@ -1105,7 +1143,7 @@ function cerrarSesion() {
                             </div>
                         </div>
                         <div class="cita-acciones">
-                            ${cita.cvUrl ? `<button class="btn-accion btn-cv" onclick="window.open('${cita.cvUrl}', '_blank')" title="Ver CV">📄</button>` : ''}
+                            ${cita.cvUrl ? `<button class="btn-accion btn-cv" onclick="window.open('${cita.cvUrl}', '_blank')">📄 CV</button>` : `<button class="btn-accion btn-subir-cv" onclick="abrirModalSubirCV('${cita.nombre}', '${cita.telefono}')">📤 CV</button>`}
                             <button class="btn-accion btn-llamar" onclick="llamar('${cita.telefono}')">📞</button>
                             <button class="btn-accion btn-whatsapp" onclick="abrirWhatsApp('${cita.telefono}', '${cita.nombre}')">💬</button>
                             <button class="btn-accion btn-evaluar" onclick="iniciarEvaluacion('${cita.telefono}')">📝 Evaluar</button>
@@ -1945,6 +1983,113 @@ function cerrarSesion() {
         
         // Inicializar al cargar la página
         document.addEventListener('DOMContentLoaded', inicializarLogin);
+        // ==========================================
+        // AUTO-REFRESH
+        // ==========================================
+        let autoRefreshInterval = null;
+
+        function iniciarAutoRefresh() {
+            if (document.getElementById('auto-refresh-toggle') && document.getElementById('auto-refresh-toggle').checked) {
+                autoRefreshInterval = setInterval(() => {
+                    const tabActiva = document.querySelector('.tab-content.active');
+                    if (tabActiva) {
+                        if (tabActiva.id === 'tab-calendario') cargarCitasCalendario();
+                        else if (tabActiva.id === 'tab-historial') cargarHistorial();
+                        else if (tabActiva.id === 'tab-listado-panel') cargarListadoPanel();
+                    }
+                }, 30000);
+            }
+        }
+
+        function toggleAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+            }
+            if (document.getElementById('auto-refresh-toggle').checked) {
+                iniciarAutoRefresh();
+            }
+        }
+
+        function actualizarHoraUpdate() {
+            const ahora = new Date();
+            const hora = ahora.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const elemento = document.getElementById('last-update-time');
+            if (elemento) elemento.textContent = hora;
+        }
+
+        // ==========================================
+        // SUBIR CV MANUAL
+        // ==========================================
+        function abrirModalSubirCV(nombre, telefono) {
+            document.getElementById('modal-cv-candidato').textContent = nombre + ' - ' + telefono;
+            document.getElementById('cv-telefono').value = telefono;
+            document.getElementById('cv-nombre').value = nombre;
+            document.getElementById('file-name-display').textContent = '';
+            document.getElementById('cv-file-input').value = '';
+            document.getElementById('btn-subir-cv-confirm').disabled = true;
+            document.getElementById('modal-subir-cv').classList.add('active');
+        }
+
+        function cerrarModalCV() {
+            document.getElementById('modal-subir-cv').classList.remove('active');
+        }
+
+        function mostrarArchivo(input) {
+            if (input.files && input.files[0]) {
+                document.getElementById('file-name-display').textContent = '✅ ' + input.files[0].name;
+                document.getElementById('btn-subir-cv-confirm').disabled = false;
+            }
+        }
+
+        async function subirCVManual() {
+            const fileInput = document.getElementById('cv-file-input');
+            const telefono = document.getElementById('cv-telefono').value;
+            const nombre = document.getElementById('cv-nombre').value;
+            const btn = document.getElementById('btn-subir-cv-confirm');
+            
+            if (!fileInput.files || !fileInput.files[0]) {
+                alert('Selecciona un archivo');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = '⏳ Subiendo...';
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = async function(e) {
+                const base64 = e.target.result.split(',')[1];
+                
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            tipo: 'subir_cv_manual',
+                            telefono: telefono,
+                            nombre: nombre,
+                            archivo: base64,
+                            nombreArchivo: file.name,
+                            mimeType: file.type
+                        })
+                    });
+                    
+                    alert('✅ CV subido correctamente');
+                    cerrarModalCV();
+                    cargarCitasCalendario();
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error al subir. Intenta de nuevo.');
+                    btn.disabled = false;
+                    btn.textContent = '📤 Subir CV';
+                }
+            };
+            
+            reader.readAsDataURL(file);
+        }
     </script>
 </body>
 </html>
