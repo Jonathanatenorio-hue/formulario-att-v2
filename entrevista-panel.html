@@ -816,20 +816,46 @@ function iniciarEvaluacion(asp) {
     btnEnviar.disabled = true;
     btnEnviar.innerHTML = 'Enviar Evaluación →';
     
-    // Mostrar respuestas Pre-Filtro
+    // Mostrar respuestas Pre-Filtro y Entrevista Telefónica
     const btnPF = document.getElementById('btn-prefiltro-panel');
     const contenidoPF = document.getElementById('prefiltro-panel-respuestas');
     const contenedorPF = document.getElementById('prefiltro-panel-content');
     
     if (asp.respuestasPF) {
         let htmlPF = '';
-        Object.values(asp.respuestasPF).forEach((r, idx) => {
-            htmlPF += '<div style="background: white; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px;">' +
-                '<div style="font-size: 12px; color: #92400e; font-weight: 600;">P' + (idx+1) + '. ' + r.pregunta + '</div>' +
-                '<div style="font-size: 14px; color: #1e293b; margin-top: 4px;">' + (r.respuesta || 'Sin respuesta') + '</div>' +
-                '<div style="font-size: 12px; color: #64748b; margin-top: 4px;">Puntaje: ' + r.puntaje + '/5</div>' +
-            '</div>';
-        });
+        
+        // Respuestas del Pre-Filtro
+        if (asp.respuestasPF.prefiltro) {
+            htmlPF += '<h5 style="color: #92400e; margin-bottom: 10px; font-size: 14px;">📋 Pre-Filtro</h5>';
+            Object.values(asp.respuestasPF.prefiltro).forEach(function(r, idx) {
+                htmlPF += '<div style="background: white; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px;">' +
+                    '<div style="font-size: 12px; color: #92400e; font-weight: 600;">P' + (idx+1) + '. ' + r.pregunta + '</div>' +
+                    '<div style="font-size: 14px; color: #1e293b; margin-top: 4px;">' + (r.respuesta || 'Sin respuesta') + '</div>' +
+                    '<div style="font-size: 12px; color: #64748b; margin-top: 4px;">Puntaje: ' + r.puntaje + '/5</div>' +
+                '</div>';
+            });
+        }
+        
+        // Respuestas de Entrevista Telefónica
+        if (asp.respuestasPF.entrevistaTel) {
+            var et = asp.respuestasPF.entrevistaTel;
+            htmlPF += '<h5 style="color: #0057B8; margin: 20px 0 10px; font-size: 14px;">📞 Entrevista Telefónica - ' + et.resultado + ' (' + et.puntajeTotal + '/30 pts)</h5>';
+            var preguntas = [et.q1, et.q2, et.q3, et.q4, et.q5, et.q6];
+            preguntas.forEach(function(r, idx) {
+                htmlPF += '<div style="background: white; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #0057B8;">' +
+                    '<div style="font-size: 12px; color: #0057B8; font-weight: 600;">Q' + (idx+1) + '. ' + r.pregunta + '</div>' +
+                    '<div style="font-size: 14px; color: #1e293b; margin-top: 4px;">' + (r.respuesta || 'Sin respuesta') + '</div>' +
+                    '<div style="font-size: 12px; color: #64748b; margin-top: 4px;">Puntaje: ' + r.puntaje + '/5</div>' +
+                '</div>';
+            });
+            if (et.observaciones) {
+                htmlPF += '<div style="background: #f0f9ff; padding: 10px 12px; border-radius: 8px; margin-top: 8px; border-left: 3px solid #0057B8;">' +
+                    '<div style="font-size: 12px; color: #0057B8; font-weight: 600;">📝 Observaciones de la reclutadora</div>' +
+                    '<div style="font-size: 14px; color: #1e293b; margin-top: 4px;">' + et.observaciones + '</div>' +
+                '</div>';
+            }
+        }
+        
         contenidoPF.innerHTML = htmlPF;
         btnPF.style.display = 'block';
         contenedorPF.style.display = 'none';
