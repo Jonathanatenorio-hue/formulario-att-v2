@@ -166,7 +166,17 @@ async function guardarRechazoEstadisticas(motivo) {
         sucursal: candidateData.sucursal || selectedSucursal || 'No especificada',
         puntaje: totalScore,
         motivo: motivo,
-        fuente: candidateData.fuente || 'No especificada'
+        fuente: candidateData.fuente || 'No especificada',
+        reclutadora: candidateData.reclutadora || '',
+        puntaje1: questionScores[1] || 0,
+        puntaje2: questionScores[2] || 0,
+        puntaje3: questionScores[3] || 0,
+        puntaje4: questionScores[4] || 0,
+        puntaje5: questionScores[5] || 0,
+        puntaje6: questionScores[6] || 0,
+        puntaje7: questionScores[7] || 0,
+        puntaje8: questionScores[8] || 0,
+        puntaje9: questionScores[9] || 0
     };
     try {
         await fetch(GOOGLE_SCRIPT_URL, {
@@ -174,13 +184,6 @@ async function guardarRechazoEstadisticas(motivo) {
             mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
-        });
-        console.log('Rechazo guardado en estadísticas');
-    } catch (error) {
-        console.error('Error guardando rechazo:', error);
-    }
-}
-
 function nextStep(currentStep){
     const validation=validateStep(currentStep);
     if(!validation.valid){alert(validation.message);return}
