@@ -241,6 +241,13 @@
                     <button class="btn btn-secondary" onclick="marcarNoSePresento()" style="background: rgba(255,255,255,0.2); border: none; color: white;">🚫 No se presentó</button>
                 </div>
 
+                <!-- Desplegable Pre-Filtro -->
+                <button id="btn-prefiltro-panel" onclick="togglePrefiltroPanelBtn()" style="display: none; width: 100%; background: #f59e0b; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px;">📝 Ver respuestas Pre-Filtro ▼</button>
+                <div id="prefiltro-panel-content" style="display: none; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                    <h4 style="color: #92400e; margin-bottom: 15px; font-size: 15px;">📝 Respuestas del Pre-Filtro</h4>
+                    <div id="prefiltro-panel-respuestas"></div>
+                </div>
+
                 <!-- Guía de rangos (solo para ciertos evaluadores) -->
                 <div class="guide-box" id="guide-box" style="display: none;">
                     <div class="guide-box-title">📊 Guía de Rangos de Aprobación</div>
