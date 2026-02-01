@@ -497,20 +497,33 @@
                 </div>
                
                 
-                <div class="stats-cards" id="stats-cards" style="display: none;">
-                    <div class="stat-card today">
-                        <div class="number" id="stat-hoy">0</div>
-                        <div class="label">📅 Citas Hoy</div>
-                    </div>
-                    <div class="stat-card pending">
-                        <div class="number" id="stat-nuevas">0</div>
-                        <div class="label">🆕 Nuevas</div>
-                    </div>
-                    <div class="stat-card no-contesto">
-                        <div class="number" id="stat-nocontesto">0</div>
-                        <div class="label">📵 No Contestó</div>
-                    </div>
-                </div>
+                <div class="stats-cards" id="stats-cards" style="display: none; grid-template-columns: repeat(5, 1fr);">
+    <div class="stat-card today">
+        <div class="number" id="stat-hoy">0</div>
+        <div class="label">📅 Citas Hoy</div>
+    </div>
+    <div class="stat-card pending">
+        <div class="number" id="stat-nuevas">0</div>
+        <div class="label">🆕 Nuevas</div>
+    </div>
+    <div class="stat-card no-contesto">
+        <div class="number" id="stat-nocontesto">0</div>
+        <div class="label">📵 No Contestó</div>
+    </div>
+    <div class="stat-card" style="border-color: #9333EA; background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);">
+        <div class="number" id="stat-pasadas">0</div>
+        <div class="label">⏰ Pasadas</div>
+    </div>
+    <div class="stat-card" style="border-color: #10B981; background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);">
+        <div class="number" id="stat-realizadas">0</div>
+        <div class="label">✅ Realizadas</div>
+    </div>
+</div>
+
+<!-- Barra de búsqueda -->
+<div style="margin-bottom: 15px;">
+    <input type="text" id="busqueda-calendario" placeholder="🔍 Buscar por nombre o teléfono..." onkeyup="filtrarCitas()" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px;">
+</div>
                 
                 <div class="calendario-grid" id="calendario-grid">
                     <div class="empty-state">
@@ -1094,9 +1107,11 @@ function cerrarSesion() {
         }
         function renderizarCalendario(citas, stats) {
             document.getElementById('stats-cards').style.display = 'grid';
-            document.getElementById('stat-hoy').textContent = stats?.hoy || 0;
-            document.getElementById('stat-nuevas').textContent = stats?.nuevas || 0;
-            document.getElementById('stat-nocontesto').textContent = stats?.noContesto || 0;
+document.getElementById('stat-hoy').textContent = stats?.hoy || 0;
+document.getElementById('stat-nuevas').textContent = stats?.nuevas || 0;
+document.getElementById('stat-nocontesto').textContent = stats?.noContesto || 0;
+document.getElementById('stat-pasadas').textContent = stats?.pasadas || 0;
+document.getElementById('stat-realizadas').textContent = stats?.realizadas || 0;
             
             const totalPendientes = (stats?.nuevas || 0) + (stats?.noContesto || 0);
             document.getElementById('badge-citas').textContent = totalPendientes;
@@ -1157,6 +1172,21 @@ function cerrarSesion() {
             
             document.getElementById('calendario-grid').innerHTML = html;
         }
+        function filtrarCitas() {
+    const busqueda = document.getElementById('busqueda-calendario').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.cita-card');
+    
+    cards.forEach(card => {
+        const nombre = card.querySelector('.nombre').textContent.toLowerCase();
+        const telefono = card.querySelector('.detalles').textContent;
+        
+        if (busqueda === '' || nombre.includes(busqueda) || telefono.includes(busqueda)) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
 
         function llamar(telefono) { window.open(`tel:${telefono}`, '_blank'); }
 
