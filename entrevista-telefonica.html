@@ -912,14 +912,7 @@
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
         // Sistema de usuarios
 const USUARIOS = {
-    // Reclutadoras (solo ven sus candidatos)
-    'Karla Flores': { password: 'Karla2026!', rol: 'reclutadora', reclutadora: 'Karla Flores' },
-    'Yessica Huerta': { password: 'Yessica2026!', rol: 'reclutadora', reclutadora: 'Yessica Huerta' },
-    'Jezabel Monterrosas': { password: 'Jezabel2026!', rol: 'reclutadora', reclutadora: 'Jezabel Monterrosas' },
-    // Usuarios master (ven todo)
-    'Jonathan': { password: 'Jona@master26!', rol: 'master' },
-    'Pilar': { password: 'Pilar@master26!', rol: 'master' },
-    'Administrador': { password: 'Admin@expert26!', rol: 'master' }
+    'Administrador': { password: 'Expert2026!', rol: 'master' }
 };
 
 let usuarioActual = null;
@@ -983,32 +976,15 @@ function mostrarSesionActiva() {
     document.getElementById('badge-avatar').textContent = iniciales;
     document.getElementById('badge-name').textContent = usuarioActual.nombre;
     
-    // Configurar filtros según rol
+    // Habilitar todos los filtros
     const filtroReclutadora = document.getElementById('filtro-reclutadora');
     const filtroSucursal = document.getElementById('filtro-sucursal');
     
-    if (usuarioActual.rol === 'reclutadora') {
-        // Reclutadora solo ve sus candidatos
-        filtroReclutadora.value = usuarioActual.reclutadora;
-        filtroReclutadora.disabled = true;
-        
-        // Ocultar filtro de sucursal para reclutadoras
-        filtroSucursal.style.display = 'none';
-        
-        // Asignar sucursal según reclutadora
-        if (usuarioActual.reclutadora === 'Karla Flores') {
-            filtroSucursal.value = 'Torre JV Juárez';
-        } else {
-            // Yessica y Jezabel son de Antequera
-            filtroSucursal.value = 'Edificio Inbursa Antequera';
-        }
-    } else {
-        // Master ve todo
-        filtroReclutadora.disabled = false;
-        filtroSucursal.style.display = 'block';
-    }
+    if (filtroReclutadora) filtroReclutadora.disabled = false;
+    if (filtroSucursal) filtroSucursal.style.display = 'block';
     
     cargarCitasCalendario();
+    iniciarAutoRefresh();
 }
 
 function cerrarSesion() {
