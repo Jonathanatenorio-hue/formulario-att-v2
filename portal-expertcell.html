@@ -704,7 +704,7 @@ function cargarModulo(id, label) {
     // Cargar iframe
     const url = MODULOS[id];
     if (url) {
-        document.getElementById('content-frame').innerHTML = '<iframe src="' + url + '" allowfullscreen allow="*" style="width:100%;height:100%;border:none;"></iframe>';
+        document.getElementById('content-frame').innerHTML = '<iframe src="' + url + '" allowfullscreen allow="*" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-top-navigation" style="width:100%;height:100%;border:none;"></iframe>';
     } else {
         document.getElementById('content-frame').innerHTML = '<div class="welcome-screen"><div class="emoji">🚧</div><h2>Módulo en construcción</h2><p>Este módulo estará disponible próximamente.</p></div>';
     }
