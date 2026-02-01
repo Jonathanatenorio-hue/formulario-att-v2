@@ -163,26 +163,6 @@
     </style>
 </head>
 <body>
-    <!-- Login Modal -->
-    <div class="login-overlay" id="login-overlay">
-        <div class="login-modal fade-in">
-            <div class="login-avatar">🔐</div>
-            <h2>Acceso Panelistas</h2>
-            <p>Ingresa tu clave para acceder al sistema de evaluación</p>
-            <div class="form-group">
-                <label>Selecciona tu nombre</label>
-                <select id="login-nombre">
-                    <option value="">Selecciona...</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Clave de acceso</label>
-                <input type="password" id="login-clave" placeholder="Ingresa tu clave">
-            </div>
-            <div class="login-error" id="login-error">Clave incorrecta. Intenta de nuevo.</div>
-            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="intentarLogin()">Ingresar →</button>
-        </div>
-    </div>
 
     <!-- User Badge -->
     <div class="user-badge" id="user-badge" style="display: none;">
@@ -217,6 +197,28 @@
                     <label>Grupo (Fecha de Panel)</label>
                     <select id="select-grupo" onchange="onGrupoChange()">
                         <option value="">Selecciona un grupo</option>
+                    </select>
+                </div>
+                <div class="form-group" id="evaluador-container" style="display: none;">
+                    <label>¿Quién evalúa?</label>
+                    <select id="select-evaluador" onchange="onEvaluadorChange()">
+                        <option value="">Selecciona tu nombre</option>
+                        <option value="Pilar García">Pilar García</option>
+                        <option value="Julio Castro">Julio Castro</option>
+                        <option value="Mashiel Campos">Mashiel Campos</option>
+                        <option value="Yessica Huerta">Yessica Huerta</option>
+                        <option value="Jezabel Monterrosas">Jezabel Monterrosas</option>
+                        <option value="Karla Flores">Karla Flores</option>
+                        <option value="Eduardo Aguila">Eduardo Aguila</option>
+                        <option value="Luisa Meza">Luisa Meza</option>
+                        <option value="Jonathan Tenorio">Jonathan Tenorio</option>
+                        <option value="Jorge Ureña">Jorge Ureña</option>
+                        <option value="Fernanda Martinez">Fernanda Martinez</option>
+                        <option value="Reyna Martinez">Reyna Martinez</option>
+                        <option value="Carlos Aguilar">Carlos Aguilar</option>
+                        <option value="Alfredo Cabrera">Alfredo Cabrera</option>
+                        <option value="Alan Salazar">Alan Salazar</option>
+                        <option value="Invitado">Invitado</option>
                     </select>
                 </div>
             </div>
