@@ -498,23 +498,23 @@
                
                 
                 <div class="stats-cards" id="stats-cards" style="display: none; grid-template-columns: repeat(5, 1fr);">
-    <div class="stat-card today">
+    <div class="stat-card today" onclick="filtrarPorTipo('hoy')" style="cursor: pointer;">
         <div class="number" id="stat-hoy">0</div>
         <div class="label">📅 Citas Hoy</div>
     </div>
-    <div class="stat-card pending">
+    <div class="stat-card pending" onclick="filtrarPorTipo('nuevas')" style="cursor: pointer;">
         <div class="number" id="stat-nuevas">0</div>
         <div class="label">🆕 Nuevas</div>
     </div>
-    <div class="stat-card no-contesto">
+    <div class="stat-card no-contesto" onclick="filtrarPorTipo('noContesto')" style="cursor: pointer;">
         <div class="number" id="stat-nocontesto">0</div>
         <div class="label">📵 No Contestó</div>
     </div>
-    <div class="stat-card" style="border-color: #9333EA; background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);">
+    <div class="stat-card" onclick="filtrarPorTipo('pasadas')" style="cursor: pointer; border-color: #9333EA; background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);">
         <div class="number" id="stat-pasadas">0</div>
         <div class="label">⏰ Pasadas</div>
     </div>
-    <div class="stat-card" style="border-color: #10B981; background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);">
+    <div class="stat-card" onclick="filtrarPorTipo('todas')" style="cursor: pointer; border-color: #10B981; background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);">
         <div class="number" id="stat-realizadas">0</div>
         <div class="label">✅ Realizadas</div>
     </div>
@@ -1136,7 +1136,7 @@ document.getElementById('stat-realizadas').textContent = stats?.realizadas || 0;
                 const fechaObj = new Date(fecha + 'T12:00:00');
                 const fechaLegible = fechaObj.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
                 
-                html += `<div class="dia-section"><div class="dia-header ${esHoy ? 'hoy' : ''}"><h3>${esHoy ? '📅 HOY - ' : ''}${fechaLegible}</h3><span class="count">${citasDelDia.length} cita(s)</span></div><div class="citas-lista">`;
+                html += `<div class="dia-section" data-fecha="${fecha}"><div class="dia-header ${esHoy ? 'hoy' : ''}"><h3>${esHoy ? '📅 HOY - ' : ''}${fechaLegible}</h3><span class="count">${citasDelDia.length} cita(s)</span></div><div class="citas-lista">`;
                 
                 citasDelDia.forEach(cita => {
                     const clasificacionClass = cita.puntaje >= 41 ? 'sobresaliente' : cita.puntaje >= 35 ? 'excelente' : 'muy-bueno';
@@ -1173,20 +1173,82 @@ document.getElementById('stat-realizadas').textContent = stats?.realizadas || 0;
             document.getElementById('calendario-grid').innerHTML = html;
         }
         function filtrarCitas() {
-    const busqueda = document.getElementById('busqueda-calendario').value.toLowerCase().trim();
-    const cards = document.querySelectorAll('.cita-card');
-    
-    cards.forEach(card => {
-        const nombre = card.querySelector('.nombre').textContent.toLowerCase();
-        const telefono = card.querySelector('.detalles').textContent;
-        
-        if (busqueda === '' || nombre.includes(busqueda) || telefono.includes(busqueda)) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
+            const busqueda = document.getElementById('busqueda-calendario').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.cita-card');
+            
+            cards.forEach(card => {
+                const nombre = card.querySelector('.nombre').textContent.toLowerCase();
+                const detalles = card.querySelector('.detalles').textContent;
+                
+                if (busqueda === '' || nombre.includes(busqueda) || detalles.includes(busqueda)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         }
-    });
-}
+
+        let filtroActivo = 'todas';
+        
+        function filtrarPorTipo(tipo) {
+            filtroActivo = tipo;
+            
+            // Quitar clase activa de todos los recuadros
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.style.transform = 'scale(1)';
+                card.style.boxShadow = '';
+            });
+            
+            // Agregar clase activa al seleccionado
+            const cardSeleccionada = event.currentTarget;
+            cardSeleccionada.style.transform = 'scale(1.05)';
+            cardSeleccionada.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+            
+            const hoy = new Date().toISOString().split('T')[0];
+            const sections = document.querySelectorAll('.dia-section');
+            
+            sections.forEach(section => {
+                const fechaHeader = section.querySelector('.dia-header');
+                const esHoy = fechaHeader.classList.contains('hoy');
+                const fechaTexto = fechaHeader.querySelector('h3').textContent;
+                
+                // Obtener la fecha de la sección
+                const cards = section.querySelectorAll('.cita-card');
+                let mostrarSeccion = false;
+                
+                cards.forEach(card => {
+                    const esNoContesto = card.classList.contains('no-contesto');
+                    const esNuevo = card.querySelector('.estado-tag.nuevo') !== null;
+                    
+                    // Obtener fecha de la cita comparando con hoy
+                    let mostrarCard = false;
+                    
+                    if (tipo === 'todas') {
+                        mostrarCard = true;
+                    } else if (tipo === 'hoy' && esHoy) {
+                        mostrarCard = true;
+                    } else if (tipo === 'nuevas' && esNuevo) {
+                        mostrarCard = true;
+                    } else if (tipo === 'noContesto' && esNoContesto) {
+                        mostrarCard = true;
+                    } else if (tipo === 'pasadas') {
+                        // Mostrar si la sección NO es hoy y NO es futura
+                        const fechaSection = obtenerFechaDeSeccion(section);
+                        if (fechaSection && fechaSection < hoy) {
+                            mostrarCard = true;
+                        }
+                    }
+                    
+                    card.style.display = mostrarCard ? 'flex' : 'none';
+                    if (mostrarCard) mostrarSeccion = true;
+                });
+                
+                section.style.display = mostrarSeccion ? 'block' : 'none';
+            });
+            
+            // Limpiar búsqueda
+            document.getElementById('busqueda-calendario').value = '';
+        }
 
         function llamar(telefono) { window.open(`tel:${telefono}`, '_blank'); }
 
