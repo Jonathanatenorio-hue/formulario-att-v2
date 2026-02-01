@@ -919,6 +919,23 @@ let usuarioActual = null;
 
 // Funciones de login
 function inicializarLogin() {
+    // Verificar si viene del portal
+    const sesionPortal = localStorage.getItem('portal_sesion');
+    if (sesionPortal) {
+        const data = JSON.parse(sesionPortal);
+        if (data.usuario && data.expira > Date.now()) {
+            usuarioActual = { nombre: data.usuario, rol: 'master' };
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('user-badge').style.display = 'flex';
+            document.getElementById('badge-avatar').textContent = data.usuario.substring(0, 2).toUpperCase();
+            document.getElementById('badge-name').textContent = data.usuario;
+            cargarCitasCalendario();
+            iniciarAutoRefresh();
+            return;
+        }
+    }
+    
+    // Si no hay sesión, mostrar login normal
     const select = document.getElementById('login-usuario');
     Object.keys(USUARIOS).sort().forEach(nombre => {
         const opt = document.createElement('option');
@@ -927,23 +944,10 @@ function inicializarLogin() {
         select.appendChild(opt);
     });
     
-    // Verificar sesión guardada
-    const sesion = localStorage.getItem('entrevista_telefonica_sesion');
-    if (sesion) {
-        const data = JSON.parse(sesion);
-        if (data.nombre && data.expira > Date.now()) {
-            usuarioActual = { nombre: data.nombre, ...USUARIOS[data.nombre] };
-            mostrarSesionActiva();
-            return;
-        }
-    }
-    
-    // Enter en password
     document.getElementById('login-password').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') intentarLogin();
     });
 }
-
 function intentarLogin() {
     const nombre = document.getElementById('login-usuario').value;
     const password = document.getElementById('login-password').value;
