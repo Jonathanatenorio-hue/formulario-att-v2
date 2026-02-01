@@ -190,6 +190,7 @@
         <div class="tabs">
             <button class="tab active" onclick="showTab('estadisticas')">📈 Estadísticas</button>
             <button class="tab" onclick="showTab('graficas')">📊 Gráficas</button>
+            <button class="tab" onclick="showTab('prefiltro')">📝 Análisis Pre-Filtro</button>
             <button class="tab" onclick="showTab('comparativas')">⚖️ Comparativas</button>
         </div>
         
@@ -241,7 +242,9 @@
         <div id="tab-graficas" class="tab-content">
             <div id="graficas-content"><div class="loading"><div class="spinner"></div></div></div>
         </div>
-        
+        <div id="tab-prefiltro" class="tab-content">
+            <div id="prefiltro-content"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
         <div id="tab-comparativas" class="tab-content">
             <div class="compare-section">
                 <h3 style="margin-bottom: 25px;">⚖️ Comparar Rendimiento</h3>
@@ -348,6 +351,9 @@ function showTab(tab) {
     document.getElementById('tab-' + tab).classList.add('active');
     if (tab === 'graficas' && datosGlobales) {
         renderGraficas();
+    }
+    if (tab === 'prefiltro' && datosGlobales) {
+        renderPrefiltro();
     }
 }
 
@@ -564,7 +570,83 @@ function renderEstadisticas(aprobados, rechazados, filtros) {
         }
     }, 100);
 }
-
+function renderPrefiltro() {
+    if (!datosGlobales || !datosGlobales.estadisticasPreguntas) {
+        document.getElementById('prefiltro-content').innerHTML = '<div class="empty-state">No hay datos de pre-filtro disponibles</div>';
+        return;
+    }
+    
+    const preguntas = datosGlobales.estadisticasPreguntas;
+    const abandono = datosGlobales.preguntaAbandono || {};
+    
+    // Gráfica de abandono
+    let abandonoHTML = '<div class="chart-card" style="margin-bottom: 24px;">' +
+        '<h3>🚪 Pregunta donde se quedan los rechazados</h3>' +
+        '<p style="color: var(--gray-500); font-size: 13px; margin-bottom: 20px;">Muestra en qué pregunta del pre-filtro los aspirantes rechazados dejaron de contestar o fueron filtrados.</p>' +
+        '<div class="chart-container"><canvas id="chart-abandono"></canvas></div></div>';
+    
+    // Cards de cada pregunta
+    let preguntasHTML = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">';
+    
+    preguntas.forEach(function(p, idx) {
+        let respHTML = '';
+        const respOrdenadas = Object.entries(p.respuestas).sort(function(a, b) { return b[1] - a[1]; });
+        
+        respOrdenadas.forEach(function(entry) {
+            const resp = entry[0];
+            const count = entry[1];
+            const pct = p.total > 0 ? Math.round((count / p.total) * 100) : 0;
+            const barColor = pct > 40 ? '#10B981' : pct > 20 ? '#F59E0B' : '#EF4444';
+            
+            respHTML += '<div style="margin-bottom: 12px;">' +
+                '<div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;">' +
+                    '<span style="color: var(--gray-700); max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="' + resp.replace(/"/g, '&quot;') + '">' + resp + '</span>' +
+                    '<span style="color: var(--gray-500); font-weight: 600;">' + count + ' (' + pct + '%)</span>' +
+                '</div>' +
+                '<div style="background: var(--gray-100); border-radius: 6px; height: 24px; overflow: hidden;">' +
+                    '<div style="height: 100%; width: ' + pct + '%; background: ' + barColor + '; border-radius: 6px; transition: width 0.5s;"></div>' +
+                '</div>' +
+            '</div>';
+        });
+        
+        preguntasHTML += '<div class="chart-card">' +
+            '<h3 style="font-size: 15px;">📊 ' + p.nombre + '</h3>' +
+            '<p style="color: var(--gray-500); font-size: 12px; margin-bottom: 15px;">Total respuestas: ' + p.total + '</p>' +
+            respHTML +
+        '</div>';
+    });
+    
+    preguntasHTML += '</div>';
+    
+    document.getElementById('prefiltro-content').innerHTML = abandonoHTML + preguntasHTML;
+    
+    // Renderizar gráfica de abandono
+    setTimeout(function() {
+        const ctxAbandono = document.getElementById('chart-abandono');
+        if (ctxAbandono) {
+            const labels = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9'];
+            const datos = labels.map(function(l) { return abandono[l] || 0; });
+            
+            new Chart(ctxAbandono, {
+                type: 'bar',
+                data: {
+                    labels: ['P1. Motivación', 'P2. Metas', 'P3. Rechazo', 'P4. Comisiones', 'P5. Sin ventas', 'P6. Puntualidad', 'P7. Supervisor', 'P8. Feedback', 'P9. Permanencia'],
+                    datasets: [{
+                        label: 'Rechazados en esta pregunta',
+                        data: datos,
+                        backgroundColor: ['#EF4444', '#F59E0B', '#8B5CF6', '#EC4899', '#6366F1', '#00A8E1', '#10B981', '#F97316', '#14B8A6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, title: { display: true, text: 'Cantidad de rechazados' } } }
+                }
+            });
+        }
+    }, 100);
+}
 function renderGraficas() {
     if (!datosGlobales) return;
     
