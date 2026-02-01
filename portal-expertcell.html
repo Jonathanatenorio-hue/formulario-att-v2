@@ -615,30 +615,26 @@ async function iniciarSesion() {
         return;
     }
     
-    btn.disabled = true;
-    btn.textContent = 'Verificando...';
-    errorDiv.classList.remove('show');
-    
-    try {
-        const url = GOOGLE_SCRIPT_URL + '?action=login&usuario=' + encodeURIComponent(usuario) + '&password=' + encodeURIComponent(password);
-        const response = await fetch(url);
-        const data = await response.json();
+    // Usuario único con acceso total
+    if (usuario === 'Administrador' && password === 'Expert2026!') {
+        usuarioActual = {
+            usuario: 'Administrador',
+            nombre: 'Administrador',
+            rol: 'Director'
+        };
+        localStorage.setItem('expertcell_sesion', JSON.stringify(usuarioActual));
         
-        if (data.status === 'success') {
-            usuarioActual = {
-                usuario: data.usuario,
-                nombre: data.nombre,
-                rol: data.rol
-            };
-            localStorage.setItem('expertcell_sesion', JSON.stringify(usuarioActual));
-            mostrarDashboard();
-        } else {
-            errorDiv.textContent = data.message || 'Error al iniciar sesión';
-            errorDiv.classList.add('show');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        errorDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+        // Guardar sesión para otros módulos
+        localStorage.setItem('portal_sesion', JSON.stringify({
+            usuario: 'Administrador',
+            nombre: 'Administrador',
+            rol: 'Director',
+            expira: Date.now() + (8 * 60 * 60 * 1000)
+        }));
+        
+        mostrarDashboard();
+    } else {
+        errorDiv.textContent = 'Usuario o contraseña incorrectos';
         errorDiv.classList.add('show');
     }
     
