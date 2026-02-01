@@ -1193,26 +1193,37 @@ document.getElementById('stat-realizadas').textContent = stats?.realizadas || 0;
         function filtrarPorTipo(tipo) {
             filtroActivo = tipo;
             
-            // Quitar clase activa de todos los recuadros
+            // Quitar estilo activo de todos los recuadros
             document.querySelectorAll('.stat-card').forEach(card => {
                 card.style.transform = 'scale(1)';
                 card.style.boxShadow = '';
             });
             
-            // Agregar clase activa al seleccionado
+            // Agregar estilo activo al seleccionado
             const cardSeleccionada = event.currentTarget;
             cardSeleccionada.style.transform = 'scale(1.05)';
             cardSeleccionada.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
             
-            const hoy = new Date().toISOString().split('T')[0];
+            // Si es "todas" o "realizadas", recargar datos
+            if (tipo === 'todas') {
+                cargarCitasCalendario();
+                return;
+            }
+            
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            const hoyStr = hoy.toISOString().split('T')[0];
+            
             const sections = document.querySelectorAll('.dia-section');
             
             sections.forEach(section => {
-                const fechaHeader = section.querySelector('.dia-header');
-                const esHoy = fechaHeader.classList.contains('hoy');
-                const fechaTexto = fechaHeader.querySelector('h3').textContent;
+                const fechaSection = section.dataset.fecha;
+                const fechaDate = new Date(fechaSection + 'T12:00:00');
+                fechaDate.setHours(0, 0, 0, 0);
                 
-                // Obtener la fecha de la sección
+                const esHoy = fechaSection === hoyStr;
+                const esPasada = fechaDate < hoy;
+                
                 const cards = section.querySelectorAll('.cita-card');
                 let mostrarSeccion = false;
                 
@@ -1220,23 +1231,16 @@ document.getElementById('stat-realizadas').textContent = stats?.realizadas || 0;
                     const esNoContesto = card.classList.contains('no-contesto');
                     const esNuevo = card.querySelector('.estado-tag.nuevo') !== null;
                     
-                    // Obtener fecha de la cita comparando con hoy
                     let mostrarCard = false;
                     
-                    if (tipo === 'todas') {
-                        mostrarCard = true;
-                    } else if (tipo === 'hoy' && esHoy) {
-                        mostrarCard = true;
-                    } else if (tipo === 'nuevas' && esNuevo) {
-                        mostrarCard = true;
-                    } else if (tipo === 'noContesto' && esNoContesto) {
-                        mostrarCard = true;
+                    if (tipo === 'hoy') {
+                        mostrarCard = esHoy;
+                    } else if (tipo === 'nuevas') {
+                        mostrarCard = esNuevo;
+                    } else if (tipo === 'noContesto') {
+                        mostrarCard = esNoContesto;
                     } else if (tipo === 'pasadas') {
-                        // Mostrar si la sección NO es hoy y NO es futura
-                        const fechaSection = obtenerFechaDeSeccion(section);
-                        if (fechaSection && fechaSection < hoy) {
-                            mostrarCard = true;
-                        }
+                        mostrarCard = esPasada;
                     }
                     
                     card.style.display = mostrarCard ? 'flex' : 'none';
@@ -1246,10 +1250,8 @@ document.getElementById('stat-realizadas').textContent = stats?.realizadas || 0;
                 section.style.display = mostrarSeccion ? 'block' : 'none';
             });
             
-            // Limpiar búsqueda
             document.getElementById('busqueda-calendario').value = '';
         }
-
         function llamar(telefono) { window.open(`tel:${telefono}`, '_blank'); }
 
         function abrirWhatsApp(telefono, nombre) {
