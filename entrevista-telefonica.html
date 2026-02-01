@@ -467,12 +467,12 @@
                 <div class="calendario-header">
                     <h2>📅 Agenda de Entrevistas</h2>
                     <div class="calendario-filters">
-                    <select id="filtro-sucursal" onchange="cargarCitasCalendario()">
+                    <select id="filtro-sucursal" onchange="sincronizarFiltros()">
                         <option value="">Todas las sucursales</option>
                         <option value="Torre JV Juárez">Torre JV Juárez</option>
                         <option value="Edificio Inbursa Antequera">Edificio Inbursa Antequera</option>
                     </select>
-                    <select id="filtro-reclutadora" onchange="cargarCitasCalendario()">
+                    <select id="filtro-reclutadora" onchange="sincronizarFiltros()">
                         <option value="">Todas las reclutadoras</option>
                         <option value="Karla Flores">Karla Flores</option>
                         <option value="Yessica Huerta">Yessica Huerta</option>
@@ -1246,6 +1246,25 @@ document.getElementById('stat-pasadas').textContent = stats?.pasadas || 0;
             });
             
             document.getElementById('busqueda-calendario').value = '';
+        }
+        function sincronizarFiltros() {
+            const sucursal = document.getElementById('filtro-sucursal').value;
+            const reclutadora = document.getElementById('filtro-reclutadora').value;
+            
+            // Sincronizar filtro de sucursal en todas las pestañas
+            const filtroSucursalPanel = document.getElementById('filtro-sucursal-panel');
+            if (filtroSucursalPanel) {
+                filtroSucursalPanel.value = sucursal === '' ? 'TODAS' : sucursal;
+            }
+            
+            // Sincronizar filtro de reclutadora en historial
+            const filtroReclutadoraHistorial = document.getElementById('filtro-reclutadora-historial');
+            if (filtroReclutadoraHistorial && reclutadora) {
+                filtroReclutadoraHistorial.value = reclutadora;
+            }
+            
+            // Recargar la pestaña actual
+            cargarCitasCalendario();
         }
         function llamar(telefono) { window.open(`tel:${telefono}`, '_blank'); }
 
