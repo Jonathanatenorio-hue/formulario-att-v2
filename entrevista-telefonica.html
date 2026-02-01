@@ -622,9 +622,17 @@
                             <div class="info-item"><strong>Ingreso esperado:</strong> <span id="info-ingreso"></span></div>
                         </div>
 
-                        <!-- Botón Ver CV -->
+                        <!-- Botones CV -->
                         <div id="cv-container" style="margin-top: 15px; display: none;">
                             <a id="btn-ver-cv" href="#" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #9333EA 0%, #7C3AED 100%); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 500;">📄 Ver CV</a>
+                            <button id="btn-subir-cv-eval" onclick="abrirModalSubirCV(selectedCandidato.nombre, selectedCandidato.telefono)" style="display: none; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; padding: 10px 20px; border-radius: 8px; border: none; font-weight: 500; cursor: pointer;">📤 Subir CV</button>
+                        </div>
+
+                        <!-- Respuestas Pre-Filtro -->
+                        <button id="btn-toggle-prefiltro" onclick="togglePrefiltro()" style="display: none; background: #f59e0b; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 15px;">📝 Ver respuestas Pre-Filtro ▼</button>
+                        <div id="prefiltro-respuestas" style="display: none; margin-top: 10px; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+                            <h4 style="color: #92400e; margin-bottom: 15px; font-size: 15px;">📝 Respuestas del Pre-Filtro</h4>
+                            <div id="respuestas-prefiltro-content"></div>
                         </div>
                     </div>
                     
