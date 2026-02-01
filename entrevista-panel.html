@@ -584,7 +584,21 @@ let vetos = [];
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', () => {
-    // Cargar nombres en login
+    // Verificar si viene del portal
+    const sesionPortal = localStorage.getItem('portal_sesion');
+    if (sesionPortal) {
+        const data = JSON.parse(sesionPortal);
+        if (data.usuario && data.expira > Date.now()) {
+            selectedEvaluador = data.usuario;
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('user-badge').style.display = 'flex';
+            document.getElementById('badge-avatar').textContent = data.usuario.substring(0, 2).toUpperCase();
+            document.getElementById('badge-name').textContent = data.usuario;
+            return;
+        }
+    }
+    
+    // Si no hay sesión del portal, cargar login normal
     const selectLogin = document.getElementById('login-nombre');
     Object.keys(CLAVES_PANELISTAS).sort().forEach(nombre => {
         const opt = document.createElement('option');
@@ -593,7 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectLogin.appendChild(opt);
     });
     
-    // Verificar si ya hay sesión
+    // Verificar si ya hay sesión de panelista
     const sesion = localStorage.getItem('panelista_sesion');
     if (sesion) {
         const data = JSON.parse(sesion);
