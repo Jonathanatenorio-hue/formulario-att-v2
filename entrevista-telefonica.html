@@ -1709,7 +1709,17 @@ document.getElementById('stat-pasadas').textContent = stats?.pasadas || 0;
             
             return puntos.length > 0 ? puntos.join(' | ') : 'Sin observaciones especiales';
         }
-        
+        function togglePrefiltro() {
+            const contenedor = document.getElementById('prefiltro-respuestas');
+            const btn = document.getElementById('btn-toggle-prefiltro');
+            if (contenedor.style.display === 'none') {
+                contenedor.style.display = 'block';
+                btn.textContent = '📝 Ocultar Pre-Filtro ▲';
+            } else {
+                contenedor.style.display = 'none';
+                btn.textContent = '📝 Ver respuestas Pre-Filtro ▼';
+            }
+        }
         function toggleRespuestasPanel(index) {
             const div = document.getElementById(`respuestas-panel-${index}`);
             div.style.display = div.style.display === 'none' ? 'block' : 'none';
@@ -1890,14 +1900,42 @@ document.getElementById('stat-pasadas').textContent = stats?.pasadas || 0;
             document.getElementById('info-puntaje').innerHTML = `<span class="score-badge ${puntajeClass}">${selectedCandidato.puntaje}/45 pts</span>`;
             document.getElementById('candidate-info').style.display = 'block';
             document.getElementById('section-evaluacion').classList.remove('hidden');
-
-            // Mostrar botón CV si existe
+            
+            // Mostrar botones CV
+            const btnVerCV = document.getElementById('btn-ver-cv');
+            const btnSubirCV = document.getElementById('btn-subir-cv-eval');
             if (selectedCandidato.cvUrl && selectedCandidato.cvUrl !== '') {
-                document.getElementById('cv-container').style.display = 'block';
-                document.getElementById('btn-ver-cv').href = selectedCandidato.cvUrl;
+                btnVerCV.href = selectedCandidato.cvUrl;
+                btnVerCV.style.display = 'inline-block';
+                if (btnSubirCV) btnSubirCV.style.display = 'none';
             } else {
-                document.getElementById('cv-container').style.display = 'none';
+                btnVerCV.style.display = 'none';
+                if (btnSubirCV) btnSubirCV.style.display = 'inline-block';
             }
+            document.getElementById('cv-container').style.display = 'block';
+            
+            // Mostrar respuestas Pre-Filtro
+            const contenedorPF = document.getElementById('prefiltro-respuestas');
+            const contenidoPF = document.getElementById('respuestas-prefiltro-content');
+            const btnTogglePF = document.getElementById('btn-toggle-prefiltro');
+            
+            if (selectedCandidato.respuestasPF) {
+                let htmlPF = '';
+                Object.values(selectedCandidato.respuestasPF).forEach((r, idx) => {
+                    htmlPF += `<div class="respuesta-item">
+                        <div class="respuesta-pregunta">P${idx+1}. ${r.pregunta}</div>
+                        <div class="respuesta-texto">${r.respuesta || 'Sin respuesta'}</div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Puntaje: ${r.puntaje}/5</div>
+                    </div>`;
+                });
+                contenidoPF.innerHTML = htmlPF;
+                btnTogglePF.style.display = 'inline-block';
+                contenedorPF.style.display = 'none';
+            } else {
+                btnTogglePF.style.display = 'none';
+                contenedorPF.style.display = 'none';
+            }
+            
             resetEvaluacion();
         }
 
