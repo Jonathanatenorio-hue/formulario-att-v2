@@ -2037,20 +2037,69 @@ document.getElementById('stat-pasadas').textContent = stats?.pasadas || 0;
             } catch (error) { alert('⚠️ Error al guardar'); btn.disabled = false; btn.innerHTML = '✅ Confirmar Cita'; }
         }
 
-        function enviarWhatsAppAprobado() {
-            const direccion = DIRECCIONES[selectedCandidato.sucursal] || selectedCandidato.sucursal;
-            const link = `${GOOGLE_SCRIPT_URL}?action=confirmar&token=${window.tokenConfirmacion}`;
-            const mensaje = `¡Hola ${selectedCandidato.nombre.split(' ')[0]}! 🎉\n\n*¡Felicidades!* Pasaste a *Entrevista Panel*.\n\n📅 *Fecha:* ${selectedViernes.fechaLegible}\n🕐 *Hora:* ${selectedHorario.inicio}\n📍 *Lugar:* ${selectedCandidato.sucursal}\n📌 *Dirección:* ${direccion}\n\n📄 Lleva: INE, CURP, RFC, NSS, Comprobante domicilio, CV\n\n✅ *Confirma aquí:* ${link}\n\n¡Te esperamos!\n*ExpertCell*`;
-            window.open(`https://wa.me/52${selectedCandidato.telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
-        }
-
         function enviarEmailAprobado() {
             const email = document.getElementById('email-candidato').value;
             const direccion = DIRECCIONES[selectedCandidato.sucursal] || selectedCandidato.sucursal;
-            const link = `${GOOGLE_SCRIPT_URL}?action=confirmar&token=${window.tokenConfirmacion}`;
-            const subject = `✅ Confirmación Entrevista Panel - ExpertCell | ${selectedViernes.fechaLegible}`;
-            const body = `Hola ${selectedCandidato.nombre.split(' ')[0]},\n\n¡Felicidades! Pasaste a Entrevista Panel.\n\nFecha: ${selectedViernes.fechaLegible}\nHora: ${selectedHorario.inicio}\nLugar: ${selectedCandidato.sucursal}\nDirección: ${direccion}\n\nDocumentos: INE, CURP, RFC, NSS, Comprobante domicilio, CV\n\nConfirma tu asistencia: ${link}\n\n¡Te esperamos!\nExpertCell`;
-            window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+            const link = GOOGLE_SCRIPT_URL + '?action=confirmar&token=' + window.tokenConfirmacion;
+            const nombre = selectedCandidato.nombre.split(' ')[0];
+            const fecha = selectedViernes.fechaLegible;
+            const hora = selectedHorario.inicio;
+            const sucursal = selectedCandidato.sucursal;
+            
+            const subject = 'Confirmación Entrevista Panel - ExpertCell | ' + fecha;
+            const body = 'Hola ' + nombre + ',\r\n\r\n' +
+                'Felicidades! Has avanzado a la etapa de Entrevista Panel en ExpertCell.\r\n\r\n' +
+                'DETALLES DE TU CITA:\r\n' +
+                '- Fecha: ' + fecha + '\r\n' +
+                '- Hora: ' + hora + '\r\n' +
+                '- Lugar: ' + sucursal + '\r\n' +
+                '- Direccion: ' + direccion + '\r\n\r\n' +
+                'DOCUMENTOS QUE DEBES LLEVAR:\r\n' +
+                '- INE\r\n' +
+                '- CURP\r\n' +
+                '- RFC\r\n' +
+                '- NSS\r\n' +
+                '- Comprobante de domicilio\r\n' +
+                '- CV impreso\r\n\r\n' +
+                'CONFIRMA TU ASISTENCIA en el siguiente enlace:\r\n' +
+                link + '\r\n\r\n' +
+                'Te esperamos!\r\n' +
+                'Equipo ExpertCell';
+            
+            window.open('mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
+        }
+
+        function enviarWhatsAppAprobado() {
+            const direccion = DIRECCIONES[selectedCandidato.sucursal] || selectedCandidato.sucursal;
+            const link = GOOGLE_SCRIPT_URL + '?action=confirmar&token=' + window.tokenConfirmacion;
+            const nombre = selectedCandidato.nombre.split(' ')[0];
+            const fecha = selectedViernes.fechaLegible;
+            const hora = selectedHorario.inicio;
+            const sucursal = selectedCandidato.sucursal;
+            
+            const mensaje = 'Hola ' + nombre + '! 🎉\n\n' +
+                '¡Felicidades! Has avanzado a la siguiente etapa de nuestro proceso de selección en *ExpertCell*.\n\n' +
+                '📋 *ENTREVISTA PANEL*\n' +
+                '━━━━━━━━━━━━━━━━━━\n' +
+                '📅 *Fecha:* ' + fecha + '\n' +
+                '🕐 *Hora:* ' + hora + '\n' +
+                '📍 *Sucursal:* ' + sucursal + '\n' +
+                '📌 *Dirección:* ' + direccion + '\n' +
+                '━━━━━━━━━━━━━━━━━━\n\n' +
+                '📄 *Documentos que debes llevar:*\n' +
+                '• INE vigente\n' +
+                '• CURP\n' +
+                '• RFC\n' +
+                '• NSS (Número de Seguro Social)\n' +
+                '• Comprobante de domicilio reciente\n' +
+                '• CV impreso\n\n' +
+                '✅ *Confirma tu asistencia aquí:*\n' +
+                link + '\n\n' +
+                '⚠️ *Importante:* Te pedimos llegar 10 minutos antes de tu hora programada.\n\n' +
+                '¡Te esperamos! 💪\n' +
+                '*Equipo ExpertCell - AT&T*';
+            
+            window.open('https://wa.me/52' + selectedCandidato.telefono + '?text=' + encodeURIComponent(mensaje), '_blank');
         }
 
         function enviarWhatsAppRechazo() {
