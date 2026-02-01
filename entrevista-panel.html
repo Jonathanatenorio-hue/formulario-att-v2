@@ -574,13 +574,7 @@
     <script>
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
 
-// Claves de panelistas (nombre: clave)
-const CLAVES_PANELISTAS = {
-    'Administrador': 'Expert2026!'
-};
-
-// Evaluadores que ven la guía de rangos
-const EVALUADORES_CON_GUIA = ['Administrador'];
+const EVALUADORES_CON_GUIA = ['Jonathan Tenorio', 'Pilar García'];
 
 let selectedSucursal = null;
 let selectedGrupo = null;
@@ -591,84 +585,9 @@ let horariosAspirantes = [];
 let evaluaciones = {};
 let vetos = [];
 
-// Inicialización
 document.addEventListener('DOMContentLoaded', () => {
-    // Verificar si viene del portal
-    const sesionPortal = localStorage.getItem('portal_sesion');
-    if (sesionPortal) {
-        const data = JSON.parse(sesionPortal);
-        if (data.usuario && data.expira > Date.now()) {
-            selectedEvaluador = data.usuario;
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('user-badge').style.display = 'flex';
-            document.getElementById('badge-avatar').textContent = data.usuario.substring(0, 2).toUpperCase();
-            document.getElementById('badge-name').textContent = data.usuario;
-            return;
-        }
-    }
-    
-    // Si no hay sesión del portal, cargar login normal
-    const selectLogin = document.getElementById('login-nombre');
-    Object.keys(CLAVES_PANELISTAS).sort().forEach(nombre => {
-        const opt = document.createElement('option');
-        opt.value = nombre;
-        opt.textContent = nombre;
-        selectLogin.appendChild(opt);
-    });
-    
-    // Verificar si ya hay sesión de panelista
-    const sesion = localStorage.getItem('panelista_sesion');
-    if (sesion) {
-        const data = JSON.parse(sesion);
-        if (data.nombre && data.expira > Date.now()) {
-            selectedEvaluador = data.nombre;
-            mostrarSesionActiva();
-        }
-    }
-    
-    // Enter en clave
-    document.getElementById('login-clave').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') intentarLogin();
-    });
+    document.getElementById('user-badge').style.display = 'none';
 });
-
-function intentarLogin() {
-    const nombre = document.getElementById('login-nombre').value;
-    const clave = document.getElementById('login-clave').value;
-    
-    if (!nombre || !clave) {
-        document.getElementById('login-error').style.display = 'block';
-        document.getElementById('login-error').textContent = 'Completa todos los campos.';
-        return;
-    }
-    
-    if (CLAVES_PANELISTAS[nombre] === clave) {
-        selectedEvaluador = nombre;
-        // Guardar sesión (expira en 8 horas)
-        localStorage.setItem('panelista_sesion', JSON.stringify({
-            nombre: nombre,
-            expira: Date.now() + (8 * 60 * 60 * 1000)
-        }));
-        mostrarSesionActiva();
-    } else {
-        document.getElementById('login-error').style.display = 'block';
-        document.getElementById('login-error').textContent = 'Clave incorrecta. Intenta de nuevo.';
-        document.getElementById('login-clave').value = '';
-    }
-}
-
-function mostrarSesionActiva() {
-    document.getElementById('login-overlay').style.display = 'none';
-    document.getElementById('user-badge').style.display = 'flex';
-    const iniciales = selectedEvaluador.substring(0, 2).toUpperCase();
-    document.getElementById('badge-avatar').textContent = iniciales;
-    document.getElementById('badge-name').textContent = selectedEvaluador;
-}
-
-function cerrarSesion() {
-    localStorage.removeItem('panelista_sesion');
-    location.reload();
-}
 
 function showSection(id) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -683,6 +602,7 @@ function onSucursalChange() {
         cargarGrupos();
     } else {
         document.getElementById('grupo-container').style.display = 'none';
+        document.getElementById('evaluador-container').style.display = 'none';
         document.getElementById('aspirantes-card').style.display = 'none';
     }
 }
@@ -690,6 +610,8 @@ function onSucursalChange() {
 async function cargarGrupos() {
     const select = document.getElementById('select-grupo');
     select.innerHTML = '<option value="">Cargando...</option>';
+    document.getElementById('evaluador-container').style.display = 'none';
+    document.getElementById('aspirantes-card').style.display = 'none';
     try {
         const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getGruposPanel&sucursal=' + encodeURIComponent(selectedSucursal));
         const data = await r.json();
@@ -712,7 +634,26 @@ async function cargarGrupos() {
 
 function onGrupoChange() {
     selectedGrupo = document.getElementById('select-grupo').value;
-    if (selectedGrupo && selectedEvaluador) cargarAspirantes();
+    if (selectedGrupo) {
+        document.getElementById('evaluador-container').style.display = 'block';
+    } else {
+        document.getElementById('evaluador-container').style.display = 'none';
+        document.getElementById('aspirantes-card').style.display = 'none';
+    }
+}
+
+function onEvaluadorChange() {
+    selectedEvaluador = document.getElementById('select-evaluador').value;
+    if (selectedEvaluador) {
+        document.getElementById('user-badge').style.display = 'flex';
+        const iniciales = selectedEvaluador.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+        document.getElementById('badge-avatar').textContent = iniciales;
+        document.getElementById('badge-name').textContent = selectedEvaluador;
+        cargarAspirantes();
+    } else {
+        document.getElementById('user-badge').style.display = 'none';
+        document.getElementById('aspirantes-card').style.display = 'none';
+    }
 }
 
 async function cargarAspirantes() {
@@ -724,8 +665,6 @@ async function cargarAspirantes() {
         const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getAspirantesPanel&sucursal=' + encodeURIComponent(selectedSucursal) + '&fecha=' + encodeURIComponent(selectedGrupo) + '&evaluador=' + encodeURIComponent(selectedEvaluador));
         const data = await r.json();
         aspirantesList = data.aspirantes || [];
-        
-        // Guardar horarios para verificar cierre
         horariosAspirantes = aspirantesList.map(a => a.hora).sort();
         
         if (aspirantesList.length === 0) {
@@ -744,8 +683,9 @@ async function cargarAspirantes() {
             
             if (asp.evaluadoPorMi) { 
                 statusClass = 'status-evaluated'; 
-                statusText = 'Evaluado'; 
+                statusText = '✅ Ya evaluado'; 
                 cardClass = 'evaluated'; 
+                puedeEvaluar = false;
             }
             if (asp.noSePresento) { 
                 statusClass = 'status-noshow'; 
@@ -754,11 +694,8 @@ async function cargarAspirantes() {
                 puedeEvaluar = false;
             }
             
-            // Verificar si está cerrada la evaluación (pasó el horario del siguiente)
             const [h, m] = asp.hora.split(':').map(Number);
             const horaAspirante = h * 60 + m;
-            
-            // Buscar siguiente horario
             const siguienteIdx = horariosAspirantes.findIndex(hora => {
                 const [sh, sm] = hora.split(':').map(Number);
                 return (sh * 60 + sm) > horaAspirante;
@@ -767,21 +704,26 @@ async function cargarAspirantes() {
             if (siguienteIdx !== -1) {
                 const [sh, sm] = horariosAspirantes[siguienteIdx].split(':').map(Number);
                 const horaSiguiente = sh * 60 + sm;
-                // Solo bloquear si es el día del panel
                 const hoyStr = ahora.toISOString().split('T')[0];
                 if (hoyStr === selectedGrupo && horaActual >= horaSiguiente && !asp.evaluadoPorMi) {
                     statusClass = 'status-cerrado';
                     statusText = '🔒 Cerrado';
                     cardClass = 'cerrado';
                     puedeEvaluar = false;
-               }
+                }
+            }
+
+            // Mostrar cuántos evaluadores ya lo evaluaron
+            let evalCountHTML = '';
+            if (asp.numEvaluadores > 0) {
+                evalCountHTML = '<span style="font-size: 11px; color: var(--gray-500); display: block;">👥 ' + asp.numEvaluadores + ' evaluador' + (asp.numEvaluadores > 1 ? 'es' : '') + '</span>';
             }
             
             const div = document.createElement('div');
             div.className = 'aspirante-card ' + cardClass;
-            div.innerHTML = '<div class="aspirante-info"><div class="aspirante-avatar">' + iniciales + '</div><div class="aspirante-details"><h4>' + asp.nombre + '</h4><p>🕐 ' + asp.hora + ' • ' + asp.estado + '</p></div></div><div style="display: flex; align-items: center; gap: 10px;">' + (asp.cvUrl ? '<button onclick="event.stopPropagation(); window.open(\'' + asp.cvUrl + '\', \'_blank\')" style="background: linear-gradient(135deg, #9333EA 0%, #7C3AED 100%); color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500;">📄 CV</button>' : '') + '<span class="status-badge ' + statusClass + '">' + statusText + '</span></div>';
+            div.innerHTML = '<div class="aspirante-info"><div class="aspirante-avatar">' + iniciales + '</div><div class="aspirante-details"><h4>' + asp.nombre + '</h4><p>🕐 ' + asp.hora + ' • ' + asp.estado + '</p>' + evalCountHTML + '</div></div><div style="display: flex; align-items: center; gap: 10px;">' + (asp.cvUrl ? '<button onclick="event.stopPropagation(); window.open(\'' + asp.cvUrl + '\', \'_blank\')" style="background: linear-gradient(135deg, #9333EA 0%, #7C3AED 100%); color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500;">📄 CV</button>' : '') + '<span class="status-badge ' + statusClass + '">' + statusText + '</span></div>';
             
-            if (puedeEvaluar && !asp.evaluadoPorMi) {
+            if (puedeEvaluar) {
                 div.onclick = () => iniciarEvaluacion(asp);
             }
             lista.appendChild(div);
@@ -799,13 +741,12 @@ function iniciarEvaluacion(asp) {
     const iniciales = asp.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
     document.getElementById('eval-avatar').textContent = iniciales;
     document.getElementById('eval-nombre').textContent = asp.nombre;
-    document.getElementById('eval-info').textContent = selectedSucursal + ' • ' + asp.hora;
+    document.getElementById('eval-info').textContent = selectedSucursal + ' • ' + asp.hora + ' • Evaluador: ' + selectedEvaluador;
     document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
     document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected','selected-warning','selected-danger'));
     document.getElementById('q1-notas').value = '';
     document.getElementById('observaciones').value = '';
     
-    // Mostrar guía de rangos solo para ciertos evaluadores
     const guideBox = document.getElementById('guide-box');
     if (EVALUADORES_CON_GUIA.includes(selectedEvaluador)) {
         guideBox.style.display = 'block';
@@ -813,20 +754,16 @@ function iniciarEvaluacion(asp) {
         guideBox.style.display = 'none';
     }
     
-    // Resetear botón de enviar
     const btnEnviar = document.getElementById('btn-enviar');
     btnEnviar.disabled = true;
     btnEnviar.innerHTML = 'Enviar Evaluación →';
     
-    // Mostrar respuestas Pre-Filtro y Entrevista Telefónica
     const btnPF = document.getElementById('btn-prefiltro-panel');
     const contenidoPF = document.getElementById('prefiltro-panel-respuestas');
     const contenedorPF = document.getElementById('prefiltro-panel-content');
     
     if (asp.respuestasPF) {
         let htmlPF = '';
-        
-        // Respuestas del Pre-Filtro
         if (asp.respuestasPF.prefiltro) {
             htmlPF += '<h5 style="color: #92400e; margin-bottom: 10px; font-size: 14px;">📋 Pre-Filtro</h5>';
             Object.values(asp.respuestasPF.prefiltro).forEach(function(r, idx) {
@@ -837,8 +774,6 @@ function iniciarEvaluacion(asp) {
                 '</div>';
             });
         }
-        
-        // Respuestas de Entrevista Telefónica
         if (asp.respuestasPF.entrevistaTel) {
             var et = asp.respuestasPF.entrevistaTel;
             htmlPF += '<h5 style="color: #0057B8; margin: 20px 0 10px; font-size: 14px;">📞 Entrevista Telefónica - ' + et.resultado + ' (' + et.puntajeTotal + '/30 pts)</h5>';
@@ -857,7 +792,6 @@ function iniciarEvaluacion(asp) {
                 '</div>';
             }
         }
-        
         contenidoPF.innerHTML = htmlPF;
         btnPF.style.display = 'block';
         contenedorPF.style.display = 'none';
@@ -886,6 +820,7 @@ function setOption(q, opt, pts, isVeto = false) {
     else event.target.classList.add('selected');
     actualizarProgreso();
 }
+
 function togglePrefiltroPanelBtn() {
     const contenedor = document.getElementById('prefiltro-panel-content');
     const btn = document.getElementById('btn-prefiltro-panel');
@@ -945,7 +880,7 @@ async function confirmarNoShow() {
     };
     try {
         await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-        document.getElementById('confirmacion-mensaje').textContent = 'Se registró que ' + selectedAspirante.nombre + ' no se presentó. Ya no aparecerá para los demás evaluadores.';
+        document.getElementById('confirmacion-mensaje').textContent = 'Se registró que ' + selectedAspirante.nombre + ' no se presentó.';
         showSection('section-confirmacion');
     } catch (e) {
         alert('Error. Intenta de nuevo.');
@@ -987,7 +922,7 @@ async function enviarEvaluacion() {
     };
     try {
         await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-        document.getElementById('confirmacion-mensaje').textContent = 'Tu evaluación para ' + selectedAspirante.nombre + ' ha sido registrada correctamente.';
+        document.getElementById('confirmacion-mensaje').textContent = 'Tu evaluación para ' + selectedAspirante.nombre + ' ha sido registrada. (' + selectedEvaluador + ')';
         showSection('section-confirmacion');
     } catch (e) {
         alert('Error. Intenta de nuevo.');
@@ -997,6 +932,6 @@ async function enviarEvaluacion() {
 }
 
 function evaluarOtro() { showSection('section-config'); cargarAspirantes(); }
-    </script>
+</script>++
 </body>
 </html>
