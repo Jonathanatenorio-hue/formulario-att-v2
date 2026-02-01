@@ -1133,6 +1133,16 @@ document.getElementById('stat-pasadas').textContent = stats?.pasadas || 0;
                                 <span>📞 ${cita.telefono}</span>
                                 <span>⭐ ${cita.puntaje}/45 <span class="clasificacion ${clasificacionClass}">${clasificacionTexto}</span></span>
                             </div>
+                            <button onclick="toggleRespuestasPF(this)" style="background: #f59e0b; color: white; border: none; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 8px;">📝 Ver Pre-Filtro ▼</button>
+                            <div class="respuestas-pf-desplegable" style="display: none; margin-top: 10px; background: #fffbeb; border: 1px solid #f59e0b; border-radius: 8px; padding: 12px;">
+                                ${cita.respuestasPF ? Object.values(cita.respuestasPF).map((r, idx) => `
+                                    <div style="background: white; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px;">
+                                        <div style="font-size: 11px; color: #92400e; font-weight: 600;">P${idx+1}. ${r.pregunta}</div>
+                                        <div style="font-size: 13px; color: #1e293b; margin-top: 4px;">${r.respuesta || 'Sin respuesta'}</div>
+                                        <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Puntaje: ${r.puntaje}/5</div>
+                                    </div>
+                                `).join('') : '<p style="color: #64748b;">Sin datos de pre-filtro</p>'}
+                            </div>
                         </div>
                         <div class="cita-acciones">
                             ${cita.cvUrl ? `<button class="btn-accion btn-cv" onclick="window.open('${cita.cvUrl}', '_blank')">📄 CV</button>` : `<button class="btn-accion btn-subir-cv" onclick="abrirModalSubirCV('${cita.nombre}', '${cita.telefono}')">📤 CV</button>`}
@@ -1148,6 +1158,16 @@ document.getElementById('stat-pasadas').textContent = stats?.pasadas || 0;
             });
             
             document.getElementById('calendario-grid').innerHTML = html;
+        }
+        function toggleRespuestasPF(btn) {
+            const desplegable = btn.nextElementSibling;
+            if (desplegable.style.display === 'none') {
+                desplegable.style.display = 'block';
+                btn.textContent = '📝 Ocultar Pre-Filtro ▲';
+            } else {
+                desplegable.style.display = 'none';
+                btn.textContent = '📝 Ver Pre-Filtro ▼';
+            }
         }
         function filtrarCitas() {
             const busqueda = document.getElementById('busqueda-calendario').value.toLowerCase().trim();
