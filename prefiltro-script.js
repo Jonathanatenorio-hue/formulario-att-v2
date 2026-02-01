@@ -168,15 +168,15 @@ async function guardarRechazoEstadisticas(motivo) {
         motivo: motivo,
         fuente: candidateData.fuente || 'No especificada',
         reclutadora: candidateData.reclutadora || '',
-        puntaje1: questionScores[1] || 0,
-        puntaje2: questionScores[2] || 0,
-        puntaje3: questionScores[3] || 0,
-        puntaje4: questionScores[4] || 0,
-        puntaje5: questionScores[5] || 0,
-        puntaje6: questionScores[6] || 0,
-        puntaje7: questionScores[7] || 0,
-        puntaje8: questionScores[8] || 0,
-        puntaje9: questionScores[9] || 0
+        puntaje1: candidateData.puntaje1 || 0,
+        puntaje2: candidateData.puntaje2 || 0,
+        puntaje3: candidateData.puntaje3 || 0,
+        puntaje4: candidateData.puntaje4 || 0,
+        puntaje5: candidateData.puntaje5 || 0,
+        puntaje6: candidateData.puntaje6 || 0,
+        puntaje7: candidateData.puntaje7 || 0,
+        puntaje8: candidateData.puntaje8 || 0,
+        puntaje9: candidateData.puntaje9 || 0
     };
     try {
         await fetch(GOOGLE_SCRIPT_URL, {
