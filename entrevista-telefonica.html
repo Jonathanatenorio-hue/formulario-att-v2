@@ -924,29 +924,37 @@ function inicializarLogin() {
     if (sesionPortal) {
         const data = JSON.parse(sesionPortal);
         if (data.usuario && data.expira > Date.now()) {
-            usuarioActual = { nombre: data.usuario, rol: 'master' };
+            usuarioActual = { 
+                nombre: data.usuario, 
+                rol: data.rol === 'Director' ? 'master' : 'reclutadora',
+                reclutadora: data.reclutadora
+            };
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('user-badge').style.display = 'flex';
             document.getElementById('badge-avatar').textContent = data.usuario.substring(0, 2).toUpperCase();
             document.getElementById('badge-name').textContent = data.usuario;
+            
+            // Si es reclutadora, filtrar solo sus datos
+            const filtroReclutadora = document.getElementById('filtro-reclutadora');
+            const filtroSucursal = document.getElementById('filtro-sucursal');
+            
+            if (data.reclutadora) {
+                filtroReclutadora.value = data.reclutadora;
+                filtroReclutadora.disabled = true;
+                filtroSucursal.style.display = 'none';
+            } else {
+                filtroReclutadora.disabled = false;
+                filtroSucursal.style.display = 'block';
+            }
+            
             cargarCitasCalendario();
             iniciarAutoRefresh();
             return;
         }
     }
     
-    // Si no hay sesión, mostrar login normal
-    const select = document.getElementById('login-usuario');
-    Object.keys(USUARIOS).sort().forEach(nombre => {
-        const opt = document.createElement('option');
-        opt.value = nombre;
-        opt.textContent = nombre;
-        select.appendChild(opt);
-    });
-    
-    document.getElementById('login-password').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') intentarLogin();
-    });
+    // Si no hay sesión, redirigir al portal
+    window.location.href = 'portal-expertcell.html';
 }
 function intentarLogin() {
     const nombre = document.getElementById('login-usuario').value;
