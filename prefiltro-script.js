@@ -184,6 +184,12 @@ async function guardarRechazoEstadisticas(motivo) {
             mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
+        });
+    } catch (error) {
+        console.error('Error guardando rechazo:', error);
+    }
+}
+
 function nextStep(currentStep){
     const validation=validateStep(currentStep);
     if(!validation.valid){alert(validation.message);return}
