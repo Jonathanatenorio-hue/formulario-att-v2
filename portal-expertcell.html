@@ -615,20 +615,32 @@ async function iniciarSesion() {
         return;
     }
     
-    // Usuario único con acceso total
-    if (usuario === 'Administrador' && password === 'Expert2026!') {
+    // Usuarios del sistema
+    const USUARIOS = {
+        'Jonathan Tenorio': { password: 'Jonathan2026!', rol: 'Director', reclutadora: null },
+        'Pilar García': { password: 'Pilar2026!', rol: 'Director', reclutadora: null },
+        'Talento Humano': { password: 'Talento2026!', rol: 'Director', reclutadora: null },
+        'Operación CC': { password: 'Operacion2026!', rol: 'Director', reclutadora: null },
+        'Karla Flores': { password: 'Karla2026!', rol: 'Reclutadora', reclutadora: 'Karla Flores' },
+        'Jezabel Monterrosas': { password: 'Jezabel2026!', rol: 'Reclutadora', reclutadora: 'Jezabel Monterrosas' },
+        'Yessica Huerta': { password: 'Yessica2026!', rol: 'Reclutadora', reclutadora: 'Yessica Huerta' }
+    };
+    
+    if (USUARIOS[usuario] && USUARIOS[usuario].password === password) {
         usuarioActual = {
-            usuario: 'Administrador',
-            nombre: 'Administrador',
-            rol: 'Director'
+            usuario: usuario,
+            nombre: usuario,
+            rol: USUARIOS[usuario].rol,
+            reclutadora: USUARIOS[usuario].reclutadora
         };
         localStorage.setItem('expertcell_sesion', JSON.stringify(usuarioActual));
         
         // Guardar sesión para otros módulos
         localStorage.setItem('portal_sesion', JSON.stringify({
-            usuario: 'Administrador',
-            nombre: 'Administrador',
-            rol: 'Director',
+            usuario: usuario,
+            nombre: usuario,
+            rol: USUARIOS[usuario].rol,
+            reclutadora: USUARIOS[usuario].reclutadora,
             expira: Date.now() + (8 * 60 * 60 * 1000)
         }));
         
