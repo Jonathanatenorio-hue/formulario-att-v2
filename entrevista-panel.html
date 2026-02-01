@@ -858,6 +858,17 @@ function setOption(q, opt, pts, isVeto = false) {
     else event.target.classList.add('selected');
     actualizarProgreso();
 }
+function togglePrefiltroPanelBtn() {
+    const contenedor = document.getElementById('prefiltro-panel-content');
+    const btn = document.getElementById('btn-prefiltro-panel');
+    if (contenedor.style.display === 'none') {
+        contenedor.style.display = 'block';
+        btn.textContent = '📝 Ocultar Pre-Filtro ▲';
+    } else {
+        contenedor.style.display = 'none';
+        btn.textContent = '📝 Ver respuestas Pre-Filtro ▼';
+    }
+}
 
 function actualizarProgreso() {
     const preguntas = ['q2','q3','q4','q5','q6','r1','r2','r3','r4','r5','d1','d2','d3','p1','p2','p3'];
