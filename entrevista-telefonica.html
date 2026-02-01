@@ -943,7 +943,6 @@ function inicializarLogin() {
             }
             
             cargarCitasCalendario();
-            iniciarAutoRefresh();
             return;
         }
     }
@@ -2123,33 +2122,7 @@ document.getElementById('stat-pasadas').textContent = stats?.pasadas || 0;
         
         // Inicializar al cargar la página
         document.addEventListener('DOMContentLoaded', inicializarLogin);
-        // ==========================================
-        // AUTO-REFRESH
-        // ==========================================
-        let autoRefreshInterval = null;
-
-        function iniciarAutoRefresh() {
-            if (document.getElementById('auto-refresh-toggle') && document.getElementById('auto-refresh-toggle').checked) {
-                autoRefreshInterval = setInterval(() => {
-                    const tabActiva = document.querySelector('.tab-content.active');
-                    if (tabActiva) {
-                        if (tabActiva.id === 'tab-calendario') cargarCitasCalendario();
-                        else if (tabActiva.id === 'tab-historial') cargarHistorial();
-                        else if (tabActiva.id === 'tab-listado-panel') cargarListadoPanel();
-                    }
-                }, 30000);
-            }
-        }
-
-        function toggleAutoRefresh() {
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-                autoRefreshInterval = null;
-            }
-            if (document.getElementById('auto-refresh-toggle').checked) {
-                iniciarAutoRefresh();
-            }
-        }
+        
 
         function actualizarHoraUpdate() {
             const ahora = new Date();
