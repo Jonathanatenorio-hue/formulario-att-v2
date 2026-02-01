@@ -343,17 +343,19 @@ function actualizarBadgeFechaCorte() {
         badge.style.display = 'none';
     }
 }
-
 function showTab(tab) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelector('[onclick="showTab(\'' + tab + '\')"]').classList.add('active');
     document.getElementById('tab-' + tab).classList.add('active');
-    if (tab === 'graficas' && datosGlobales) {
-        renderGraficas();
-    }
-    if (tab === 'prefiltro' && datosGlobales) {
-        renderPrefiltro();
+    if (!datosGlobales) {
+        cargarEstadisticas().then(function() {
+            if (tab === 'graficas') renderGraficas();
+            if (tab === 'prefiltro') renderPrefiltro();
+        });
+    } else {
+        if (tab === 'graficas') renderGraficas();
+        if (tab === 'prefiltro') renderPrefiltro();
     }
 }
 
