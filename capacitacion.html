@@ -401,7 +401,6 @@ async function toggleAsistencia(fila, dia, valorActual) {
     
     // Guardar en servidor
     await guardarCampo(fila, 'dia' + dia, nuevo);
-    if (nuevo === 'B') await guardarCampo(fila, 'resultado_final', 'Baja');
 }
 
 // ========== COMPETENCIAS ==========
