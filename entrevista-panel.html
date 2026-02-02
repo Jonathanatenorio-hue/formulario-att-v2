@@ -224,7 +224,21 @@
             </div>
             <div class="card fade-in" id="aspirantes-card" style="display: none;">
                 <div class="card-title"><span class="icon">📋</span>Aspirantes a Evaluar</div>
-                <p style="color: var(--gray-500); font-size: 14px; margin-bottom: 16px;">Selecciona un aspirante para comenzar. <strong>⚠️ La evaluación se cierra cuando inicia el siguiente horario.</strong></p>
+                <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #0057B8; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                    <h4 style="color: #0057B8; margin-bottom: 12px; font-size: 15px;">📘 ¿Cómo funciona la evaluación panel?</h4>
+                    <div style="font-size: 13px; color: #334155; line-height: 1.8;">
+                        <p style="margin-bottom: 8px;">👥 <strong>Múltiples evaluadores:</strong> Cada aspirante puede ser evaluado por varios miembros del panel de forma independiente. El sistema calcula el <strong>promedio de todas las evaluaciones</strong> para determinar el resultado final.</p>
+                        <p style="margin-bottom: 8px;">🎯 <strong>Criterios de aprobación (puntaje promedio):</strong></p>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 8px 0 12px;">
+                            <div style="background: white; padding: 8px 12px; border-radius: 8px; border-left: 4px solid #10B981;"><strong>🌟 71-80 pts:</strong> Excelente</div>
+                            <div style="background: white; padding: 8px 12px; border-radius: 8px; border-left: 4px solid #22C55E;"><strong>✅ 64-70 pts:</strong> Bien</div>
+                            <div style="background: white; padding: 8px 12px; border-radius: 8px; border-left: 4px solid #F59E0B;"><strong>⚠️ 58-63 pts:</strong> Regular</div>
+                            <div style="background: white; padding: 8px 12px; border-radius: 8px; border-left: 4px solid #EF4444;"><strong>❌ 0-57 pts:</strong> No aprobó</div>
+                        </div>
+                        <p style="margin-bottom: 8px;">🚫 <strong>Veto:</strong> Si cualquier evaluador marca VETO en "¿Lo quiero en mi equipo?" o "Energía para ventas", el aspirante <strong>no aprueba</strong> sin importar el puntaje.</p>
+                        <p style="margin-bottom: 0;">⏰ <strong>Tiempo límite:</strong> La evaluación de cada aspirante se cierra cuando inicia el horario de la siguiente cita. Una vez cerrada, ya no se puede evaluar.</p>
+                    </div>
+                </div>
                 <div class="aspirantes-list" id="aspirantes-list"></div>
             </div>
         </div>
