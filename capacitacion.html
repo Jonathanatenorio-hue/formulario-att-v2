@@ -155,6 +155,7 @@
             <div class="header-actions">
                 <button class="btn btn-primary" onclick="showSection('section-grupos')">📋 Mis Grupos</button>
                 <button class="btn btn-secondary" style="background: rgba(255,255,255,0.15); border: none; color: white;" onclick="abrirModalNuevoGrupo()">➕ Nuevo Grupo</button>
+                <button class="btn btn-secondary" style="background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.3); color: white;" onclick="abrirModalGrupoInterno()">🏢 Grupo Interno</button>
             </div>
         </div>
 
@@ -263,6 +264,53 @@
             <div style="display: flex; gap: 12px; margin-top: 20px;">
                 <button class="btn btn-secondary" onclick="cerrarModal('modal-nuevo-grupo')" style="flex: 1;">Cancelar</button>
                 <button class="btn btn-primary" id="btn-crear-grupo" onclick="crearGrupo()" style="flex: 1;">Crear Grupo →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Grupo Interno -->
+    <div class="modal-overlay" id="modal-grupo-interno">
+        <div class="modal fade-in">
+            <h2 style="font-size: 20px; margin-bottom: 6px;">🏢 Crear Grupo Interno (Operación)</h2>
+            <p style="color: var(--gray-500); font-size: 13px; margin-bottom: 20px;">Para capacitación de personal activo en operación.</p>
+            <div class="form-group">
+                <label>Nombre del Grupo</label>
+                <input type="text" id="interno-grupo-nombre" placeholder="Ej: Refuerzo Febrero - Torre JV">
+            </div>
+            <div class="form-group">
+                <label>Fecha de Inicio</label>
+                <input type="date" id="interno-grupo-fecha">
+            </div>
+            <div class="form-group">
+                <label>Sucursal</label>
+                <select id="interno-grupo-sucursal">
+                    <option value="">Selecciona...</option>
+                    <option value="Torre JV Juárez">Torre JV Juárez</option>
+                    <option value="Edificio Inbursa Antequera">Edificio Inbursa Antequera</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Capacitador</label>
+                <select id="interno-grupo-capacitador">
+                    <option value="">Selecciona...</option>
+                    <option value="Tomas Rosas">Tomas Rosas</option>
+                    <option value="Iran Carrasco">Iran Carrasco</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Agregar participantes manualmente</label>
+                <div id="interno-participantes" style="border: 2px solid var(--gray-200); border-radius: 10px; padding: 12px;">
+                    <div id="interno-lista-participantes"></div>
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <input type="text" id="interno-nombre" placeholder="Nombre completo" style="flex: 2; padding: 10px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit;">
+                        <input type="text" id="interno-telefono" placeholder="Teléfono" style="flex: 1; padding: 10px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit;">
+                        <button class="btn btn-sm btn-primary" onclick="agregarParticipanteInterno()">+</button>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="cerrarModal('modal-grupo-interno')" style="flex: 1;">Cancelar</button>
+                <button class="btn btn-success" id="btn-crear-interno" onclick="crearGrupoInterno()" style="flex: 1;">Crear Grupo Interno →</button>
             </div>
         </div>
     </div>
@@ -795,7 +843,88 @@ function abrirModalNuevoGrupo() {
 function cerrarModal(id) {
     document.getElementById(id).classList.remove('active');
 }
+let participantesInternos = [];
 
+function abrirModalGrupoInterno() {
+    document.getElementById('modal-grupo-interno').classList.add('active');
+    document.getElementById('interno-grupo-nombre').value = '';
+    document.getElementById('interno-grupo-fecha').value = '';
+    document.getElementById('interno-grupo-sucursal').value = '';
+    document.getElementById('interno-grupo-capacitador').value = '';
+    participantesInternos = [];
+    renderParticipantesInternos();
+}
+
+function agregarParticipanteInterno() {
+    const nombre = document.getElementById('interno-nombre').value.trim();
+    const telefono = document.getElementById('interno-telefono').value.trim();
+    if (!nombre) { alert('Escribe el nombre.'); return; }
+    participantesInternos.push({ nombre: nombre, telefono: telefono, reclutadora: 'Operación' });
+    document.getElementById('interno-nombre').value = '';
+    document.getElementById('interno-telefono').value = '';
+    document.getElementById('interno-nombre').focus();
+    renderParticipantesInternos();
+}
+
+function eliminarParticipanteInterno(idx) {
+    participantesInternos.splice(idx, 1);
+    renderParticipantesInternos();
+}
+
+function renderParticipantesInternos() {
+    const container = document.getElementById('interno-lista-participantes');
+    if (participantesInternos.length === 0) {
+        container.innerHTML = '<p style="color: var(--gray-400); font-size: 13px; text-align: center; padding: 10px;">Agrega participantes abajo</p>';
+        return;
+    }
+    container.innerHTML = '';
+    participantesInternos.forEach(function(p, idx) {
+        const div = document.createElement('div');
+        div.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--gray-50); border-radius: 8px; margin-bottom: 6px;';
+        div.innerHTML = '<span><strong>' + p.nombre + '</strong> <span style="color: var(--gray-500); font-size: 12px;">' + (p.telefono || 'Sin tel.') + '</span></span>' +
+            '<button onclick="eliminarParticipanteInterno(' + idx + ')" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 16px;">✕</button>';
+        container.appendChild(div);
+    });
+}
+
+async function crearGrupoInterno() {
+    const nombre = document.getElementById('interno-grupo-nombre').value.trim();
+    const fecha = document.getElementById('interno-grupo-fecha').value;
+    const sucursal = document.getElementById('interno-grupo-sucursal').value;
+    const capacitador = document.getElementById('interno-grupo-capacitador').value;
+    
+    if (!nombre || !fecha || !sucursal || !capacitador) { alert('Completa todos los campos.'); return; }
+    if (participantesInternos.length === 0) { alert('Agrega al menos un participante.'); return; }
+    
+    const btn = document.getElementById('btn-crear-interno');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span> Creando...';
+    
+    try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                tipo: 'crear_grupo_capacitacion',
+                grupo: nombre,
+                fechaInicio: fecha,
+                sucursal: sucursal,
+                capacitador: capacitador,
+                aspirantes: participantesInternos
+            })
+        });
+        
+        cerrarModal('modal-grupo-interno');
+        alert('✅ Grupo interno "' + nombre + '" creado con ' + participantesInternos.length + ' participantes.');
+        cargarGrupos();
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+    
+    btn.disabled = false;
+    btn.innerHTML = 'Crear Grupo Interno →';
+}
 async function cargarAspirantesDisponibles() {
     const sucursal = document.getElementById('nuevo-grupo-sucursal').value;
     const container = document.getElementById('aspirantes-disponibles');
