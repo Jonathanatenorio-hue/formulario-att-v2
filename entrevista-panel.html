@@ -719,10 +719,18 @@ async function cargarAspirantes() {
                 return (sh * 60 + sm) > horaAspirante;
             });
             
-            if (siguienteIdx !== -1) {
+            // Bloquear si la fecha del panel ya pasó
+            const hoyStr = ahora.toISOString().split('T')[0];
+            const esFechaPasada = hoyStr > selectedGrupo;
+            
+            if (esFechaPasada && !asp.evaluadoPorMi) {
+                statusClass = 'status-cerrado';
+                statusText = '🔒 Cerrado (fecha pasada)';
+                cardClass = 'cerrado';
+                puedeEvaluar = false;
+            } else if (siguienteIdx !== -1) {
                 const [sh, sm] = horariosAspirantes[siguienteIdx].split(':').map(Number);
                 const horaSiguiente = sh * 60 + sm;
-                const hoyStr = ahora.toISOString().split('T')[0];
                 if (hoyStr === selectedGrupo && horaActual >= horaSiguiente && !asp.evaluadoPorMi) {
                     statusClass = 'status-cerrado';
                     statusText = '🔒 Cerrado';
