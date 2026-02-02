@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capacitación | ExpertCell - AT&T</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --att-blue: #00A8E1;
+            --att-blue-dark: #0057B8;
+            --att-blue-deeper: #003A70;
+            --white: #FFFFFF;
+            --gray-50: #F8FAFC;
+            --gray-100: #F1F5F9;
+            --gray-200: #E2E8F0;
+            --gray-300: #CBD5E1;
+            --gray-400: #94A3B8;
+            --gray-500: #64748B;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1E293B;
+            --gray-900: #0F172A;
+            --success: #10B981;
+            --success-light: #D1FAE5;
+            --warning: #F59E0B;
+            --warning-light: #FEF3C7;
+            --danger: #EF4444;
+            --danger-light: #FEE2E2;
+            --purple: #8B5CF6;
+            --purple-light: #EDE9FE;
+            --indigo: #6366F1;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'IBM Plex Sans', sans-serif; background: linear-gradient(180deg, var(--gray-900) 0%, #0f1729 100%); min-height: 100vh; color: var(--gray-800); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        .header { background: linear-gradient(135deg, var(--att-blue-deeper) 0%, var(--att-blue-dark) 50%, var(--att-blue) 100%); padding: 30px; border-radius: 16px; margin-bottom: 24px; position: relative; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: -50%; right: -20%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); }
+        .header h1 { color: var(--white); font-size: 26px; font-weight: 700; position: relative; z-index: 1; }
+        .header p { color: rgba(255,255,255,0.8); font-size: 14px; margin-top: 4px; position: relative; z-index: 1; }
+        .header-actions { display: flex; gap: 12px; margin-top: 16px; position: relative; z-index: 1; }
+
+        .card { background: var(--white); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .card-title { font-size: 17px; font-weight: 600; color: var(--gray-800); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+
+        .btn { padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); color: var(--white); box-shadow: 0 4px 15px rgba(0,168,225,0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,168,225,0.4); }
+        .btn-secondary { background: var(--gray-100); color: var(--gray-700); border: 2px solid var(--gray-200); }
+        .btn-success { background: linear-gradient(135deg, var(--success) 0%, #059669 100%); color: white; }
+        .btn-danger { background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%); color: white; }
+        .btn-sm { padding: 8px 16px; font-size: 13px; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
+        .form-group select, .form-group input, .form-group textarea { width: 100%; padding: 12px 14px; border: 2px solid var(--gray-200); border-radius: 10px; font-size: 14px; font-family: inherit; transition: all 0.2s; background: var(--white); }
+        .form-group select:focus, .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--att-blue); box-shadow: 0 0 0 4px rgba(0,168,225,0.1); }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* Grupos Grid */
+        .grupos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+        .grupo-card { background: var(--white); border-radius: 14px; padding: 20px; border: 2px solid var(--gray-200); cursor: pointer; transition: all 0.2s; }
+        .grupo-card:hover { border-color: var(--att-blue); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,168,225,0.15); }
+        .grupo-card h3 { font-size: 16px; color: var(--gray-800); margin-bottom: 8px; }
+        .grupo-card .meta { font-size: 13px; color: var(--gray-500); margin-bottom: 12px; }
+        .grupo-stats { display: flex; gap: 12px; }
+        .grupo-stat { text-align: center; flex: 1; padding: 8px; background: var(--gray-50); border-radius: 8px; }
+        .grupo-stat .num { font-size: 20px; font-weight: 700; }
+        .grupo-stat .label { font-size: 11px; color: var(--gray-500); }
+        .grupo-stat.green .num { color: var(--success); }
+        .grupo-stat.red .num { color: var(--danger); }
+        .grupo-stat.blue .num { color: var(--att-blue); }
+
+        /* Aspirante row */
+        .asp-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .asp-table th { background: var(--gray-50); padding: 12px 16px; font-size: 12px; font-weight: 600; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; text-align: left; border-bottom: 2px solid var(--gray-200); }
+        .asp-table td { padding: 14px 16px; border-bottom: 1px solid var(--gray-100); font-size: 14px; vertical-align: middle; }
+        .asp-table tr:hover td { background: var(--gray-50); }
+        .asp-table tr.baja td { opacity: 0.5; text-decoration: line-through; }
+
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
+        .badge-success { background: var(--success-light); color: var(--success); }
+        .badge-warning { background: var(--warning-light); color: var(--warning); }
+        .badge-danger { background: var(--danger-light); color: var(--danger); }
+        .badge-info { background: #DBEAFE; color: var(--att-blue-dark); }
+        .badge-gray { background: var(--gray-100); color: var(--gray-500); }
+        .badge-purple { background: var(--purple-light); color: var(--purple); }
+
+        /* Asistencia buttons */
+        .asist-btn { width: 32px; height: 32px; border: 2px solid var(--gray-200); border-radius: 8px; background: white; cursor: pointer; font-size: 14px; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+        .asist-btn:hover { border-color: var(--att-blue); }
+        .asist-btn.a { background: var(--success); border-color: var(--success); color: white; }
+        .asist-btn.r { background: var(--warning); border-color: var(--warning); color: white; }
+        .asist-btn.f { background: var(--danger); border-color: var(--danger); color: white; }
+        .asist-btn.b { background: var(--gray-600); border-color: var(--gray-600); color: white; }
+
+        /* Competencia select */
+        .comp-select { padding: 6px 10px; border: 2px solid var(--gray-200); border-radius: 8px; font-size: 12px; font-family: inherit; cursor: pointer; }
+        .comp-select.domina { border-color: var(--success); background: var(--success-light); }
+        .comp-select.en-proceso { border-color: var(--warning); background: var(--warning-light); }
+        .comp-select.no-domina { border-color: var(--danger); background: var(--danger-light); }
+        .comp-select.pendiente { border-color: var(--gray-200); background: var(--gray-50); }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 4px; background: var(--gray-100); padding: 4px; border-radius: 12px; margin-bottom: 20px; overflow-x: auto; }
+        .tab { padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: none; color: var(--gray-500); transition: all 0.2s; white-space: nowrap; font-family: inherit; }
+        .tab.active { background: var(--white); color: var(--att-blue-dark); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+        /* Detail panel */
+        .detail-panel { background: var(--gray-50); border-radius: 14px; padding: 24px; margin-top: 16px; border: 2px solid var(--gray-200); }
+        .detail-panel h3 { font-size: 16px; font-weight: 600; color: var(--gray-800); margin-bottom: 16px; }
+        .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .detail-field label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-500); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .detail-field textarea { width: 100%; padding: 10px 12px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit; font-size: 13px; min-height: 80px; resize: vertical; }
+        .detail-field textarea:focus { outline: none; border-color: var(--att-blue); }
+
+        /* Informe final */
+        .informe-card { background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-900) 100%); border-radius: 16px; padding: 28px; color: white; margin-top: 20px; }
+        .informe-card h3 { font-size: 18px; margin-bottom: 16px; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: white; border-radius: 16px; padding: 28px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+
+        .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--gray-200); border-radius: 50%; border-top-color: var(--att-blue); animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .fade-in { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--gray-500); }
+        .empty-state .icon { font-size: 64px; margin-bottom: 16px; }
+        .empty-state h3 { font-size: 18px; color: var(--gray-700); margin-bottom: 8px; }
+
+        @media (max-width: 768px) {
+            .container { padding: 12px; }
+            .header { padding: 20px; }
+            .header h1 { font-size: 20px; }
+            .grupos-grid { grid-template-columns: 1fr; }
+            .detail-grid { grid-template-columns: 1fr; }
+            .tabs { flex-wrap: nowrap; overflow-x: auto; }
+            .asp-table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Módulo de Capacitación</h1>
+            <p>Gestión y seguimiento de grupos en entrenamiento | ExpertCell</p>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="showSection('section-grupos')">📋 Mis Grupos</button>
+                <button class="btn btn-secondary" style="background: rgba(255,255,255,0.15); border: none; color: white;" onclick="abrirModalNuevoGrupo()">➕ Nuevo Grupo</button>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: Lista de Grupos -->
+        <div class="section active" id="section-grupos">
+            <div class="card">
+                <div class="card-title">📋 Grupos de Capacitación</div>
+                <div id="grupos-lista" class="grupos-grid">
+                    <div style="text-align: center; padding: 40px; color: var(--gray-500);"><span class="loading-spinner"></span> Cargando...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: Detalle de Grupo -->
+        <div class="section" id="section-detalle">
+            <div class="card fade-in">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <button class="btn btn-secondary btn-sm" onclick="showSection('section-grupos'); cargarGrupos();">← Volver</button>
+                    </div>
+                    <div style="text-align: right;">
+                        <h2 id="detalle-grupo-titulo" style="font-size: 20px; color: var(--gray-800);"></h2>
+                        <p id="detalle-grupo-info" style="font-size: 13px; color: var(--gray-500);"></p>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('asistencia')">📅 Asistencia</button>
+                    <button class="tab" onclick="showTab('competencias')">🎯 Competencias</button>
+                    <button class="tab" onclick="showTab('evaluaciones')">📝 Evaluaciones</button>
+                    <button class="tab" onclick="showTab('seguimientos')">📞 Seguimientos</button>
+                    <button class="tab" onclick="showTab('informe')">📊 Informe Final</button>
+                </div>
+
+                <div id="tab-asistencia" class="tab-content" style="display: block;">
+                    <div style="overflow-x: auto;">
+                        <table class="asp-table" id="tabla-asistencia">
+                            <thead><tr><th>Aspirante</th><th>Día 1<br><small>Lun</small></th><th>Día 2<br><small>Mar</small></th><th>Día 3<br><small>Mié</small></th><th>Día 4<br><small>Jue</small></th><th>Día 5<br><small>Vie</small></th><th>Día 6<br><small>Sáb</small></th><th>Resumen</th></tr></thead>
+                            <tbody id="tbody-asistencia"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="tab-competencias" class="tab-content" style="display: none;">
+                    <p style="color: var(--gray-500); font-size: 13px; margin-bottom: 16px;">Marca el nivel de dominio de cada competencia por aspirante.</p>
+                    <div style="overflow-x: auto;">
+                        <table class="asp-table" id="tabla-competencias">
+                            <thead><tr><th>Aspirante</th><th>Producto AT&T</th><th>Sistemas</th><th>Logística</th><th>Técnicas Venta</th><th>Simulación</th><th>Objeciones</th><th>Cierre</th><th>Apertura</th><th>Avance</th></tr></thead>
+                            <tbody id="tbody-competencias"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="tab-evaluaciones" class="tab-content" style="display: none;">
+                    <p style="color: var(--gray-500); font-size: 13px; margin-bottom: 16px;">Registra exámenes y roleplay. Disponibles desde el Día 2.</p>
+                    <div id="evaluaciones-lista"></div>
+                </div>
+
+                <div id="tab-seguimientos" class="tab-content" style="display: none;">
+                    <p style="color: var(--gray-500); font-size: 13px; margin-bottom: 16px;">Registra los clientes en proceso que cada aspirante va trabajando durante la capacitación.</p>
+                    <div id="seguimientos-lista"></div>
+                </div>
+
+                <div id="tab-informe" class="tab-content" style="display: none;">
+                    <p style="color: var(--gray-500); font-size: 13px; margin-bottom: 16px;">Informe final para entrega al supervisor. Incluye FODA, resultado y conclusión.</p>
+                    <div id="informe-lista"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nuevo Grupo -->
+    <div class="modal-overlay" id="modal-nuevo-grupo">
+        <div class="modal fade-in">
+            <h2 style="font-size: 20px; margin-bottom: 20px;">➕ Crear Nuevo Grupo de Capacitación</h2>
+            <div class="form-group">
+                <label>Nombre del Grupo</label>
+                <input type="text" id="nuevo-grupo-nombre" placeholder="Ej: Grupo Febrero 2026 - Torre JV">
+            </div>
+            <div class="form-group">
+                <label>Fecha de Inicio (Lunes)</label>
+                <input type="date" id="nuevo-grupo-fecha">
+            </div>
+            <div class="form-group">
+                <label>Sucursal</label>
+                <select id="nuevo-grupo-sucursal" onchange="cargarAspirantesDisponibles()">
+                    <option value="">Selecciona...</option>
+                    <option value="Torre JV Juárez">Torre JV Juárez</option>
+                    <option value="Edificio Inbursa Antequera">Edificio Inbursa Antequera</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Capacitador</label>
+                <select id="nuevo-grupo-capacitador">
+                    <option value="">Selecciona...</option>
+                    <option value="Tomas Rosas">Tomas Rosas</option>
+                    <option value="Iran Carrasco">Iran Carrasco</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Aspirantes disponibles (Checklist Completo)</label>
+                <div id="aspirantes-disponibles" style="max-height: 250px; overflow-y: auto; border: 2px solid var(--gray-200); border-radius: 10px; padding: 12px;">
+                    <p style="color: var(--gray-500); font-size: 13px;">Selecciona una sucursal para ver aspirantes disponibles.</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="cerrarModal('modal-nuevo-grupo')" style="flex: 1;">Cancelar</button>
+                <button class="btn btn-primary" id="btn-crear-grupo" onclick="crearGrupo()" style="flex: 1;">Crear Grupo →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-HOsviZvkv83Lrsu6cFukqRK6uuft9nw438lxPv2WOX_prRx3CfosVF7-BxuwBJCQ9A/exec';
+
+let grupoActual = null;
+let aspirantesGrupo = [];
+let aspirantesDisponibles = [];
+
+document.addEventListener('DOMContentLoaded', cargarGrupos);
+
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+}
+
+function showTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+    document.querySelector('[onclick="showTab(\'' + tab + '\')"]').classList.add('active');
+    document.getElementById('tab-' + tab).style.display = 'block';
+    
+    if (tab === 'competencias') renderCompetencias();
+    if (tab === 'evaluaciones') renderEvaluaciones();
+    if (tab === 'seguimientos') renderSeguimientos();
+    if (tab === 'informe') renderInforme();
+}
+
+// ========== GRUPOS ==========
+async function cargarGrupos() {
+    const container = document.getElementById('grupos-lista');
+    container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--gray-500);"><span class="loading-spinner"></span> Cargando grupos...</div>';
+    try {
+        const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getGruposCapacitacion');
+        const data = await r.json();
+        if (data.grupos && data.grupos.length > 0) {
+            container.innerHTML = '';
+            data.grupos.forEach(g => {
+                const div = document.createElement('div');
+                div.className = 'grupo-card';
+                div.onclick = () => abrirGrupo(g.grupo);
+                div.innerHTML = '<h3>📚 ' + g.grupo + '</h3>' +
+                    '<div class="meta">📍 ' + g.sucursal + ' • 👨‍🏫 ' + g.capacitador + ' • 📅 ' + g.fechaInicio + '</div>' +
+                    '<div class="grupo-stats">' +
+                        '<div class="grupo-stat blue"><div class="num">' + g.totalAspirantes + '</div><div class="label">Total</div></div>' +
+                        '<div class="grupo-stat green"><div class="num">' + g.graduados + '</div><div class="label">Graduados</div></div>' +
+                        '<div class="grupo-stat"><div class="num">' + g.enProceso + '</div><div class="label">En proceso</div></div>' +
+                        '<div class="grupo-stat red"><div class="num">' + g.bajas + '</div><div class="label">Bajas</div></div>' +
+                    '</div>';
+                container.appendChild(div);
+            });
+        } else {
+            container.innerHTML = '<div class="empty-state"><div class="icon">📚</div><h3>No hay grupos aún</h3><p>Crea tu primer grupo de capacitación</p></div>';
+        }
+    } catch (e) {
+        console.error(e);
+        container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><h3>Error al cargar</h3><p>' + e.message + '</p></div>';
+    }
+}
+
+async function abrirGrupo(grupo) {
+    grupoActual = grupo;
+    document.getElementById('detalle-grupo-titulo').textContent = '📚 ' + grupo;
+    showSection('section-detalle');
+    
+    try {
+        const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getAspirantesCapacitacion&grupo=' + encodeURIComponent(grupo));
+        const data = await r.json();
+        aspirantesGrupo = data.aspirantes || [];
+        
+        if (aspirantesGrupo.length > 0) {
+            var asp0 = aspirantesGrupo[0];
+            document.getElementById('detalle-grupo-info').textContent = '📍 ' + asp0.sucursal + ' • 👨‍🏫 ' + asp0.capacitador + ' • 📅 Inicio: ' + asp0.fechaInicio;
+        }
+        
+        renderAsistencia();
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+// ========== ASISTENCIA ==========
+function renderAsistencia() {
+    const tbody = document.getElementById('tbody-asistencia');
+    tbody.innerHTML = '';
+    
+    aspirantesGrupo.forEach(asp => {
+        const tr = document.createElement('tr');
+        if (asp.resultadoFinal === 'Baja') tr.className = 'baja';
+        
+        let asistHTML = '';
+        for (let d = 1; d <= 6; d++) {
+            const val = asp.asistencia['dia' + d];
+            asistHTML += '<td style="text-align: center;">' + renderAsistBtn(asp.fila, d, val) + '</td>';
+        }
+        
+        const asistencias = Object.values(asp.asistencia).filter(v => v === 'A').length;
+        const faltas = Object.values(asp.asistencia).filter(v => v === 'F').length;
+        const retardos = Object.values(asp.asistencia).filter(v => v === 'R').length;
+        
+        tr.innerHTML = '<td><strong>' + asp.nombre + '</strong><br><small style="color: var(--gray-500);">Recl: ' + asp.reclutadora + '</small></td>' +
+            asistHTML +
+            '<td><span class="badge badge-success">' + asistencias + 'A</span> <span class="badge badge-warning">' + retardos + 'R</span> <span class="badge badge-danger">' + faltas + 'F</span></td>';
+        
+        tbody.appendChild(tr);
+    });
+}
+
+function renderAsistBtn(fila, dia, valor) {
+    const estados = [
+        { code: '', label: '—', cls: '' },
+        { code: 'A', label: '✓', cls: 'a' },
+        { code: 'R', label: '⏰', cls: 'r' },
+        { code: 'F', label: '✗', cls: 'f' },
+        { code: 'B', label: '🚫', cls: 'b' }
+    ];
+    const current = estados.find(e => e.code === valor) || estados[0];
+    return '<button class="asist-btn ' + current.cls + '" onclick="toggleAsistencia(' + fila + ', ' + dia + ', \'' + valor + '\')" title="' + (valor || 'Sin registro') + '">' + current.label + '</button>';
+}
+
+async function toggleAsistencia(fila, dia, valorActual) {
+    const secuencia = ['', 'A', 'R', 'F', 'B'];
+    const idx = secuencia.indexOf(valorActual);
+    const nuevo = secuencia[(idx + 1) % secuencia.length];
+    
+    // Actualizar localmente
+    const asp = aspirantesGrupo.find(a => a.fila === fila);
+    if (asp) {
+        asp.asistencia['dia' + dia] = nuevo;
+        if (nuevo === 'B') asp.resultadoFinal = 'Baja';
+        renderAsistencia();
+    }
+    
+    // Guardar en servidor
+    await guardarCampo(fila, 'dia' + dia, nuevo);
+    if (nuevo === 'B') await guardarCampo(fila, 'resultado_final', 'Baja');
+}
+
+// ========== COMPETENCIAS ==========
+function renderCompetencias() {
+    const tbody = document.getElementById('tbody-competencias');
+    tbody.innerHTML = '';
+    
+    const comps = ['producto', 'sistemas', 'logistica', 'tecnicas', 'simulacion', 'objeciones', 'cierre', 'apertura'];
+    
+    aspirantesGrupo.forEach(asp => {
+        if (asp.resultadoFinal === 'Baja') return;
+        const tr = document.createElement('tr');
+        let compHTML = '';
+        let dominadas = 0;
+        
+        comps.forEach(comp => {
+            const val = asp.competencias[comp] || 'Pendiente';
+            if (val === 'Domina') dominadas++;
+            const cls = val === 'Domina' ? 'domina' : val === 'En proceso' ? 'en-proceso' : val === 'No domina' ? 'no-domina' : 'pendiente';
+            compHTML += '<td><select class="comp-select ' + cls + '" onchange="cambiarCompetencia(' + asp.fila + ', \'comp_' + comp + '\', this.value, this)">' +
+                '<option value="Pendiente"' + (val === 'Pendiente' ? ' selected' : '') + '>⏳ Pendiente</option>' +
+                '<option value="Domina"' + (val === 'Domina' ? ' selected' : '') + '>✅ Domina</option>' +
+                '<option value="En proceso"' + (val === 'En proceso' ? ' selected' : '') + '>🔄 En proceso</option>' +
+                '<option value="No domina"' + (val === 'No domina' ? ' selected' : '') + '>❌ No domina</option>' +
+            '</select></td>';
+        });
+        
+        const pct = Math.round((dominadas / comps.length) * 100);
+        const barColor = pct >= 80 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)';
+        
+        tr.innerHTML = '<td><strong>' + asp.nombre + '</strong></td>' + compHTML +
+            '<td><div style="display: flex; align-items: center; gap: 8px;"><div style="flex: 1; height: 8px; background: var(--gray-100); border-radius: 4px; overflow: hidden;"><div style="height: 100%; width: ' + pct + '%; background: ' + barColor + '; border-radius: 4px;"></div></div><span style="font-size: 12px; font-weight: 600; color: var(--gray-600);">' + pct + '%</span></div></td>';
+        
+        tbody.appendChild(tr);
+    });
+}
+
+async function cambiarCompetencia(fila, campo, valor, el) {
+    el.className = 'comp-select ' + (valor === 'Domina' ? 'domina' : valor === 'En proceso' ? 'en-proceso' : valor === 'No domina' ? 'no-domina' : 'pendiente');
+    const asp = aspirantesGrupo.find(a => a.fila === fila);
+    if (asp) {
+        const compKey = campo.replace('comp_', '');
+        asp.competencias[compKey] = valor;
+    }
+    await guardarCampo(fila, campo, valor);
+}
+
+// ========== EVALUACIONES ==========
+function renderEvaluaciones() {
+    const container = document.getElementById('evaluaciones-lista');
+    let html = '';
+    
+    aspirantesGrupo.forEach(asp => {
+        if (asp.resultadoFinal === 'Baja') return;
+        
+        html += '<div class="detail-panel" style="margin-bottom: 16px;">' +
+            '<h3>👤 ' + asp.nombre + '</h3>' +
+            '<div class="detail-grid">' +
+                '<div class="detail-field">' +
+                    '<label>📝 Examen Teórico (0-100)</label>' +
+                    '<div style="display: flex; gap: 8px;">' +
+                        '<input type="number" min="0" max="100" value="' + (asp.examen.puntaje || '') + '" placeholder="Puntaje" onchange="guardarCampo(' + asp.fila + ', \'examen_puntaje\', this.value)" style="flex: 1; padding: 10px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit;">' +
+                        '<input type="date" value="' + (asp.examen.fecha || '') + '" onchange="guardarCampo(' + asp.fila + ', \'examen_fecha\', this.value)" style="padding: 10px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit;">' +
+                    '</div>' +
+                '</div>' +
+                '<div class="detail-field">' +
+                    '<label>🎭 Roleplay (0-100)</label>' +
+                    '<div style="display: flex; gap: 8px;">' +
+                        '<input type="number" min="0" max="100" value="' + (asp.roleplay.puntaje || '') + '" placeholder="Puntaje" onchange="guardarCampo(' + asp.fila + ', \'roleplay_puntaje\', this.value)" style="flex: 1; padding: 10px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit;">' +
+                        '<input type="date" value="' + (asp.roleplay.fecha || '') + '" onchange="guardarCampo(' + asp.fila + ', \'roleplay_fecha\', this.value)" style="padding: 10px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit;">' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="detail-field" style="margin-top: 12px;">' +
+                '<label>📝 Observaciones del Roleplay</label>' +
+                '<textarea placeholder="¿Cómo fue su desempeño? Puntos fuertes y débiles..." onchange="guardarCampo(' + asp.fila + ', \'roleplay_obs\', this.value)">' + (asp.roleplay.observaciones || '') + '</textarea>' +
+            '</div>' +
+        '</div>';
+    });
+    
+    container.innerHTML = html || '<div class="empty-state"><p>No hay aspirantes activos</p></div>';
+}
+
+// ========== SEGUIMIENTOS ==========
+function renderSeguimientos() {
+    const container = document.getElementById('seguimientos-lista');
+    let html = '';
+    
+    aspirantesGrupo.forEach(asp => {
+        if (asp.resultadoFinal === 'Baja') return;
+        
+        html += '<div class="detail-panel" style="margin-bottom: 16px;">' +
+            '<h3>👤 ' + asp.nombre + '</h3>' +
+            '<div class="detail-field">' +
+                '<label>📞 Clientes en proceso / Seguimientos durante capacitación</label>' +
+                '<textarea placeholder="Registra los clientes que el aspirante está trabajando, avances, resultados parciales..." style="min-height: 100px;" onchange="guardarCampo(' + asp.fila + ', \'seguimientos\', this.value)">' + (asp.seguimientos || '') + '</textarea>' +
+            '</div>' +
+            '<div style="display: flex; gap: 16px; margin-top: 12px;">' +
+                '<div class="detail-field" style="flex: 1;">' +
+                    '<label>💰 ¿Ha vendido?</label>' +
+                    '<select onchange="guardarCampo(' + asp.fila + ', \'vendio\', this.value)" style="width: 100%; padding: 10px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit;">' +
+                        '<option value="No"' + (asp.vendio === 'No' ? ' selected' : '') + '>No</option>' +
+                        '<option value="Sí"' + (asp.vendio === 'Sí' ? ' selected' : '') + '>Sí</option>' +
+                    '</select>' +
+                '</div>' +
+                '<div class="detail-field" style="flex: 2;">' +
+                    '<label>📊 Detalle de ventas</label>' +
+                    '<input type="text" placeholder="Ej: 2 renovaciones, 1 portabilidad..." value="' + (asp.ventasDetalle || '') + '" onchange="guardarCampo(' + asp.fila + ', \'ventas_detalle\', this.value)" style="padding: 10px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit;">' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    });
+    
+    container.innerHTML = html || '<div class="empty-state"><p>No hay aspirantes activos</p></div>';
+}
+
+// ========== INFORME FINAL ==========
+function renderInforme() {
+    const container = document.getElementById('informe-lista');
+    let html = '';
+    
+    aspirantesGrupo.forEach(asp => {
+        if (asp.resultadoFinal === 'Baja') return;
+        
+        const comps = Object.values(asp.competencias);
+        const dominadas = comps.filter(c => c === 'Domina').length;
+        const pctComp = Math.round((dominadas / comps.length) * 100);
+        const asistencias = Object.values(asp.asistencia).filter(v => v === 'A').length;
+        
+        html += '<div class="detail-panel" style="margin-bottom: 20px;">' +
+            '<div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">' +
+                '<h3 style="margin: 0;">👤 ' + asp.nombre + '</h3>' +
+                '<div style="display: flex; gap: 8px;">' +
+                    '<span class="badge badge-info">📅 Asist: ' + asistencias + '/6</span>' +
+                    '<span class="badge badge-purple">🎯 Comp: ' + pctComp + '%</span>' +
+                    (asp.examen.puntaje ? '<span class="badge badge-info">📝 Examen: ' + asp.examen.puntaje + '</span>' : '') +
+                    (asp.roleplay.puntaje ? '<span class="badge badge-info">🎭 Roleplay: ' + asp.roleplay.puntaje + '</span>' : '') +
+                '</div>' +
+            '</div>' +
+            '<div class="detail-grid">' +
+                '<div class="detail-field"><label>💪 Fortalezas</label><textarea placeholder="Principales fortalezas del aspirante..." onchange="guardarCampo(' + asp.fila + ', \'foda_fortalezas\', this.value)">' + (asp.foda.fortalezas || '') + '</textarea></div>' +
+                '<div class="detail-field"><label>🌟 Oportunidades</label><textarea placeholder="Áreas donde puede crecer..." onchange="guardarCampo(' + asp.fila + ', \'foda_oportunidades\', this.value)">' + (asp.foda.oportunidades || '') + '</textarea></div>' +
+                '<div class="detail-field"><label>⚠️ Debilidades</label><textarea placeholder="Áreas que necesita mejorar..." onchange="guardarCampo(' + asp.fila + ', \'foda_debilidades\', this.value)">' + (asp.foda.debilidades || '') + '</textarea></div>' +
+                '<div class="detail-field"><label>🚨 Amenazas</label><textarea placeholder="Factores de riesgo..." onchange="guardarCampo(' + asp.fila + ', \'foda_amenazas\', this.value)">' + (asp.foda.amenazas || '') + '</textarea></div>' +
+            '</div>' +
+            '<div style="margin-top: 16px;">' +
+                '<div class="detail-field">' +
+                    '<label>🏆 Resultado Final</label>' +
+                    '<select onchange="cambiarResultado(' + asp.fila + ', this.value)" style="width: 100%; padding: 12px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit; font-size: 15px; font-weight: 600;">' +
+                        '<option value=""' + (!asp.resultadoFinal ? ' selected' : '') + '>— Sin definir —</option>' +
+                        '<option value="Graduado"' + (asp.resultadoFinal === 'Graduado' ? ' selected' : '') + '>✅ Graduado</option>' +
+                        '<option value="No Graduado"' + (asp.resultadoFinal === 'No Graduado' ? ' selected' : '') + '>❌ No Graduado</option>' +
+                        '<option value="Baja"' + (asp.resultadoFinal === 'Baja' ? ' selected' : '') + '>🚫 Baja</option>' +
+                    '</select>' +
+                '</div>' +
+                '<div class="detail-field" style="margin-top: 12px;">' +
+                    '<label>📋 Justificación (¿Por qué gradúa o no?)</label>' +
+                    '<textarea placeholder="Explica la razón del resultado final..." style="min-height: 80px;" onchange="guardarCampo(' + asp.fila + ', \'justificacion\', this.value)">' + (asp.justificacion || '') + '</textarea>' +
+                '</div>' +
+                '<div class="detail-field" style="margin-top: 12px;">' +
+                    '<label>📊 Conclusión para el Supervisor</label>' +
+                    '<textarea placeholder="Recomendaciones para el supervisor que recibirá a este agente: en qué es fuerte, en qué necesita apoyo, cómo motivarlo, qué vigilar..." style="min-height: 100px;" onchange="guardarCampo(' + asp.fila + ', \'conclusion_supervisor\', this.value)">' + (asp.conclusionSupervisor || '') + '</textarea>' +
+                    '<button class="btn btn-sm btn-primary" style="margin-top: 8px;" onclick="generarConclusion(' + asp.fila + ')">🤖 Generar conclusión automática</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    });
+    
+    container.innerHTML = html || '<div class="empty-state"><p>No hay aspirantes activos</p></div>';
+}
+
+async function cambiarResultado(fila, valor) {
+    const asp = aspirantesGrupo.find(a => a.fila === fila);
+    if (asp) asp.resultadoFinal = valor;
+    await guardarCampo(fila, 'resultado_final', valor);
+}
+
+function generarConclusion(fila) {
+    const asp = aspirantesGrupo.find(a => a.fila === fila);
+    if (!asp) return;
+    
+    const comps = Object.values(asp.competencias);
+    const dominadas = comps.filter(c => c === 'Domina').length;
+    const enProceso = comps.filter(c => c === 'En proceso').length;
+    const noDomina = comps.filter(c => c === 'No domina').length;
+    const asistencias = Object.values(asp.asistencia).filter(v => v === 'A').length;
+    const retardos = Object.values(asp.asistencia).filter(v => v === 'R').length;
+    
+    let conclusion = asp.nombre + ' completó la capacitación con ' + asistencias + '/6 asistencias';
+    if (retardos > 0) conclusion += ' y ' + retardos + ' retardo(s)';
+    conclusion += '. ';
+    
+    if (dominadas > 0) conclusion += 'Domina ' + dominadas + '/8 competencias. ';
+    if (enProceso > 0) conclusion += 'Tiene ' + enProceso + ' competencia(s) en proceso. ';
+    if (noDomina > 0) conclusion += '⚠️ No domina ' + noDomina + ' competencia(s), requiere refuerzo. ';
+    
+    if (asp.examen.puntaje) conclusion += 'Examen teórico: ' + asp.examen.puntaje + '/100. ';
+    if (asp.roleplay.puntaje) conclusion += 'Roleplay: ' + asp.roleplay.puntaje + '/100. ';
+    if (asp.vendio === 'Sí') conclusion += '💰 Ya realizó ventas durante capacitación. ';
+    
+    if (asp.foda.fortalezas) conclusion += '\n\n💪 Fortalezas: ' + asp.foda.fortalezas;
+    if (asp.foda.debilidades) conclusion += '\n⚠️ Áreas de mejora: ' + asp.foda.debilidades;
+    
+    if (asp.resultadoFinal === 'Graduado') {
+        conclusion += '\n\n✅ RECOMENDACIÓN: Listo para piso. ';
+        if (asp.foda.debilidades) conclusion += 'Supervisar de cerca: ' + asp.foda.debilidades;
+    } else if (asp.resultadoFinal === 'No Graduado') {
+        conclusion += '\n\n❌ No se recomienda para piso en este momento. ' + (asp.justificacion || '');
+    }
+    
+    // Encontrar el textarea de conclusión y actualizarlo
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(ta => {
+        if (ta.placeholder && ta.placeholder.includes('Recomendaciones para el supervisor')) {
+            const panel = ta.closest('.detail-panel');
+            if (panel && panel.querySelector('h3').textContent.includes(asp.nombre)) {
+                ta.value = conclusion;
+                guardarCampo(fila, 'conclusion_supervisor', conclusion);
+            }
+        }
+    });
+}
+
+// ========== NUEVO GRUPO ==========
+function abrirModalNuevoGrupo() {
+    document.getElementById('modal-nuevo-grupo').classList.add('active');
+    document.getElementById('nuevo-grupo-nombre').value = '';
+    document.getElementById('nuevo-grupo-fecha').value = '';
+    document.getElementById('nuevo-grupo-sucursal').value = '';
+    document.getElementById('nuevo-grupo-capacitador').value = '';
+    document.getElementById('aspirantes-disponibles').innerHTML = '<p style="color: var(--gray-500); font-size: 13px;">Selecciona una sucursal para ver aspirantes disponibles.</p>';
+}
+
+function cerrarModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+
+async function cargarAspirantesDisponibles() {
+    const sucursal = document.getElementById('nuevo-grupo-sucursal').value;
+    const container = document.getElementById('aspirantes-disponibles');
+    
+    if (!sucursal) {
+        container.innerHTML = '<p style="color: var(--gray-500); font-size: 13px;">Selecciona una sucursal.</p>';
+        return;
+    }
+    
+    const capSelect = document.getElementById('nuevo-grupo-capacitador');
+    if (sucursal === 'Torre JV Juárez') capSelect.value = 'Tomas Rosas';
+    else if (sucursal === 'Edificio Inbursa Antequera') capSelect.value = 'Iran Carrasco';
+    
+    container.innerHTML = '<p style="color: var(--gray-500); font-size: 13px;"><span class="loading-spinner"></span> Buscando aspirantes aprobados...</p>';
+    
+    try {
+        const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getAspirantesParaCapacitacion&sucursal=' + encodeURIComponent(sucursal));
+        const data = await r.json();
+        const grupos = data.grupos || [];
+        aspirantesDisponibles = [];
+        
+        if (grupos.length === 0) {
+            container.innerHTML = '<p style="color: var(--gray-500); font-size: 13px;">No hay aspirantes aprobados con checklist completo disponibles.</p>';
+            return;
+        }
+        
+        container.innerHTML = '';
+        let globalIdx = 0;
+        
+        grupos.forEach(grupo => {
+            const header = document.createElement('div');
+            header.style.cssText = 'background: linear-gradient(135deg, #f0f9ff, #e0f2fe); padding: 10px 14px; border-radius: 8px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center;';
+            header.innerHTML = '<strong style="color: #0057B8; font-size: 13px;">📅 Panel: ' + grupo.fechaLegible + '</strong><span style="font-size: 12px; color: var(--gray-500);">' + grupo.aspirantes.length + ' aspirante(s)</span>';
+            container.appendChild(header);
+            
+            grupo.aspirantes.forEach(asp => {
+                aspirantesDisponibles.push(asp);
+                const div = document.createElement('div');
+                div.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--gray-100); cursor: pointer;';
+                div.innerHTML = '<input type="checkbox" id="asp-check-' + globalIdx + '" checked style="width: 18px; height: 18px; cursor: pointer;">' +
+                    '<label for="asp-check-' + globalIdx + '" style="cursor: pointer; flex: 1;"><strong>' + asp.nombre + '</strong> <span style="color: var(--gray-500); font-size: 12px;">• ' + asp.telefono + ' • Recl: ' + asp.reclutadora + '</span><br><span class="badge badge-success" style="font-size: 10px;">' + asp.resultado + '</span></label>';
+                container.appendChild(div);
+                globalIdx++;
+            });
+        });
+    } catch (e) {
+        console.error(e);
+        container.innerHTML = '<p style="color: var(--danger); font-size: 13px;">Error al cargar aspirantes.</p>';
+    }
+}
+
+async function crearGrupo() {
+    const nombre = document.getElementById('nuevo-grupo-nombre').value.trim();
+    const fecha = document.getElementById('nuevo-grupo-fecha').value;
+    const sucursal = document.getElementById('nuevo-grupo-sucursal').value;
+    const capacitador = document.getElementById('nuevo-grupo-capacitador').value;
+    
+    if (!nombre || !fecha || !sucursal || !capacitador) {
+        alert('Completa todos los campos.');
+        return;
+    }
+    
+    // Obtener aspirantes seleccionados
+    const seleccionados = [];
+    aspirantesDisponibles.forEach((asp, idx) => {
+        const check = document.getElementById('asp-check-' + idx);
+        if (check && check.checked) seleccionados.push(asp);
+    });
+    
+    if (seleccionados.length === 0) {
+        alert('Selecciona al menos un aspirante.');
+        return;
+    }
+    
+    const btn = document.getElementById('btn-crear-grupo');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span> Creando...';
+    
+    try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                tipo: 'crear_grupo_capacitacion',
+                grupo: nombre,
+                fechaInicio: fecha,
+                sucursal: sucursal,
+                capacitador: capacitador,
+                aspirantes: seleccionados
+            })
+        });
+        
+        cerrarModal('modal-nuevo-grupo');
+        alert('✅ Grupo "' + nombre + '" creado con ' + seleccionados.length + ' aspirantes.');
+        cargarGrupos();
+    } catch (e) {
+        alert('Error al crear grupo: ' + e.message);
+    }
+    
+    btn.disabled = false;
+    btn.innerHTML = 'Crear Grupo →';
+}
+
+// ========== GUARDAR CAMPO ==========
+async function guardarCampo(fila, campo, valor) {
+    try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                tipo: 'actualizar_capacitacion',
+                fila: fila,
+                campo: campo,
+                valor: valor
+            })
+        });
+    } catch (e) {
+        console.error('Error guardando:', e);
+    }
+}
+    </script>
+</body>
+</html>
