@@ -410,8 +410,7 @@ function filtrarGrupos() {
             container.appendChild(div);
         });
     } else {
-        container.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><h3>Sin resultados</h3><p>No hay grupos con esos filtros (debug: ' + todosLosGrupos.length + ' grupos, fecha filtro: ' + filtroFecha + ', fechas disponibles: ' + todosLosGrupos.map(g => g.fechaInicio).join(', ') + ')</p></div>';
-    }
+container.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><h3>Sin resultados</h3><p>No hay grupos con esos filtros</p></div>';    }
 }
 async function abrirGrupo(grupo) {
     grupoActual = grupo;
