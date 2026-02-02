@@ -387,7 +387,7 @@ function filtrarGrupos() {
     let filtrados = todosLosGrupos.filter(g => {
         if (filtroSuc && g.sucursal !== filtroSuc) return false;
         if (filtroCap && g.capacitador !== filtroCap) return false;
-        if (filtroFecha && !g.fechaInicio.startsWith(filtroFecha)) return false;
+        if (filtroFecha && !String(g.fechaInicio).includes(filtroFecha)) return false;
         return true;
     });
     
