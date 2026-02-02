@@ -387,7 +387,19 @@ function filtrarGrupos() {
     let filtrados = todosLosGrupos.filter(g => {
         if (filtroSuc && g.sucursal !== filtroSuc) return false;
         if (filtroCap && g.capacitador !== filtroCap) return false;
-        if (filtroFecha && !String(g.fechaInicio).includes(filtroFecha)) return false;
+        if (filtroFecha) {
+            var partes = filtroFecha.split('-');
+            var anio = partes[0];
+            var mes = partes[1];
+            var fechaStr = String(g.fechaInicio);
+            var coincide = fechaStr.includes(anio) && fechaStr.includes(mes);
+            if (!coincide) {
+                // Intentar también con formato mes/año
+                var mesNum = parseInt(mes);
+                coincide = fechaStr.includes(anio) && (fechaStr.includes('-' + mes + '-') || fechaStr.includes('/' + mesNum + '/') || fechaStr.includes('/' + mes + '/'));
+            }
+            if (!coincide) return false;
+        }
         return true;
     });
     
@@ -408,7 +420,7 @@ function filtrarGrupos() {
             container.appendChild(div);
         });
     } else {
-        container.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><h3>Sin resultados</h3><p>No hay grupos con esos filtros</p></div>';
+        container.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><h3>Sin resultados</h3><p>No hay grupos con esos filtros (debug: ' + todosLosGrupos.length + ' grupos, fecha filtro: ' + filtroFecha + ', fechas disponibles: ' + todosLosGrupos.map(g => g.fechaInicio).join(', ') + ')</p></div>';
     }
 }
 async function abrirGrupo(grupo) {
