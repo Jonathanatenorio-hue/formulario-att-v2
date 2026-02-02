@@ -578,50 +578,208 @@ async function cambiarResultado(fila, valor) {
     await guardarCampo(fila, 'resultado_final', valor);
 }
 
-function generarConclusion(fila) {
+async function generarConclusion(fila) {
     const asp = aspirantesGrupo.find(a => a.fila === fila);
     if (!asp) return;
     
-    const comps = Object.values(asp.competencias);
-    const dominadas = comps.filter(c => c === 'Domina').length;
-    const enProceso = comps.filter(c => c === 'En proceso').length;
-    const noDomina = comps.filter(c => c === 'No domina').length;
-    const asistencias = Object.values(asp.asistencia).filter(v => v === 'A').length;
-    const retardos = Object.values(asp.asistencia).filter(v => v === 'R').length;
+    // Encontrar el botón y mostrar loading
+    const botones = document.querySelectorAll('button');
+    let btnConclusion = null;
+    botones.forEach(b => { if (b.textContent.includes('Generar conclusión') && b.onclick.toString().includes(fila)) btnConclusion = b; });
+    if (btnConclusion) { btnConclusion.disabled = true; btnConclusion.innerHTML = '<span class="loading-spinner"></span> Generando informe completo...'; }
     
-    let conclusion = asp.nombre + ' completó la capacitación con ' + asistencias + '/6 asistencias';
-    if (retardos > 0) conclusion += ' y ' + retardos + ' retardo(s)';
-    conclusion += '. ';
-    
-    if (dominadas > 0) conclusion += 'Domina ' + dominadas + '/8 competencias. ';
-    if (enProceso > 0) conclusion += 'Tiene ' + enProceso + ' competencia(s) en proceso. ';
-    if (noDomina > 0) conclusion += '⚠️ No domina ' + noDomina + ' competencia(s), requiere refuerzo. ';
-    
-    if (asp.examen.puntaje) conclusion += 'Examen teórico: ' + asp.examen.puntaje + '/100. ';
-    if (asp.roleplay.puntaje) conclusion += 'Roleplay: ' + asp.roleplay.puntaje + '/100. ';
-    if (asp.vendio === 'Sí') conclusion += '💰 Ya realizó ventas durante capacitación. ';
-    
-    if (asp.foda.fortalezas) conclusion += '\n\n💪 Fortalezas: ' + asp.foda.fortalezas;
-    if (asp.foda.debilidades) conclusion += '\n⚠️ Áreas de mejora: ' + asp.foda.debilidades;
-    
-    if (asp.resultadoFinal === 'Graduado') {
-        conclusion += '\n\n✅ RECOMENDACIÓN: Listo para piso. ';
-        if (asp.foda.debilidades) conclusion += 'Supervisar de cerca: ' + asp.foda.debilidades;
-    } else if (asp.resultadoFinal === 'No Graduado') {
-        conclusion += '\n\n❌ No se recomienda para piso en este momento. ' + (asp.justificacion || '');
+    try {
+        const r = await fetch(GOOGLE_SCRIPT_URL + '?action=getHistorialAspirante&telefono=' + encodeURIComponent(asp.telefono));
+        const data = await r.json();
+        const h = data.historial || {};
+        
+        let conclusion = '═══════════════════════════════════════\n';
+        conclusion += 'INFORME INTEGRAL DE ' + asp.nombre.toUpperCase() + '\n';
+        conclusion += '═══════════════════════════════════════\n\n';
+        
+        // --- RECORRIDO DE RECLUTAMIENTO ---
+        conclusion += '📋 RECORRIDO DE RECLUTAMIENTO\n';
+        conclusion += '───────────────────────────────────\n';
+        
+        if (h.preFiltro) {
+            conclusion += '• Pre-Filtro: Reclutadora ' + h.preFiltro.reclutadora;
+            if (h.preFiltro.puntaje) conclusion += ' | Puntaje: ' + h.preFiltro.puntaje;
+            conclusion += '\n';
+        }
+        
+        if (h.entrevistaTel) {
+            conclusion += '• Entrevista Telefónica: ' + h.entrevistaTel.resultado;
+            if (h.entrevistaTel.puntaje) conclusion += ' | Puntaje: ' + h.entrevistaTel.puntaje + '/30';
+            conclusion += '\n';
+            if (h.entrevistaTel.observaciones) conclusion += '  Observaciones: ' + h.entrevistaTel.observaciones + '\n';
+        }
+        
+        if (h.resultadoPanel) {
+            conclusion += '• Panel de Evaluación: ' + h.resultadoPanel.resultadoFinal;
+            if (h.resultadoPanel.puntajePromedio) conclusion += ' | Promedio: ' + h.resultadoPanel.puntajePromedio + '/80';
+            if (h.resultadoPanel.numEvaluadores) conclusion += ' | ' + h.resultadoPanel.numEvaluadores + ' evaluador(es)';
+            if (h.resultadoPanel.tieneVeto === 'true' || h.resultadoPanel.tieneVeto === 'Sí') conclusion += ' | ⚠️ TUVO VETO';
+            conclusion += '\n';
+        }
+        
+        if (h.evaluacionesPanel && h.evaluacionesPanel.length > 0) {
+            conclusion += '\n  Detalle por evaluador:\n';
+            h.evaluacionesPanel.forEach(function(ev) {
+                conclusion += '  → ' + ev.evaluador + ': ' + ev.puntaje + '/80 - ' + ev.resultado;
+                if (ev.tieneVeto === 'true' || ev.tieneVeto === 'Sí') conclusion += ' [VETO]';
+                conclusion += '\n';
+                if (ev.observaciones) conclusion += '    Obs: ' + ev.observaciones + '\n';
+            });
+        }
+        
+        // --- CAPACITACIÓN ---
+        conclusion += '\n📚 CAPACITACIÓN\n';
+        conclusion += '───────────────────────────────────\n';
+        
+        const asistencias = Object.values(asp.asistencia).filter(v => v === 'A').length;
+        const retardos = Object.values(asp.asistencia).filter(v => v === 'R').length;
+        const faltas = Object.values(asp.asistencia).filter(v => v === 'F').length;
+        const diasRegistrados = Object.values(asp.asistencia).filter(v => v !== '').length;
+        
+        conclusion += '• Asistencia: ' + asistencias + ' asistencias, ' + retardos + ' retardo(s), ' + faltas + ' falta(s) de ' + diasRegistrados + ' días registrados\n';
+        
+        if (retardos >= 2) conclusion += '  ⚠️ Patrón de impuntualidad detectado. El supervisor debe vigilar horarios.\n';
+        if (faltas >= 2) conclusion += '  🚨 Alto ausentismo durante capacitación. Riesgo de abandono.\n';
+        
+        // Competencias
+        const comps = asp.competencias;
+        const compNames = { producto: 'Producto AT&T', sistemas: 'Sistemas', logistica: 'Logística', tecnicas: 'Técnicas de Venta', simulacion: 'Simulación', objeciones: 'Manejo de Objeciones', cierre: 'Cierre', apertura: 'Apertura' };
+        const dominadas = Object.values(comps).filter(c => c === 'Domina').length;
+        const enProceso = Object.values(comps).filter(c => c === 'En proceso').length;
+        const noDomina = Object.values(comps).filter(c => c === 'No domina').length;
+        const totalComps = Object.keys(comps).length;
+        const pctComp = Math.round((dominadas / totalComps) * 100);
+        
+        conclusion += '• Competencias: ' + dominadas + '/' + totalComps + ' dominadas (' + pctComp + '%)\n';
+        
+        var compsDominadas = [], compsEnProceso = [], compsNoDomina = [];
+        Object.keys(comps).forEach(function(key) {
+            if (comps[key] === 'Domina') compsDominadas.push(compNames[key]);
+            else if (comps[key] === 'En proceso') compsEnProceso.push(compNames[key]);
+            else if (comps[key] === 'No domina') compsNoDomina.push(compNames[key]);
+        });
+        
+        if (compsDominadas.length > 0) conclusion += '  ✅ Domina: ' + compsDominadas.join(', ') + '\n';
+        if (compsEnProceso.length > 0) conclusion += '  🔄 En proceso: ' + compsEnProceso.join(', ') + '\n';
+        if (compsNoDomina.length > 0) conclusion += '  ❌ No domina: ' + compsNoDomina.join(', ') + '\n';
+        
+        // Evaluaciones
+        if (asp.examen.puntaje || asp.roleplay.puntaje) {
+            conclusion += '\n• Evaluaciones:\n';
+            if (asp.examen.puntaje) {
+                var exPts = parseInt(asp.examen.puntaje);
+                var exNivel = exPts >= 90 ? 'Excelente' : exPts >= 75 ? 'Bueno' : exPts >= 60 ? 'Regular' : 'Bajo';
+                conclusion += '  Examen teórico: ' + asp.examen.puntaje + '/100 (' + exNivel + ')\n';
+            }
+            if (asp.roleplay.puntaje) {
+                var rpPts = parseInt(asp.roleplay.puntaje);
+                var rpNivel = rpPts >= 90 ? 'Excelente' : rpPts >= 75 ? 'Bueno' : rpPts >= 60 ? 'Regular' : 'Bajo';
+                conclusion += '  Roleplay: ' + asp.roleplay.puntaje + '/100 (' + rpNivel + ')\n';
+            }
+            if (asp.roleplay.observaciones) conclusion += '  Obs roleplay: ' + asp.roleplay.observaciones + '\n';
+        }
+        
+        // Ventas
+        if (asp.vendio === 'Sí') {
+            conclusion += '\n• 💰 Ventas durante capacitación: SÍ';
+            if (asp.ventasDetalle) conclusion += ' - ' + asp.ventasDetalle;
+            conclusion += '\n';
+        }
+        
+        // Seguimientos
+        if (asp.seguimientos) {
+            conclusion += '\n• Seguimientos/Clientes en proceso:\n  ' + asp.seguimientos + '\n';
+        }
+        
+        // --- FODA ---
+        if (asp.foda.fortalezas || asp.foda.oportunidades || asp.foda.debilidades || asp.foda.amenazas) {
+            conclusion += '\n🎯 ANÁLISIS FODA\n';
+            conclusion += '───────────────────────────────────\n';
+            if (asp.foda.fortalezas) conclusion += '💪 Fortalezas: ' + asp.foda.fortalezas + '\n';
+            if (asp.foda.oportunidades) conclusion += '🌟 Oportunidades: ' + asp.foda.oportunidades + '\n';
+            if (asp.foda.debilidades) conclusion += '⚠️ Debilidades: ' + asp.foda.debilidades + '\n';
+            if (asp.foda.amenazas) conclusion += '🚨 Amenazas: ' + asp.foda.amenazas + '\n';
+        }
+        
+        // --- CONCLUSIÓN Y RECOMENDACIÓN ---
+        conclusion += '\n🏆 CONCLUSIÓN Y RECOMENDACIONES PARA EL SUPERVISOR\n';
+        conclusion += '═══════════════════════════════════════\n';
+        
+        if (asp.resultadoFinal === 'Graduado') {
+            conclusion += '✅ RESULTADO: GRADUADO - LISTO PARA PISO\n\n';
+            
+            // Puntos fuertes
+            if (compsDominadas.length > 0) {
+                conclusion += 'Puntos fuertes: Este agente demostró buen dominio en ' + compsDominadas.join(', ') + '. ';
+            }
+            if (asp.vendio === 'Sí') {
+                conclusion += 'Ya generó ventas durante capacitación, lo cual indica capacidad de ejecución inmediata. ';
+            }
+            if (asp.examen.puntaje && parseInt(asp.examen.puntaje) >= 80) {
+                conclusion += 'Su desempeño en el examen teórico fue sólido. ';
+            }
+            
+            // Áreas de atención
+            conclusion += '\n\n';
+            if (compsEnProceso.length > 0 || compsNoDomina.length > 0) {
+                conclusion += 'Áreas que requieren atención del supervisor: ';
+                if (compsEnProceso.length > 0) conclusion += 'Aún está en proceso en ' + compsEnProceso.join(', ') + '. ';
+                if (compsNoDomina.length > 0) conclusion += 'No domina ' + compsNoDomina.join(', ') + ', se recomienda refuerzo directo en estas áreas. ';
+                conclusion += '\n\n';
+            }
+            
+            // Recomendaciones específicas
+            conclusion += 'Recomendaciones:\n';
+            if (retardos >= 2) conclusion += '→ Monitorear puntualidad, mostró patrón de retardos.\n';
+            if (asp.foda.debilidades) conclusion += '→ Trabajar en: ' + asp.foda.debilidades + '\n';
+            if (compsNoDomina.length > 0) conclusion += '→ Programar sesiones de refuerzo en: ' + compsNoDomina.join(', ') + '\n';
+            if (asp.roleplay.puntaje && parseInt(asp.roleplay.puntaje) < 70) conclusion += '→ Necesita práctica adicional en simulación de llamadas.\n';
+            if (asp.foda.fortalezas) conclusion += '→ Aprovechar sus fortalezas: ' + asp.foda.fortalezas + '\n';
+            conclusion += '→ Seguimiento cercano las primeras 2 semanas en piso.\n';
+            
+        } else if (asp.resultadoFinal === 'No Graduado') {
+            conclusion += '❌ RESULTADO: NO GRADUADO\n\n';
+            conclusion += 'Este aspirante no cumplió con los requisitos mínimos para pasar a operación. ';
+            if (noDomina >= 3) conclusion += 'No logró dominar ' + noDomina + ' de ' + totalComps + ' competencias. ';
+            if (asp.examen.puntaje && parseInt(asp.examen.puntaje) < 60) conclusion += 'Su examen teórico fue insuficiente (' + asp.examen.puntaje + '/100). ';
+            if (faltas >= 2) conclusion += 'Tuvo ' + faltas + ' faltas durante la capacitación. ';
+            if (asp.justificacion) conclusion += '\n\nJustificación del capacitador: ' + asp.justificacion;
+            
+        } else {
+            conclusion += '⏳ RESULTADO: PENDIENTE DE DEFINIR\n';
+            conclusion += 'El capacitador aún no ha definido el resultado final.\n';
+            conclusion += '\nResumen actual: ' + dominadas + '/' + totalComps + ' competencias dominadas';
+            if (asp.examen.puntaje) conclusion += ', examen: ' + asp.examen.puntaje + '/100';
+            if (asp.roleplay.puntaje) conclusion += ', roleplay: ' + asp.roleplay.puntaje + '/100';
+            conclusion += '\n';
+        }
+        
+        conclusion += '\n───────────────────────────────────\n';
+        conclusion += 'Generado: ' + new Date().toLocaleString('es-MX') + ' | Capacitador: ' + asp.capacitador + ' | Sucursal: ' + asp.sucursal;
+        
+        // Encontrar el textarea de conclusión y actualizarlo
+        const textareas = document.querySelectorAll('textarea');
+        textareas.forEach(ta => {
+            if (ta.placeholder && ta.placeholder.includes('Recomendaciones para el supervisor')) {
+                const panel = ta.closest('.detail-panel');
+                if (panel && panel.querySelector('h3').textContent.includes(asp.nombre)) {
+                    ta.value = conclusion;
+                    guardarCampo(fila, 'conclusion_supervisor', conclusion);
+                }
+            }
+        });
+        
+    } catch (e) {
+        console.error(e);
+        alert('Error al generar conclusión: ' + e.message);
     }
     
-    // Encontrar el textarea de conclusión y actualizarlo
-    const textareas = document.querySelectorAll('textarea');
-    textareas.forEach(ta => {
-        if (ta.placeholder && ta.placeholder.includes('Recomendaciones para el supervisor')) {
-            const panel = ta.closest('.detail-panel');
-            if (panel && panel.querySelector('h3').textContent.includes(asp.nombre)) {
-                ta.value = conclusion;
-                guardarCampo(fila, 'conclusion_supervisor', conclusion);
-            }
-        }
-    });
+    if (btnConclusion) { btnConclusion.disabled = false; btnConclusion.innerHTML = '🤖 Generar conclusión automática'; }
 }
 
 // ========== NUEVO GRUPO ==========
