@@ -255,15 +255,19 @@
                     <div class="guide-box-title">📊 Guía de Rangos de Aprobación</div>
                     <div class="guide-box-content">
                         <div class="guide-item green">
-                            <div class="guide-item-score">64-80 pts</div>
-                            <div class="guide-item-label">✅ Aprobado (muy bien)</div>
+                            <div class="guide-item-score">73-80 pts</div>
+                            <div class="guide-item-label">🌟 Aprobado (excelente)</div>
+                        </div>
+                        <div class="guide-item green">
+                            <div class="guide-item-score">65-72 pts</div>
+                            <div class="guide-item-label">✅ Aprobado (bien)</div>
                         </div>
                         <div class="guide-item yellow">
-                            <div class="guide-item-score">48-63 pts</div>
+                            <div class="guide-item-score">59-64 pts</div>
                             <div class="guide-item-label">⚠️ Aprobado (regular)</div>
                         </div>
                         <div class="guide-item red">
-                            <div class="guide-item-score">10-47 pts</div>
+                            <div class="guide-item-score">0-58 pts</div>
                             <div class="guide-item-label">❌ No aprobó</div>
                         </div>
                     </div>
@@ -845,8 +849,9 @@ function actualizarProgreso() {
     let resultado = '', colorStyle = '';
     if (respondidas < preguntas.length) { resultado = 'Completa la evaluación'; colorStyle = 'background: var(--gray-500)'; }
     else if (vetos.length > 0) { resultado = '❌ No aprobó (VETO)'; colorStyle = 'background: var(--danger)'; }
-    else if (puntaje >= 64) { resultado = '✅ Aprobado (muy bien)'; colorStyle = 'background: var(--success)'; }
-    else if (puntaje >= 48) { resultado = '⚠️ Aprobado (regular)'; colorStyle = 'background: var(--warning)'; }
+    else if (puntaje >= 73) { resultado = '🌟 Aprobado (excelente)'; colorStyle = 'background: var(--success)'; }
+    else if (puntaje >= 65) { resultado = '✅ Aprobado (bien)'; colorStyle = 'background: var(--success)'; }
+    else if (puntaje >= 59) { resultado = '⚠️ Aprobado (regular)'; colorStyle = 'background: var(--warning)'; }
     else { resultado = '❌ No aprobó'; colorStyle = 'background: var(--danger)'; }
     document.getElementById('resultado-label').textContent = resultado;
     document.getElementById('resultado-label').style = colorStyle;
@@ -898,8 +903,9 @@ async function enviarEvaluacion() {
     preguntas.forEach(q => { if (evaluaciones[q] !== undefined) puntaje += evaluaciones[q]; });
     let resultado = '';
     if (vetos.length > 0) resultado = 'No aprobó (VETO)';
-    else if (puntaje >= 64) resultado = 'Aprobado (muy bien)';
-    else if (puntaje >= 48) resultado = 'Aprobado (regular)';
+    else if (puntaje >= 73) resultado = 'Aprobado (excelente)';
+    else if (puntaje >= 65) resultado = 'Aprobado (bien)';
+    else if (puntaje >= 59) resultado = 'Aprobado (regular)';
     else resultado = 'No aprobó';
     const data = {
         tipo: 'evaluacion_panel',
