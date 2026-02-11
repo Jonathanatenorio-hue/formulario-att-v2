@@ -175,6 +175,36 @@ function saveStepData(step){
 async function guardarRechazoEstadisticas(motivo) {
     const data = {
         tipo: 'rechazo_pf',
+        nombre: candidateData.nombre || document.getElementById('nombre')?.value || '',  // NUEVO
+        telefono: candidateData.telefono || document.getElementById('telefono')?.value || '',  // NUEVO
+        sucursal: candidateData.sucursal || selectedSucursal || 'No especificada',
+        puntaje: totalScore,
+        motivo: motivo,
+        fuente: candidateData.fuente || 'No especificada',
+        reclutadora: candidateData.reclutadora || '',
+        puntaje1: candidateData.puntaje1 || 0,
+        puntaje2: candidateData.puntaje2 || 0,
+        puntaje3: candidateData.puntaje3 || 0,
+        puntaje4: candidateData.puntaje4 || 0,
+        puntaje5: candidateData.puntaje5 || 0,
+        puntaje6: candidateData.puntaje6 || 0,
+        puntaje7: candidateData.puntaje7 || 0,
+        puntaje8: candidateData.puntaje8 || 0,
+        puntaje9: candidateData.puntaje9 || 0
+    };
+    try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+    } catch (error) {
+        console.error('Error guardando rechazo:', error);
+    }
+}
+    const data = {
+        tipo: 'rechazo_pf',
         sucursal: candidateData.sucursal || selectedSucursal || 'No especificada',
         puntaje: totalScore,
         motivo: motivo,
