@@ -141,7 +141,19 @@ function selectSucursal(sucursal,direccion){
 function abrirMaps(){if(selectedSucursal&&mapsLinks[selectedSucursal]){window.open(mapsLinks[selectedSucursal],'_blank')}else{alert('Por favor selecciona primero una sucursal.')}}
 function startForm(){
     document.getElementById('intro').style.display='none';
-    document.getElementById('step-fuente').classList.add('active'); // Ahora inicia en fuente
+    document.getElementById('step-privacidad').classList.add('active');
+}
+
+function aceptarPrivacidad(acepta) {
+    document.getElementById('step-privacidad').classList.remove('active');
+    if (acepta) {
+        candidateData.aceptoPrivacidad = 'Sí';
+        candidateData.fechaAceptacionPrivacidad = new Date().toLocaleString('es-MX');
+        document.getElementById('step-fuente').classList.add('active');
+    } else {
+        candidateData.aceptoPrivacidad = 'No';
+        document.getElementById('rejected-privacidad').classList.add('active');
+    }
 }
 
 function validateStep(step){
