@@ -103,6 +103,75 @@
             <button class="btn" onclick="startForm()">Comenzar Pre-evaluación →</button>
         </div>
         
+        <!-- NUEVO: Aviso de Privacidad -->
+        <div class="form-section step" id="step-privacidad">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="font-size: 48px;">🔒</div>
+                <h2 style="color: #333; margin: 15px 0;">Aviso de Privacidad</h2>
+                <p style="color: #666; font-size: 14px;">Antes de continuar, es importante que conozcas cómo protegemos tus datos.</p>
+            </div>
+            
+            <div style="max-height: 350px; overflow-y: auto; background: #f8f9fa; padding: 20px; border-radius: 12px; border: 2px solid #e0e0e0; margin-bottom: 20px; font-size: 13px; line-height: 1.6; color: #444;">
+                <h3 style="color: #0066CC; font-size: 16px; margin-bottom: 15px;">AVISO DE PRIVACIDAD INTEGRAL - Empleados / Colaboradores</h3>
+                
+                <p style="margin-bottom: 12px;"><strong>DATOS DEL RESPONSABLE</strong></p>
+                <p style="margin-bottom: 12px;">Expertcell S.A. de C.V. (ExpertCell), con domicilio en Boulevard Municipio libre 1971, interior 6, planta alta, Colonia Ex-Hacienda Mayorazgo, Puebla, Puebla, CP 72480, es responsable del tratamiento de sus datos personales conforme a este Aviso de Privacidad.</p>
+                
+                <p style="margin-bottom: 12px;"><strong>CONTACTO:</strong></p>
+                <p style="margin-bottom: 12px;">📞 Teléfono: 222 403 38 01<br>📧 Email: protecciondedatos@expertcell.com.mx</p>
+                
+                <p style="margin-bottom: 12px;"><strong>¿QUÉ DATOS PERSONALES RECABAMOS Y PARA QUÉ FINES?</strong></p>
+                <p style="margin-bottom: 12px;">ExpertCell efectuará el correcto tratamiento de sus Datos Personales y Sensibles que sean necesarios con la finalidad de: evaluación, selección, retroalimentación, desempeño, productividad y seguimiento de sus capacidades laborales y/o calificación para el empleo.</p>
+                
+                <p style="margin-bottom: 12px;"><strong>Dichos datos incluyen:</strong></p>
+                <ul style="margin-left: 20px; margin-bottom: 12px;">
+                    <li>Datos de identificación y contacto</li>
+                    <li>Datos laborales y académicos</li>
+                    <li>Datos patrimoniales o financieros</li>
+                    <li>Datos biométricos y características físicas</li>
+                    <li>Datos recopilados en entrevistas</li>
+                    <li>Datos de verificación de antecedentes</li>
+                </ul>
+                
+                <p style="margin-bottom: 12px;"><strong>FINALIDADES PRIMARIAS:</strong></p>
+                <ul style="margin-left: 20px; margin-bottom: 12px;">
+                    <li>Integrar expediente único de personal</li>
+                    <li>Acreditar identidad y evaluación de candidatos</li>
+                    <li>Firma de contrato laboral</li>
+                    <li>Pagar remuneraciones y prestaciones</li>
+                    <li>Control de asistencia y seguridad social</li>
+                    <li>Programar acciones de capacitación</li>
+                </ul>
+                
+                <p style="margin-bottom: 12px;"><strong>PLAZOS DE CONSERVACIÓN:</strong></p>
+                <p style="margin-bottom: 12px;">Sus datos serán conservados por 5 años + 1 (6 años fiscales). Después serán eliminados de manera segura.</p>
+                
+                <p style="margin-bottom: 12px;"><strong>DERECHOS ARCO:</strong></p>
+                <p style="margin-bottom: 12px;">Usted tiene derecho a Acceder, Rectificar, Cancelar u Oponerse al uso de sus datos personales. Para ejercer estos derechos, contacte al Departamento de Protección de Datos al teléfono (222) 403 38 01 o al correo protecciondedatos@expertcell.com.mx</p>
+                
+                <p style="margin-bottom: 0; font-size: 11px; color: #666;">Documento: EXP_API_001 | Última actualización: marzo 2025</p>
+            </div>
+            
+            <div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #ffc107;">
+                <p style="margin: 0; color: #856404; font-size: 14px;"><strong>⚠️ Importante:</strong> Al continuar, declaras que tus datos personales son exactos, auténticos y completos, y otorgas tu consentimiento para su tratamiento conforme a este aviso.</p>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button class="btn" onclick="aceptarPrivacidad(true)" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">✅ Acepto el Aviso de Privacidad</button>
+                <button class="btn" onclick="aceptarPrivacidad(false)" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">❌ No Acepto</button>
+            </div>
+        </div>
+        
+        <!-- Pantalla de rechazo por privacidad -->
+        <div class="rejected-screen" id="rejected-privacidad">
+            <div class="icon">🔒</div>
+            <h2>No podemos continuar sin tu consentimiento</h2>
+            <p>Para participar en nuestro proceso de selección, es necesario que aceptes el Aviso de Privacidad.</p>
+            <p>Esto nos permite procesar tu información de manera legal y segura.</p>
+            <p style="margin-top: 30px; color: #0066CC; font-weight: 600;">Si cambias de opinión, puedes volver a intentarlo.</p>
+            <button class="btn" onclick="location.reload()" style="margin-top: 20px;">🔄 Volver a intentar</button>
+        </div>
+        
         <!-- NUEVO: Paso 0 - Fuente del candidato -->
         <div class="form-section step" id="step-fuente">
             <div class="progress-bar"><div class="progress-fill" style="width: 5%"></div></div>
