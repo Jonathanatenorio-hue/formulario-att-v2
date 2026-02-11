@@ -235,15 +235,14 @@ async function guardarRechazoEstadisticas(motivo) {
 function nextStep(currentStep){
     const validation=validateStep(currentStep);
     if(!validation.valid){alert(validation.message);return}
+    saveStepData(currentStep);
     if(validation.reject){
-        saveStepData(currentStep);
         guardarRechazoEstadisticas('Respuesta incompatible en pregunta ' + (currentStep - 3));
         localStorage.setItem('att_rejected','true');
         document.getElementById(`step${currentStep}`).classList.remove('active');
         document.getElementById('rejected-screen').classList.add('active');
         return
     }
-    saveStepData(currentStep);
     if(currentStep===1){document.getElementById('centro-nombre').textContent=selectedSucursal;document.getElementById('centro-direccion').textContent=selectedDireccion;}
     if(currentStep===3)renderQuestion('q1','options-q1');
     else if(currentStep===4)renderQuestion('q2','options-q2');
