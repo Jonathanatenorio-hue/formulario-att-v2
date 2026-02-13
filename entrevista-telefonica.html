@@ -1080,28 +1080,54 @@ function cerrarSesion() {
         // ==========================================
         // CALENDARIO DE CITAS
         // ==========================================
-        async function cargarCitasCalendario() {
-            const sucursal = document.getElementById('filtro-sucursal').value;
-            const reclutadora = document.getElementById('filtro-reclutadora').value;
-            const periodo = document.getElementById('filtro-periodo').value;
-            
-            // Si es reclutadora y no tiene valor, asignar su reclutadora
-            if (usuarioActual && usuarioActual.rol === 'reclutadora' && !reclutadora) {
-                document.getElementById('filtro-reclutadora').value = usuarioActual.reclutadora;
+        function cambiarPeriodo() {
+    const periodo = document.getElementById('filtro-periodo').value;
+    const rangoDiv = document.getElementById('rango-fechas');
+    
+    if (periodo === 'rango') {
+        rangoDiv.style.display = 'inline-flex';
+        rangoDiv.style.alignItems = 'center';
+    } else {
+        rangoDiv.style.display = 'none';
+        cargarCitasCalendario();
+    }
+}
+
+async function cargarCitasCalendario() {
+    const sucursal = document.getElementById('filtro-sucursal').value;
+    const reclutadora = document.getElementById('filtro-reclutadora').value;
+    const periodo = document.getElementById('filtro-periodo').value;
+    
+    // Si es reclutadora y no tiene valor, asignar su reclutadora
+    if (usuarioActual && usuarioActual.rol === 'reclutadora' && !reclutadora) {
+        document.getElementById('filtro-reclutadora').value = usuarioActual.reclutadora;
+    }
+    
+    const reclutadoraFinal = document.getElementById('filtro-reclutadora').value;
+    
+    document.getElementById('calendario-grid').innerHTML = `<div class="loading-spinner"><div class="spinner"></div><p>Cargando citas...</p></div>`;
+    
+    try {
+        let url = `${GOOGLE_SCRIPT_URL}?action=getCitasCalendario&periodo=${periodo}`;
+        
+        // Agregar parámetros de rango si aplica
+        if (periodo === 'rango') {
+            const desde = document.getElementById('fecha-desde').value;
+            const hasta = document.getElementById('fecha-hasta').value;
+            if (!desde || !hasta) {
+                alert('Selecciona las fechas del rango');
+                document.getElementById('calendario-grid').innerHTML = `<div class="empty-state"><div class="icon">📅</div><h3>Selecciona un rango</h3><p>Ingresa fecha inicial y final</p></div>`;
+                return;
             }
-            
-            const reclutadoraFinal = document.getElementById('filtro-reclutadora').value;
-            
-            document.getElementById('calendario-grid').innerHTML = `<div class="loading-spinner"><div class="spinner"></div><p>Cargando citas...</p></div>`;
-            
-            try {
-                let url = `${GOOGLE_SCRIPT_URL}?action=getCitasCalendario&periodo=${periodo}`;
-                if (reclutadoraFinal) {
-                    url += `&reclutadora=${encodeURIComponent(reclutadoraFinal)}`;
-                }
-                if (sucursal) {
-                    url += `&sucursal=${encodeURIComponent(sucursal)}`;
-                }
+            url += `&desde=${desde}&hasta=${hasta}`;
+        }
+        
+        if (reclutadoraFinal) {
+            url += `&reclutadora=${encodeURIComponent(reclutadoraFinal)}`;
+        }
+        if (sucursal) {
+            url += `&sucursal=${encodeURIComponent(sucursal)}`;
+        }
                 const response = await fetch(url);
                 const data = await response.json();
                 
