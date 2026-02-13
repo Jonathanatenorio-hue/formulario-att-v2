@@ -74,6 +74,8 @@
         .btn-no-contesto { background: #ffebee; color: #c62828; }
         .btn-no-contesto:hover { background: #f44336; color: white; }
         .btn-evaluar { background: linear-gradient(135deg, #00A8E1 0%, #0066CC 100%); color: white; }
+        .btn-archivar { background: #6b7280; color: white; }
+.btn-archivar:hover { background: #4b5563; }
         .btn-evaluar:hover { transform: scale(1.05); }
         
         .empty-state { text-align: center; padding: 40px; color: #64748b; }
@@ -820,9 +822,12 @@
                 <div class="agenda-section" id="agenda-section">
                     <h3>📅 Agendar Entrevista Panel (Viernes)</h3>
                     <div class="email-field">
-                        <label style="font-weight:600; margin-bottom:8px; display:block;">📧 Correo del candidato:</label>
-                        <input type="email" id="email-candidato" placeholder="ejemplo@correo.com">
-                    </div>
+    <label style="font-weight:600; margin-bottom:8px; display:block;">📧 Correo del candidato:</label>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <input type="email" id="email-candidato" placeholder="ejemplo@correo.com" style="flex: 1;">
+        <button type="button" id="btn-editar-email" onclick="habilitarEdicionEmail()" style="display: none; background: #f59e0b; color: white; border: none; padding: 12px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">✏️ Editar</button>
+    </div>
+</div>
                     <div style="margin-bottom:20px;">
                         <label style="font-weight:600; margin-bottom:10px; display:block;">Selecciona el viernes:</label>
                         <div class="viernes-selector" id="viernes-selector"></div>
@@ -1158,6 +1163,7 @@ document.getElementById('stat-pasadas').textContent = stats?.pasadas || 0;
                             <button class="btn-accion btn-whatsapp" onclick="abrirWhatsApp('${cita.telefono}', '${cita.nombre}')">💬</button>
                             <button class="btn-accion btn-evaluar" onclick="iniciarEvaluacion('${cita.telefono}')">📝 Evaluar</button>
                             <button class="btn-accion btn-no-contesto" onclick="marcarNoContesto('${cita.telefono}')">📵 No Contestó</button>
+                            <button class="btn-accion btn-archivar" onclick="archivarCita('${cita.telefono}', '${cita.nombre}')" title="Archivar esta cita">🗄️ Archivar</button>
                         </div>
                     </div>`;
                 });
