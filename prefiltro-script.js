@@ -506,11 +506,18 @@ function confirmAppointment(){
         document.getElementById('email-link-final').href='mailto:'+reclutadorInfo.email;
         document.getElementById('seccion-post-cita').scrollIntoView({ behavior: 'smooth' });
     }).catch(error=>{
-        console.error('Error:',error);
+    console.error('Error:',error);
+    
+    if (error.message === 'DUPLICADO') {
+        // Mostrar pantalla de duplicado
+        document.getElementById('approved-screen').classList.remove('active');
+        document.getElementById('duplicado-screen').classList.add('active');
+    } else {
         alert('⚠️ Hubo un problema. Intenta de nuevo.');
         btn.disabled=false;
-        btn.textContent='Confirmar Cita →'
-    })
+        btn.textContent='Confirmar Cita →';
+    }
+})
 }
 
 async function sendToGoogleSheets(data){
@@ -544,8 +551,21 @@ async function sendToGoogleSheets(data){
         estado:'Nuevo',
         cvUrl: data.cvUrl || ''
     };
-    const response=await fetch(GOOGLE_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(formData)});
-    return response
+    
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+    });
+    
+    const result = await response.json();
+    
+    // Verificar si es duplicado
+    if (result.status === 'duplicado') {
+        throw new Error('DUPLICADO');
+    }
+    
+    return result;
 }
 
 // =====================================================
