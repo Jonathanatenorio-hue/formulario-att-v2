@@ -318,20 +318,12 @@ function setupDatePicker(){
             reclutadorInfo.whatsappNumero = '2213491520';
             candidateData.reclutadora = 'Karla Flores';
         } else {
-            // Edificio Inbursa - asignación aleatoria entre Yessica y Jezabel
-            let inbursaCounter = parseInt(localStorage.getItem('inbursaCounter') || '0');
-            if(inbursaCounter % 2 === 0) {
-                reclutadorInfo.nombre = 'Yessica Huerta';
-                reclutadorInfo.email = 'reclutamientocc2@solucell.com.mx';
-                candidateData.reclutadora = 'Yessica Huerta';
-            } else {
-                reclutadorInfo.nombre = 'Jezabel Monterrosas';
-                reclutadorInfo.email = 'reclutamientocc1@solucell.com.mx';
-                candidateData.reclutadora = 'Jezabel Monterrosas';
-            }
+            // Edificio Inbursa - el servidor asignará aleatoriamente
+            reclutadorInfo.nombre = 'Equipo Reclutamiento Inbursa';
+            reclutadorInfo.email = 'reclutamientocc2@solucell.com.mx';
             reclutadorInfo.whatsapp = '221 155 7027';
             reclutadorInfo.whatsappNumero = '2211557027';
-            localStorage.setItem('inbursaCounter', (inbursaCounter + 1).toString());
+            // NO asignar candidateData.reclutadora aquí - el servidor lo hará
         }
     }
     
