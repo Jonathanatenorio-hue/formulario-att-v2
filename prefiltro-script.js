@@ -509,7 +509,6 @@ function confirmAppointment(){
     console.error('Error:',error);
     
     if (error.message === 'DUPLICADO') {
-        // Mostrar pantalla de duplicado
         document.getElementById('approved-screen').classList.remove('active');
         document.getElementById('duplicado-screen').classList.add('active');
     } else {
