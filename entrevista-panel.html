@@ -48,8 +48,6 @@
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .btn-secondary { background: var(--gray-100); color: var(--gray-700); border: 2px solid var(--gray-200); }
         .btn-danger { background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%); color: var(--white); }
-        
-        /* Login Modal */
         .login-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .login-modal { background: var(--white); border-radius: 20px; padding: 40px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
         .login-modal h2 { font-size: 24px; margin-bottom: 8px; color: var(--gray-800); }
@@ -57,7 +55,6 @@
         .login-modal .form-group { text-align: left; }
         .login-error { color: var(--danger); font-size: 13px; margin-top: 10px; display: none; }
         .login-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; color: white; }
-        
         .evaluadores-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
         .evaluador-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--gray-50); border: 2px solid var(--gray-200); border-radius: 10px; cursor: pointer; transition: all 0.2s ease; }
         .evaluador-item:hover { border-color: var(--att-blue); background: rgba(0, 168, 225, 0.05); }
@@ -129,7 +126,6 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .fade-in { animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        /* Guía de rangos */
         .guide-box { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid var(--warning); border-radius: 12px; padding: 16px; margin-bottom: 20px; }
         .guide-box-title { font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .guide-box-content { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -139,12 +135,46 @@
         .guide-item.green .guide-item-score { color: var(--success); }
         .guide-item.yellow .guide-item-score { color: var(--warning); }
         .guide-item.red .guide-item-score { color: var(--danger); }
-        /* User badge */
         .user-badge { position: fixed; top: 20px; right: 20px; background: var(--white); padding: 10px 16px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; z-index: 100; }
         .user-badge-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, var(--att-blue) 0%, var(--att-blue-dark) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600; }
         .user-badge-name { font-size: 14px; font-weight: 600; color: var(--gray-700); }
         .user-badge-logout { background: none; border: none; color: var(--gray-400); cursor: pointer; font-size: 16px; padding: 4px; }
         .user-badge-logout:hover { color: var(--danger); }
+
+        /* === Preguntas obligatorias del panelista === */
+        .panelist-questions { background: var(--gray-50); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+        .panelist-header { background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%); color: white; padding: 16px 20px; border-radius: 10px; margin-bottom: 20px; }
+        .panelist-header h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .panelist-header p { font-size: 12px; opacity: 0.9; }
+        .panelist-q { margin-bottom: 20px; }
+        .panelist-q:last-child { margin-bottom: 0; }
+        .panelist-q-label { font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 8px; display: flex; align-items: flex-start; gap: 6px; line-height: 1.5; }
+        .panelist-q-label .req { color: var(--danger); font-weight: 700; font-size: 16px; }
+        .panelist-textarea { width: 100%; padding: 14px; border: 2px solid var(--gray-200); border-radius: 10px; font-family: inherit; font-size: 14px; min-height: 80px; resize: vertical; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+        .panelist-textarea:focus { outline: none; border-color: #7C3AED; box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1); }
+        .panelist-textarea.field-error { border-color: var(--danger); background: #FFF5F5; }
+        .panelist-textarea.field-error:focus { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1); }
+        .panelist-textarea.field-valid { border-color: var(--success); }
+        .field-hint { font-size: 12px; margin-top: 5px; color: var(--gray-400); }
+        .field-hint.hint-error { color: var(--danger); font-weight: 500; }
+        .field-hint.hint-ok { color: var(--success); font-weight: 500; }
+        .conditional-q { display: none; }
+        .conditional-q.visible { display: block; }
+        .conditional-q-approved { border-left: 4px solid var(--success); padding-left: 16px; }
+        .conditional-q-failed { border-left: 4px solid var(--danger); padding-left: 16px; }
+        .missing-fields-alert { background: linear-gradient(135deg, var(--danger-light) 0%, #fecaca 100%); border: 2px solid var(--danger); border-radius: 10px; padding: 14px 18px; margin-top: 16px; display: none; align-items: center; gap: 10px; font-size: 13px; color: #991b1b; font-weight: 500; }
+        .missing-fields-alert.visible { display: flex; }
+
+        /* Historial completo del aspirante */
+        .hist-section { margin-bottom: 16px; }
+        .hist-section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; }
+        .hist-datos { background: #E0F2FE; color: #0369A1; }
+        .hist-prefiltro { background: #FEF3C7; color: #92400E; }
+        .hist-telefonica { background: #EDE9FE; color: #5B21B6; }
+        .hist-item { background: white; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
+        .hist-item-label { font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.3px; }
+        .hist-item-value { color: var(--gray-800); margin-top: 2px; }
+
         @media (max-width: 640px) {
             .container { padding: 12px; }
             .header { padding: 20px; }
@@ -164,7 +194,6 @@
 </head>
 <body>
 
-    <!-- User Badge -->
     <div class="user-badge" id="user-badge" style="display: none;">
         <div class="user-badge-avatar" id="badge-avatar">XX</div>
         <span class="user-badge-name" id="badge-name">Usuario</span>
@@ -257,14 +286,14 @@
                     <button class="btn btn-secondary" onclick="marcarNoSePresento()" style="background: rgba(255,255,255,0.2); border: none; color: white;">🚫 No se presentó</button>
                 </div>
 
-                <!-- Desplegable Pre-Filtro -->
-                <button id="btn-prefiltro-panel" onclick="togglePrefiltroPanelBtn()" style="display: none; width: 100%; background: #f59e0b; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px;">📝 Ver respuestas Pre-Filtro ▼</button>
-                <div id="prefiltro-panel-content" style="display: none; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-                    <h4 style="color: #92400e; margin-bottom: 15px; font-size: 15px;">📝 Respuestas del Pre-Filtro</h4>
+                <!-- Desplegable Historial Completo -->
+                <button id="btn-prefiltro-panel" onclick="togglePrefiltroPanelBtn()" style="display: none; width: 100%; background: linear-gradient(135deg, #7C3AED, #6D28D9); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px;">📂 Ver historial completo del aspirante ▼</button>
+                <div id="prefiltro-panel-content" style="display: none; background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 2px solid #7C3AED; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                    <h4 style="color: #5B21B6; margin-bottom: 15px; font-size: 15px;">📂 Historial Completo del Aspirante</h4>
                     <div id="prefiltro-panel-respuestas"></div>
                 </div>
 
-                <!-- Guía de rangos (solo para ciertos evaluadores) -->
+                <!-- Guía de rangos -->
                 <div class="guide-box" id="guide-box" style="display: none;">
                     <div class="guide-box-title">📊 Guía de Rangos de Aprobación</div>
                     <div class="guide-box-content">
@@ -540,10 +569,63 @@
                     </div>
                 </div>
 
-                <!-- Observaciones -->
-                <div class="eval-section">
-                    <div class="eval-section-title">📝 Observaciones</div>
-                    <textarea id="observaciones" placeholder="Observaciones sobre el candidato..." style="width: 100%; padding: 14px; border: 2px solid var(--gray-200); border-radius: 10px; font-family: inherit; min-height: 100px; resize: vertical;"></textarea>
+                <!-- ============================================= -->
+                <!-- PREGUNTAS OBLIGATORIAS PARA EL PANELISTA      -->
+                <!-- ============================================= -->
+                <div class="panelist-questions" id="panelist-questions-section">
+                    <div class="panelist-header">
+                        <h4>🎤 Preguntas para ti, panelista</h4>
+                        <p>Estas preguntas son para TI como evaluador. Contesta de manera objetiva y honesta basándote en lo que observaste durante la entrevista. Todas son obligatorias.</p>
+                    </div>
+
+                    <!-- Pregunta 1: Siempre visible -->
+                    <div class="panelist-q">
+                        <div class="panelist-q-label">
+                            <span class="req">*</span>
+                            <span>1. ¿Qué es lo que más destacas del aspirante?</span>
+                        </div>
+                        <textarea id="pan-q1" class="panelist-textarea" placeholder="Escribe lo que más te llamó la atención positivamente del candidato..." oninput="validarPreguntasPanelista()"></textarea>
+                        <div class="field-hint" id="pan-q1-hint">Campo obligatorio — sé específico y objetivo</div>
+                    </div>
+
+                    <!-- Pregunta 2: Siempre visible -->
+                    <div class="panelist-q">
+                        <div class="panelist-q-label">
+                            <span class="req">*</span>
+                            <span>2. ¿Cuál fue la red flag más preocupante que detectaste?</span>
+                        </div>
+                        <textarea id="pan-q2" class="panelist-textarea" placeholder="Describe la señal de alerta más importante que observaste..." oninput="validarPreguntasPanelista()"></textarea>
+                        <div class="field-hint" id="pan-q2-hint">Campo obligatorio — si no detectaste ninguna, explica por qué</div>
+                    </div>
+
+                    <!-- Pregunta 3: Condicional APROBADO -->
+                    <div class="panelist-q conditional-q" id="pan-q3-approved-container">
+                        <div class="conditional-q-approved">
+                            <div class="panelist-q-label">
+                                <span class="req">*</span>
+                                <span>3. ¿Por qué consideras APTO para AT&T al aspirante?</span>
+                            </div>
+                            <textarea id="pan-q3-approved" class="panelist-textarea" placeholder="Explica objetivamente por qué este candidato merece formar parte del equipo AT&T..." oninput="validarPreguntasPanelista()"></textarea>
+                            <div class="field-hint" id="pan-q3-approved-hint">Campo obligatorio — fundamenta tu decisión</div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 3: Condicional REPROBADO -->
+                    <div class="panelist-q conditional-q" id="pan-q3-failed-container">
+                        <div class="conditional-q-failed">
+                            <div class="panelist-q-label">
+                                <span class="req">*</span>
+                                <span>3. ¿Por qué NO consideras apto para AT&T al aspirante?</span>
+                            </div>
+                            <textarea id="pan-q3-failed" class="panelist-textarea" placeholder="Explica objetivamente por qué este candidato no debería formar parte del equipo AT&T..." oninput="validarPreguntasPanelista()"></textarea>
+                            <div class="field-hint" id="pan-q3-failed-hint">Campo obligatorio — fundamenta tu decisión</div>
+                        </div>
+                    </div>
+
+                    <!-- Alerta de campos faltantes -->
+                    <div class="missing-fields-alert" id="missing-fields-alert">
+                        ⚠️ <span id="missing-fields-text">Debes completar todas las preguntas obligatorias para poder enviar la evaluación.</span>
+                    </div>
                 </div>
 
                 <!-- Resultado -->
@@ -602,6 +684,7 @@ let aspirantesList = [];
 let horariosAspirantes = [];
 let evaluaciones = {};
 let vetos = [];
+let intentoEnvio = false; // Para mostrar errores solo después del primer intento
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('user-badge').style.display = 'none';
@@ -719,7 +802,6 @@ async function cargarAspirantes() {
                 return (sh * 60 + sm) > horaAspirante;
             });
             
-            // Bloquear si la fecha del panel ya pasó
             const hoyStr = ahora.toISOString().split('T')[0];
             const esFechaPasada = hoyStr > selectedGrupo;
             
@@ -739,7 +821,6 @@ async function cargarAspirantes() {
                 }
             }
 
-            // Mostrar cuántos evaluadores ya lo evaluaron
             let evalCountHTML = '';
             if (asp.numEvaluadores > 0) {
                 evalCountHTML = '<span style="font-size: 11px; color: var(--gray-500); display: block;">👥 ' + asp.numEvaluadores + ' evaluador' + (asp.numEvaluadores > 1 ? 'es' : '') + '</span>';
@@ -764,6 +845,8 @@ function iniciarEvaluacion(asp) {
     selectedAspirante = asp;
     evaluaciones = {};
     vetos = [];
+    intentoEnvio = false;
+    
     const iniciales = asp.nombre.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
     document.getElementById('eval-avatar').textContent = iniciales;
     document.getElementById('eval-nombre').textContent = asp.nombre;
@@ -771,54 +854,157 @@ function iniciarEvaluacion(asp) {
     document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
     document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected','selected-warning','selected-danger'));
     document.getElementById('q1-notas').value = '';
-    document.getElementById('observaciones').value = '';
+    
+    // Limpiar preguntas del panelista
+    document.getElementById('pan-q1').value = '';
+    document.getElementById('pan-q2').value = '';
+    document.getElementById('pan-q3-approved').value = '';
+    document.getElementById('pan-q3-failed').value = '';
+    ['pan-q1','pan-q2','pan-q3-approved','pan-q3-failed'].forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.remove('field-error','field-valid');
+    });
+    ['pan-q1-hint','pan-q2-hint','pan-q3-approved-hint','pan-q3-failed-hint'].forEach(id => {
+        const el = document.getElementById(id);
+        el.className = 'field-hint';
+        el.textContent = 'Campo obligatorio';
+    });
+    document.getElementById('pan-q1-hint').textContent = 'Campo obligatorio — sé específico y objetivo';
+    document.getElementById('pan-q2-hint').textContent = 'Campo obligatorio — si no detectaste ninguna, explica por qué';
+    document.getElementById('pan-q3-approved-hint').textContent = 'Campo obligatorio — fundamenta tu decisión';
+    document.getElementById('pan-q3-failed-hint').textContent = 'Campo obligatorio — fundamenta tu decisión';
+    
+    // Ocultar preguntas condicionales
+    document.getElementById('pan-q3-approved-container').classList.remove('visible');
+    document.getElementById('pan-q3-failed-container').classList.remove('visible');
+    document.getElementById('missing-fields-alert').classList.remove('visible');
     
     const guideBox = document.getElementById('guide-box');
-    if (EVALUADORES_CON_GUIA.includes(selectedEvaluador)) {
-        guideBox.style.display = 'block';
-    } else {
-        guideBox.style.display = 'none';
-    }
+    guideBox.style.display = EVALUADORES_CON_GUIA.includes(selectedEvaluador) ? 'block' : 'none';
     
     const btnEnviar = document.getElementById('btn-enviar');
     btnEnviar.disabled = true;
     btnEnviar.innerHTML = 'Enviar Evaluación →';
     
+    // Cargar historial completo
     const btnPF = document.getElementById('btn-prefiltro-panel');
     const contenidoPF = document.getElementById('prefiltro-panel-respuestas');
     const contenedorPF = document.getElementById('prefiltro-panel-content');
     
     if (asp.respuestasPF) {
-        let htmlPF = '';
-        if (asp.respuestasPF.prefiltro) {
-            htmlPF += '<h5 style="color: #92400e; margin-bottom: 10px; font-size: 14px;">📋 Pre-Filtro</h5>';
-            Object.values(asp.respuestasPF.prefiltro).forEach(function(r, idx) {
-                htmlPF += '<div style="background: white; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px;">' +
-                    '<div style="font-size: 12px; color: #92400e; font-weight: 600;">P' + (idx+1) + '. ' + r.pregunta + '</div>' +
-                    '<div style="font-size: 14px; color: #1e293b; margin-top: 4px;">' + (r.respuesta || 'Sin respuesta') + '</div>' +
-                    '<div style="font-size: 12px; color: #64748b; margin-top: 4px;">Puntaje: ' + r.puntaje + '/5</div>' +
-                '</div>';
+        let htmlHist = '';
+        
+        // === SECCIÓN 1: DATOS DEL ASPIRANTE ===
+        if (asp.respuestasPF.datosPersonales || asp.telefono || asp.estado) {
+            htmlHist += '<div class="hist-section">';
+            htmlHist += '<div class="hist-section-title hist-datos">👤 Datos del Aspirante</div>';
+            
+            const datos = asp.respuestasPF.datosPersonales || {};
+            const camposDatos = [
+                { label: 'Nombre', valor: asp.nombre },
+                { label: 'Teléfono', valor: asp.telefono || datos.telefono },
+                { label: 'Estado/Ciudad', valor: datos.ciudad || asp.estado },
+                { label: 'Edad', valor: datos.edad },
+                { label: 'Escolaridad', valor: datos.escolaridad },
+                { label: 'Experiencia en ventas', valor: datos.experienciaVentas },
+                { label: 'Experiencia en call center', valor: datos.experienciaCC },
+                { label: 'Disponibilidad', valor: datos.disponibilidad },
+                { label: 'Fuente de reclutamiento', valor: datos.fuente },
+                { label: 'Fecha de registro', valor: datos.fechaRegistro }
+            ];
+            camposDatos.forEach(c => {
+                if (c.valor) {
+                    htmlHist += '<div class="hist-item"><div class="hist-item-label">' + c.label + '</div><div class="hist-item-value">' + c.valor + '</div></div>';
+                }
             });
+            htmlHist += '</div>';
         }
-        if (asp.respuestasPF.entrevistaTel) {
-            var et = asp.respuestasPF.entrevistaTel;
-            htmlPF += '<h5 style="color: #0057B8; margin: 20px 0 10px; font-size: 14px;">📞 Entrevista Telefónica - ' + et.resultado + ' (' + et.puntajeTotal + '/30 pts)</h5>';
-            var preguntas = [et.q1, et.q2, et.q3, et.q4, et.q5, et.q6];
-            preguntas.forEach(function(r, idx) {
-                htmlPF += '<div style="background: white; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #0057B8;">' +
-                    '<div style="font-size: 12px; color: #0057B8; font-weight: 600;">Q' + (idx+1) + '. ' + r.pregunta + '</div>' +
-                    '<div style="font-size: 14px; color: #1e293b; margin-top: 4px;">' + (r.respuesta || 'Sin respuesta') + '</div>' +
-                    '<div style="font-size: 12px; color: #64748b; margin-top: 4px;">Puntaje: ' + r.puntaje + '/5</div>' +
+        
+        // === SECCIÓN 2: PRE-FILTRO ===
+        if (asp.respuestasPF.prefiltro) {
+            htmlHist += '<div class="hist-section">';
+            htmlHist += '<div class="hist-section-title hist-prefiltro">📋 Respuestas del Pre-Filtro</div>';
+            
+            if (asp.respuestasPF.prefiltroResultado) {
+                htmlHist += '<div class="hist-item" style="border-left: 4px solid #F59E0B; font-weight: 600;">Resultado Pre-Filtro: ' + asp.respuestasPF.prefiltroResultado + '</div>';
+            }
+            if (asp.respuestasPF.prefiltroPuntaje) {
+                htmlHist += '<div class="hist-item" style="border-left: 4px solid #F59E0B;">Puntaje: ' + asp.respuestasPF.prefiltroPuntaje + '</div>';
+            }
+            
+            Object.values(asp.respuestasPF.prefiltro).forEach(function(r, idx) {
+                htmlHist += '<div class="hist-item">' +
+                    '<div class="hist-item-label">P' + (idx+1) + '. ' + r.pregunta + '</div>' +
+                    '<div class="hist-item-value">' + (r.respuesta || 'Sin respuesta') + '</div>' +
+                    '<div style="font-size: 11px; color: var(--gray-400); margin-top: 4px;">Puntaje: ' + r.puntaje + '/5</div>' +
                 '</div>';
             });
-            if (et.observaciones) {
-                htmlPF += '<div style="background: #f0f9ff; padding: 10px 12px; border-radius: 8px; margin-top: 8px; border-left: 3px solid #0057B8;">' +
-                    '<div style="font-size: 12px; color: #0057B8; font-weight: 600;">📝 Observaciones de la reclutadora</div>' +
-                    '<div style="font-size: 14px; color: #1e293b; margin-top: 4px;">' + et.observaciones + '</div>' +
+            
+            if (asp.respuestasPF.prefiltroObservaciones) {
+                htmlHist += '<div class="hist-item" style="border-left: 4px solid #F59E0B; background: #FFFBEB;">' +
+                    '<div class="hist-item-label">📝 Observaciones del Pre-Filtro</div>' +
+                    '<div class="hist-item-value">' + asp.respuestasPF.prefiltroObservaciones + '</div>' +
                 '</div>';
             }
+            htmlHist += '</div>';
         }
-        contenidoPF.innerHTML = htmlPF;
+        
+        // === SECCIÓN 3: ENTREVISTA TELEFÓNICA ===
+        if (asp.respuestasPF.entrevistaTel) {
+            var et = asp.respuestasPF.entrevistaTel;
+            htmlHist += '<div class="hist-section">';
+            htmlHist += '<div class="hist-section-title hist-telefonica">📞 Entrevista Telefónica — ' + et.resultado + ' (' + et.puntajeTotal + '/30 pts)</div>';
+            
+            if (et.reclutadora) {
+                htmlHist += '<div class="hist-item"><div class="hist-item-label">Reclutadora</div><div class="hist-item-value">' + et.reclutadora + '</div></div>';
+            }
+            if (et.fecha) {
+                htmlHist += '<div class="hist-item"><div class="hist-item-label">Fecha de entrevista</div><div class="hist-item-value">' + et.fecha + '</div></div>';
+            }
+            
+            var preguntas = [et.q1, et.q2, et.q3, et.q4, et.q5, et.q6];
+            preguntas.forEach(function(r, idx) {
+                if (r) {
+                    htmlHist += '<div class="hist-item" style="border-left: 3px solid #7C3AED;">' +
+                        '<div class="hist-item-label">Q' + (idx+1) + '. ' + r.pregunta + '</div>' +
+                        '<div class="hist-item-value">' + (r.respuesta || 'Sin respuesta') + '</div>' +
+                        '<div style="font-size: 11px; color: var(--gray-400); margin-top: 4px;">Puntaje: ' + r.puntaje + '/5</div>' +
+                    '</div>';
+                }
+            });
+            
+            // Observaciones de la reclutadora
+            if (et.observaciones) {
+                htmlHist += '<div class="hist-item" style="border-left: 3px solid #7C3AED; background: #F5F3FF;">' +
+                    '<div class="hist-item-label">📝 Observaciones de la reclutadora</div>' +
+                    '<div class="hist-item-value">' + et.observaciones + '</div>' +
+                '</div>';
+            }
+            
+            // Preguntas de la reclutadora (lo que más destaca, red flag, aptitud)
+            if (et.preguntaDestaca) {
+                htmlHist += '<div class="hist-item" style="border-left: 3px solid var(--success); background: #F0FDF4;">' +
+                    '<div class="hist-item-label">⭐ Lo que más destaca la reclutadora</div>' +
+                    '<div class="hist-item-value">' + et.preguntaDestaca + '</div>' +
+                '</div>';
+            }
+            if (et.preguntaRedFlag) {
+                htmlHist += '<div class="hist-item" style="border-left: 3px solid var(--danger); background: #FFF5F5;">' +
+                    '<div class="hist-item-label">🚩 Red flag detectada por la reclutadora</div>' +
+                    '<div class="hist-item-value">' + et.preguntaRedFlag + '</div>' +
+                '</div>';
+            }
+            if (et.preguntaAptitud) {
+                htmlHist += '<div class="hist-item" style="border-left: 3px solid #7C3AED; background: #F5F3FF;">' +
+                    '<div class="hist-item-label">📋 Razón de aptitud/no aptitud según reclutadora</div>' +
+                    '<div class="hist-item-value">' + et.preguntaAptitud + '</div>' +
+                '</div>';
+            }
+            
+            htmlHist += '</div>';
+        }
+        
+        contenidoPF.innerHTML = htmlHist;
         btnPF.style.display = 'block';
         contenedorPF.style.display = 'none';
     } else {
@@ -852,11 +1038,25 @@ function togglePrefiltroPanelBtn() {
     const btn = document.getElementById('btn-prefiltro-panel');
     if (contenedor.style.display === 'none') {
         contenedor.style.display = 'block';
-        btn.textContent = '📝 Ocultar Pre-Filtro ▲';
+        btn.textContent = '📂 Ocultar historial del aspirante ▲';
     } else {
         contenedor.style.display = 'none';
-        btn.textContent = '📝 Ver respuestas Pre-Filtro ▼';
+        btn.textContent = '📂 Ver historial completo del aspirante ▼';
     }
+}
+
+// Determina si el resultado actual es aprobatorio o no
+function obtenerResultadoActual() {
+    const preguntas = ['q2','q3','q4','q5','q6','r1','r2','r3','r4','r5','d1','d2','d3','p1','p2','p3'];
+    const respondidas = preguntas.filter(q => evaluaciones[q] !== undefined).length;
+    if (respondidas < preguntas.length) return 'incompleto';
+    
+    let puntaje = 0;
+    preguntas.forEach(q => { if (evaluaciones[q] !== undefined) puntaje += evaluaciones[q]; });
+    
+    if (vetos.length > 0) return 'reprobado';
+    if (puntaje >= 59) return 'aprobado';
+    return 'reprobado';
 }
 
 function actualizarProgreso() {
@@ -865,9 +1065,11 @@ function actualizarProgreso() {
     const porcentaje = (respondidas / preguntas.length) * 100;
     document.getElementById('eval-progress-bar').style.width = porcentaje + '%';
     document.getElementById('eval-progress-text').textContent = respondidas + '/' + preguntas.length;
+    
     let puntaje = 0;
     preguntas.forEach(q => { if (evaluaciones[q] !== undefined) puntaje += evaluaciones[q]; });
     document.getElementById('resultado-score').textContent = puntaje + '/80';
+    
     let resultado = '', colorStyle = '';
     if (respondidas < preguntas.length) { resultado = 'Completa la evaluación'; colorStyle = 'background: var(--gray-500)'; }
     else if (vetos.length > 0) { resultado = '❌ No aprobó (VETO)'; colorStyle = 'background: var(--danger)'; }
@@ -875,9 +1077,113 @@ function actualizarProgreso() {
     else if (puntaje >= 65) { resultado = '✅ Aprobado (bien)'; colorStyle = 'background: var(--success)'; }
     else if (puntaje >= 59) { resultado = '⚠️ Aprobado (regular)'; colorStyle = 'background: var(--warning)'; }
     else { resultado = '❌ No aprobó'; colorStyle = 'background: var(--danger)'; }
+    
     document.getElementById('resultado-label').textContent = resultado;
     document.getElementById('resultado-label').style = colorStyle;
-    document.getElementById('btn-enviar').disabled = respondidas < preguntas.length;
+    
+    // Mostrar/ocultar pregunta condicional según resultado
+    const res = obtenerResultadoActual();
+    const approvedContainer = document.getElementById('pan-q3-approved-container');
+    const failedContainer = document.getElementById('pan-q3-failed-container');
+    
+    if (res === 'aprobado') {
+        approvedContainer.classList.add('visible');
+        failedContainer.classList.remove('visible');
+    } else if (res === 'reprobado') {
+        approvedContainer.classList.remove('visible');
+        failedContainer.classList.add('visible');
+    } else {
+        approvedContainer.classList.remove('visible');
+        failedContainer.classList.remove('visible');
+    }
+    
+    // Validar si se puede enviar
+    const allQuestionsAnswered = respondidas >= preguntas.length;
+    const panelistValid = validarPreguntasPanelista(false);
+    document.getElementById('btn-enviar').disabled = !(allQuestionsAnswered && panelistValid);
+}
+
+// Valida las preguntas obligatorias del panelista
+function validarPreguntasPanelista(mostrarErrores) {
+    if (mostrarErrores === undefined) mostrarErrores = intentoEnvio;
+    
+    const q1 = document.getElementById('pan-q1').value.trim();
+    const q2 = document.getElementById('pan-q2').value.trim();
+    const res = obtenerResultadoActual();
+    
+    let campos = [
+        { id: 'pan-q1', hintId: 'pan-q1-hint', valor: q1, defaultHint: 'Campo obligatorio — sé específico y objetivo' },
+        { id: 'pan-q2', hintId: 'pan-q2-hint', valor: q2, defaultHint: 'Campo obligatorio — si no detectaste ninguna, explica por qué' }
+    ];
+    
+    // Agregar campo condicional según resultado
+    if (res === 'aprobado') {
+        const q3a = document.getElementById('pan-q3-approved').value.trim();
+        campos.push({ id: 'pan-q3-approved', hintId: 'pan-q3-approved-hint', valor: q3a, defaultHint: 'Campo obligatorio — fundamenta tu decisión' });
+    } else if (res === 'reprobado') {
+        const q3f = document.getElementById('pan-q3-failed').value.trim();
+        campos.push({ id: 'pan-q3-failed', hintId: 'pan-q3-failed-hint', valor: q3f, defaultHint: 'Campo obligatorio — fundamenta tu decisión' });
+    }
+    
+    let todosValidos = true;
+    let faltantes = 0;
+    
+    campos.forEach(c => {
+        const el = document.getElementById(c.id);
+        const hint = document.getElementById(c.hintId);
+        const esValido = c.valor.length >= 10; // Mínimo 10 caracteres
+        
+        if (esValido) {
+            el.classList.remove('field-error');
+            el.classList.add('field-valid');
+            hint.className = 'field-hint hint-ok';
+            hint.textContent = '✓ Respuesta registrada';
+        } else if (mostrarErrores || c.valor.length > 0) {
+            if (c.valor.length > 0 && c.valor.length < 10) {
+                el.classList.add('field-error');
+                el.classList.remove('field-valid');
+                hint.className = 'field-hint hint-error';
+                hint.textContent = '⚠️ Mínimo 10 caracteres — faltan ' + (10 - c.valor.length);
+            } else if (mostrarErrores) {
+                el.classList.add('field-error');
+                el.classList.remove('field-valid');
+                hint.className = 'field-hint hint-error';
+                hint.textContent = '⚠️ Este campo es obligatorio';
+            }
+            todosValidos = false;
+            faltantes++;
+        } else {
+            el.classList.remove('field-error','field-valid');
+            hint.className = 'field-hint';
+            hint.textContent = c.defaultHint;
+            todosValidos = false;
+            faltantes++;
+        }
+    });
+    
+    // Si el resultado es incompleto, las preguntas condicionales no aplican aún
+    if (res === 'incompleto') {
+        // Solo validar q1 y q2
+        todosValidos = campos.slice(0,2).every(c => c.valor.length >= 10);
+        // Pero no habilitar envío porque faltan preguntas de evaluación
+    }
+    
+    const alert = document.getElementById('missing-fields-alert');
+    if (mostrarErrores && !todosValidos) {
+        alert.classList.add('visible');
+        document.getElementById('missing-fields-text').textContent = 
+            'Debes completar todas las preguntas obligatorias para poder enviar. ' + faltantes + ' campo' + (faltantes > 1 ? 's' : '') + ' pendiente' + (faltantes > 1 ? 's' : '') + '.';
+    } else {
+        alert.classList.remove('visible');
+    }
+    
+    // Actualizar botón
+    const preguntas = ['q2','q3','q4','q5','q6','r1','r2','r3','r4','r5','d1','d2','d3','p1','p2','p3'];
+    const respondidas = preguntas.filter(q => evaluaciones[q] !== undefined).length;
+    const allQuestionsAnswered = respondidas >= preguntas.length;
+    document.getElementById('btn-enviar').disabled = !(allQuestionsAnswered && todosValidos);
+    
+    return todosValidos;
 }
 
 function marcarNoSePresento() {
@@ -917,18 +1223,39 @@ async function confirmarNoShow() {
 }
 
 async function enviarEvaluacion() {
+    intentoEnvio = true;
+    
+    // Validar preguntas del panelista con errores visibles
+    if (!validarPreguntasPanelista(true)) {
+        // Hacer scroll al primer campo con error
+        const primerError = document.querySelector('.panelist-textarea.field-error');
+        if (primerError) {
+            primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            primerError.focus();
+        }
+        return;
+    }
+    
     const btn = document.getElementById('btn-enviar');
     btn.disabled = true;
     btn.innerHTML = '<span class="loading"></span> Enviando...';
+    
     const preguntas = ['q2','q3','q4','q5','q6','r1','r2','r3','r4','r5','d1','d2','d3','p1','p2','p3'];
     let puntaje = 0;
     preguntas.forEach(q => { if (evaluaciones[q] !== undefined) puntaje += evaluaciones[q]; });
+    
     let resultado = '';
     if (vetos.length > 0) resultado = 'No aprobó (VETO)';
     else if (puntaje >= 73) resultado = 'Aprobado (excelente)';
     else if (puntaje >= 65) resultado = 'Aprobado (bien)';
     else if (puntaje >= 59) resultado = 'Aprobado (regular)';
     else resultado = 'No aprobó';
+    
+    const res = obtenerResultadoActual();
+    const pregunta3 = res === 'aprobado' 
+        ? document.getElementById('pan-q3-approved').value.trim() 
+        : document.getElementById('pan-q3-failed').value.trim();
+    
     const data = {
         tipo: 'evaluacion_panel',
         sucursal: selectedSucursal,
@@ -945,9 +1272,16 @@ async function enviarEvaluacion() {
         tiene_veto: vetos.length > 0,
         vetos: vetos.join(','),
         resultado: resultado,
-        observaciones: document.getElementById('observaciones').value,
+        // Nuevos campos: preguntas obligatorias del panelista
+        panelista_destaca: document.getElementById('pan-q1').value.trim(),
+        panelista_redflag: document.getElementById('pan-q2').value.trim(),
+        panelista_aptitud: pregunta3,
+        panelista_aptitud_tipo: res === 'aprobado' ? 'apto' : 'no_apto',
+        // Campo legacy por compatibilidad (combina las 3 respuestas)
+        observaciones: '【DESTACA】 ' + document.getElementById('pan-q1').value.trim() + ' 【RED FLAG】 ' + document.getElementById('pan-q2').value.trim() + ' 【' + (res === 'aprobado' ? 'APTO' : 'NO APTO') + '】 ' + pregunta3,
         timestamp: new Date().toLocaleString('es-MX')
     };
+    
     try {
         await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
         document.getElementById('confirmacion-mensaje').textContent = 'Tu evaluación para ' + selectedAspirante.nombre + ' ha sido registrada. (' + selectedEvaluador + ')';
@@ -960,6 +1294,6 @@ async function enviarEvaluacion() {
 }
 
 function evaluarOtro() { showSection('section-config'); cargarAspirantes(); }
-</script>++
+</script>
 </body>
 </html>
