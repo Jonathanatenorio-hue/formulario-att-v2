@@ -2275,6 +2275,55 @@ document.getElementById('stat-pasadas').textContent = stats?.pasadas || 0;
             
             reader.readAsDataURL(file);
         }
+        // ==========================================
+        // ARCHIVAR CITAS
+        // ==========================================
+        async function archivarCita(telefono, nombre) {
+            const motivo = prompt('¿Por qué quieres archivar a ' + nombre + '?\n\nOpciones:\n- No contesta después de varios intentos\n- Ya no le interesa\n- Encontró otro empleo\n- Datos incorrectos\n- Otro\n\nEscribe el motivo:');
+            
+            if (!motivo) return;
+            
+            if (!confirm('¿Archivar a ' + nombre + '?\n\nMotivo: ' + motivo + '\n\nEsta acción moverá el candidato al historial de archivados.')) return;
+            
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        tipo: 'archivar_cita_pf', 
+                        telefono: telefono,
+                        motivo: motivo,
+                        archivadoPor: usuarioActual?.nombre || 'Sistema'
+                    })
+                });
+                
+                alert('✅ Candidato archivado correctamente.');
+                setTimeout(function() { cargarCitasCalendario(); }, 500);
+            } catch (error) { 
+                console.error('Error:', error);
+                alert('Error al archivar. Intenta de nuevo.');
+            }
+        }
+        
+        // ==========================================
+        // EDITAR EMAIL
+        // ==========================================
+        function habilitarEdicionEmail() {
+            const emailInput = document.getElementById('email-candidato');
+            const btnEditar = document.getElementById('btn-editar-email');
+            emailInput.disabled = false;
+            emailInput.focus();
+            emailInput.select();
+            btnEditar.style.display = 'none';
+        }
+        
+        function bloquearEmailDespuesDeAgendar() {
+            const emailInput = document.getElementById('email-candidato');
+            const btnEditar = document.getElementById('btn-editar-email');
+            emailInput.disabled = true;
+            btnEditar.style.display = 'inline-block';
+        }
     </script>
 </body>
 </html>
