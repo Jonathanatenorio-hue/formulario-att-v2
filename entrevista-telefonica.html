@@ -491,11 +491,19 @@
                         <option value="Yessica Huerta">Yessica Huerta</option>
                         <option value="Jezabel Monterrosas">Jezabel Monterrosas</option>
                     </select>
-                    <select id="filtro-periodo" onchange="cargarCitasCalendario()">
-                        <option value="hoy">Hoy</option>
-                        <option value="semana" selected>Esta semana</option>
-                        <option value="mes">Este mes</option>
-                    </select>
+                    <select id="filtro-periodo" onchange="cambiarPeriodo()">
+    <option value="hoy">Hoy</option>
+    <option value="semana" selected>Esta semana</option>
+    <option value="mes">Este mes</option>
+    <option value="todas">Todas las citas</option>
+    <option value="rango">Rango personalizado</option>
+</select>
+<div id="rango-fechas" style="display: none; margin-left: 10px;">
+    <input type="date" id="fecha-desde" style="padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px;">
+    <span style="margin: 0 5px;">a</span>
+    <input type="date" id="fecha-hasta" style="padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px;">
+    <button onclick="cargarCitasCalendario()" style="margin-left: 5px; padding: 8px 12px; background: #0066CC; color: white; border: none; border-radius: 6px; cursor: pointer;">Buscar</button>
+</div>
                 </div>
                 </div>
                 <!-- Barra de actualización -->
