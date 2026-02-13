@@ -2079,28 +2079,131 @@ document.getElementById('stat-pasadas').textContent = stats?.pasadas || 0;
         }
 
         async function cargarHorarios(fecha) {
-            const container = document.getElementById('horarios-grid');
-            container.innerHTML = '<p style="text-align:center;">⏳ Cargando...</p>';
-            let ocupados = [];
-            try {
-                const url = `${GOOGLE_SCRIPT_URL}?action=getSlots&fecha=${encodeURIComponent(fecha)}&sucursal=${encodeURIComponent(selectedCandidato.sucursal)}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.ocupados) ocupados = data.ocupados;
-            } catch (error) { console.error('Error:', error); }
-            
-            container.innerHTML = '';
-            HORARIOS.forEach(h => {
-                const div = document.createElement('div');
-                div.className = 'horario-slot';
-                if (h.comida) { div.classList.add('comida'); div.innerHTML = '🍽️ COMIDA'; }
-                else if (ocupados.includes(h.hora)) { div.classList.add('ocupado'); div.innerHTML = `${h.hora} - ${h.fin}`; }
-                else { div.innerHTML = `${h.hora} - ${h.fin}`; div.onclick = () => selectHorario(h.hora, h.fin, div); }
-                container.appendChild(div);
-            });
-            document.getElementById('btn-agendar').style.display = 'block';
+    const container = document.getElementById('horarios-grid');
+    container.innerHTML = '<p style="text-align:center;">⏳ Cargando...</p>';
+    
+    let datosSlots = { ocupados: [], conteo: {}, nivel: 1 };
+    
+    try {
+        const url = `${GOOGLE_SCRIPT_URL}?action=getSlots&fecha=${encodeURIComponent(fecha)}&sucursal=${encodeURIComponent(selectedCandidato.sucursal)}`;
+        const response = await fetch(url);
+        datosSlots = await response.json();
+    } catch (error) { 
+        console.error('Error:', error); 
+    }
+    
+    const { ocupados, conteo, nivel } = datosSlots;
+    
+    // Definir horarios
+    const HORARIOS_BASE = [
+        { hora: '10:00', fin: '10:45' },
+        { hora: '10:45', fin: '11:30' },
+        { hora: '11:30', fin: '12:15' },
+        { hora: '12:15', fin: '13:00' },
+        { hora: '13:00', fin: '13:45' },
+        { hora: '13:45', fin: '14:30' },
+        { hora: '16:00', fin: '16:45' },
+        { hora: '16:45', fin: '17:30' },
+        { hora: '17:30', fin: '18:15' },
+        { hora: '18:15', fin: '19:00' }
+    ];
+    
+    const HORARIOS_COMIDA = [
+        { hora: '14:30', fin: '15:15' },
+        { hora: '15:15', fin: '16:00' }
+    ];
+    
+    container.innerHTML = '';
+    
+    // Mostrar indicador de nivel
+    let nivelTexto = '';
+    let nivelColor = '';
+    if (nivel === 1) {
+        nivelTexto = '📊 Nivel 1: Horarios normales';
+        nivelColor = '#4CAF50';
+    } else if (nivel === 2) {
+        nivelTexto = '📊 Nivel 2: +Horarios de comida habilitados';
+        nivelColor = '#ff9800';
+    } else {
+        nivelTexto = '📊 Nivel 3: Permitiendo 2 aspirantes por horario';
+        nivelColor = '#f44336';
+    }
+    
+    const nivelDiv = document.createElement('div');
+    nivelDiv.style.cssText = `background: ${nivelColor}; color: white; padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-weight: 600;`;
+    nivelDiv.textContent = nivelTexto;
+    container.appendChild(nivelDiv);
+    
+    // Crear grid de horarios
+    const gridDiv = document.createElement('div');
+    gridDiv.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px;';
+    
+    // Renderizar horarios base
+    HORARIOS_BASE.forEach(h => {
+        const count = conteo[h.hora] || 0;
+        const estaOcupado = ocupados.includes(h.hora);
+        
+        const div = document.createElement('div');
+        div.className = 'horario-slot';
+        
+        if (estaOcupado) {
+            // Completamente ocupado
+            div.classList.add('ocupado');
+            div.innerHTML = `${h.hora} - ${h.fin}`;
+            if (nivel === 3 && count >= 2) {
+                div.innerHTML += '<br><small style="font-size:10px;">👥 2/2</small>';
+            }
+        } else if (count === 1 && nivel === 3) {
+            // Nivel 3: tiene 1 aspirante, puede recibir otro
+            div.style.cssText += 'background: #fff3e0; border-color: #ff9800; color: #e65100;';
+            div.innerHTML = `${h.hora} - ${h.fin}<br><small style="font-size:10px;">👤 1/2</small>`;
+            div.onclick = () => selectHorario(h.hora, h.fin, div);
+        } else {
+            // Disponible normal
+            div.innerHTML = `${h.hora} - ${h.fin}`;
+            div.onclick = () => selectHorario(h.hora, h.fin, div);
         }
-
+        
+        gridDiv.appendChild(div);
+    });
+    
+    // Renderizar horarios de comida (solo si nivel >= 2)
+    if (nivel >= 2) {
+        // Separador visual
+        const separador = document.createElement('div');
+        separador.style.cssText = 'grid-column: 1 / -1; text-align: center; padding: 10px; color: #ff9800; font-weight: 600; border-top: 2px dashed #ff9800; margin-top: 10px;';
+        separador.textContent = '🍽️ HORARIOS DE COMIDA (Nivel 2+)';
+        gridDiv.appendChild(separador);
+        
+        HORARIOS_COMIDA.forEach(h => {
+            const count = conteo[h.hora] || 0;
+            const estaOcupado = count >= 1;
+            
+            const div = document.createElement('div');
+            div.className = 'horario-slot';
+            div.style.cssText = 'background: #fff8e1; border-color: #ffc107;';
+            
+            if (estaOcupado) {
+                div.classList.add('ocupado');
+                div.style.cssText = 'background: #ffcdd2; border-color: #f44336; color: #c62828; cursor: not-allowed; text-decoration: line-through;';
+            } else {
+                div.onclick = () => selectHorario(h.hora, h.fin, div);
+            }
+            
+            div.innerHTML = `${h.hora} - ${h.fin}`;
+            gridDiv.appendChild(div);
+        });
+    } else {
+        // Nivel 1: Mostrar horarios de comida bloqueados
+        const separador = document.createElement('div');
+        separador.style.cssText = 'grid-column: 1 / -1; text-align: center; padding: 10px; color: #9e9e9e; font-size: 12px; border-top: 2px dashed #e0e0e0; margin-top: 10px;';
+        separador.textContent = '🔒 Horarios de comida se desbloquean cuando los 10 base estén llenos';
+        gridDiv.appendChild(separador);
+    }
+    
+    container.appendChild(gridDiv);
+    document.getElementById('btn-agendar').style.display = 'block';
+}
         function selectHorario(inicio, fin, element) {
             if (element.classList.contains('ocupado') || element.classList.contains('comida')) return;
             document.querySelectorAll('.horario-slot').forEach(opt => opt.classList.remove('selected'));
