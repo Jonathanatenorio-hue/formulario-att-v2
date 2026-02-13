@@ -2336,6 +2336,97 @@ document.getElementById('stat-pasadas').textContent = stats?.pasadas || 0;
             emailInput.disabled = true;
             btnEditar.style.display = 'inline-block';
         }
+
+        // ==========================================
+        // VER ARCHIVADOS
+        // ==========================================
+        function abrirModalArchivados() {
+            document.getElementById('modal-archivados').classList.add('active');
+            cargarArchivados();
+        }
+        
+        function cerrarModalArchivados() {
+            document.getElementById('modal-archivados').classList.remove('active');
+        }
+        
+        async function cargarArchivados() {
+            const contenedor = document.getElementById('lista-archivados');
+            contenedor.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>Cargando archivados...</p></div>';
+            
+            try {
+                const url = GOOGLE_SCRIPT_URL + '?action=getArchivados';
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.archivados) {
+                    renderizarArchivados(data.archivados);
+                } else {
+                    contenedor.innerHTML = '<div class="empty-state"><div class="icon">📭</div><h3>Sin archivados</h3><p>No hay candidatos archivados</p></div>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                contenedor.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><h3>Error al cargar</h3><p>Intenta de nuevo</p></div>';
+            }
+        }
+        
+        function renderizarArchivados(archivados) {
+            const contenedor = document.getElementById('lista-archivados');
+            
+            if (archivados.length === 0) {
+                contenedor.innerHTML = '<div class="empty-state"><div class="icon">📭</div><h3>Sin archivados</h3><p>No hay candidatos archivados</p></div>';
+                return;
+            }
+            
+            let html = '<p style="color: #64748b; margin-bottom: 15px;">Total: ' + archivados.length + ' candidato(s) archivado(s)</p>';
+            
+            archivados.forEach(function(a) {
+                html += '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #6b7280; border-radius: 8px; padding: 15px; margin-bottom: 12px;">' +
+                    '<div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 10px;">' +
+                        '<div style="flex: 1;">' +
+                            '<div style="font-weight: 600; font-size: 16px; color: #1e293b;">' + a.nombre + '</div>' +
+                            '<div style="font-size: 13px; color: #64748b; margin-top: 5px;">' +
+                                '📞 ' + a.telefono + ' | 🏢 ' + a.sucursal +
+                            '</div>' +
+                            '<div style="font-size: 13px; color: #64748b; margin-top: 5px;">' +
+                                '📝 <strong>Motivo:</strong> ' + (a.motivo || 'Sin especificar') +
+                            '</div>' +
+                            '<div style="font-size: 12px; color: #94a3b8; margin-top: 5px;">' +
+                                '👤 ' + (a.archivadoPor || 'Sistema') + ' | 📅 ' + (a.fechaArchivo || 'N/A') +
+                            '</div>' +
+                        '</div>' +
+                        '<button onclick="restaurarCandidato(\'' + a.telefono + '\', \'' + a.nombre + '\')" style="background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">♻️ Restaurar</button>' +
+                    '</div>' +
+                '</div>';
+            });
+            
+            contenedor.innerHTML = html;
+        }
+        
+        async function restaurarCandidato(telefono, nombre) {
+            if (!confirm('¿Restaurar a ' + nombre + '?\n\nEl candidato volverá a aparecer en la lista de citas pendientes.')) return;
+            
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        tipo: 'restaurar_candidato_pf', 
+                        telefono: telefono
+                    })
+                });
+                
+                alert('✅ Candidato restaurado correctamente.');
+                cargarArchivados();
+                setTimeout(function() { cargarCitasCalendario(); }, 500);
+            } catch (error) { 
+                console.error('Error:', error);
+                alert('Error al restaurar. Intenta de nuevo.');
+            }
+        }
+    </script>
+</body>
+</html>
     </script>
 </body>
 </html>
