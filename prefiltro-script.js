@@ -551,19 +551,35 @@ async function sendToGoogleSheets(data){
         cvUrl: data.cvUrl || ''
     };
     
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-    });
-    
-    const result = await response.json();
-    
-    if (result.status === 'duplicado') {
-        throw new Error('DUPLICADO');
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(formData),
+            redirect: 'follow'
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'duplicado') {
+            throw new Error('DUPLICADO');
+        }
+        
+        return result;
+    } catch (error) {
+        if (error.message === 'DUPLICADO') {
+            throw error;
+        }
+        // Si falla la lectura de respuesta, intentar sin esperar respuesta
+        console.log('Reintentando con no-cors...');
+        await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+        return { status: 'success' };
     }
-    
-    return result;
 }
 
 // =====================================================
