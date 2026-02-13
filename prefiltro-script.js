@@ -560,7 +560,6 @@ async function sendToGoogleSheets(data){
     
     const result = await response.json();
     
-    // Verificar si es duplicado
     if (result.status === 'duplicado') {
         throw new Error('DUPLICADO');
     }
