@@ -228,6 +228,38 @@ async function guardarRechazoEstadisticas(motivo) {
         console.error('Error guardando rechazo:', error);
     }
 }
+async function guardarRechazoDuplicado() {
+    const data = {
+        tipo: 'rechazo_pf',
+        nombre: candidateData.nombre || '',
+        telefono: candidateData.telefono || '',
+        sucursal: candidateData.sucursal || selectedSucursal || 'No especificada',
+        puntaje: candidateData.puntajeTotal || totalScore || 0,
+        motivo: 'Teléfono duplicado - Ya aplicó anteriormente',
+        fuente: candidateData.fuente || 'No especificada',
+        reclutadora: candidateData.reclutadora || reclutadoraAsignada || '',
+        puntaje1: candidateData.puntaje1 || 0,
+        puntaje2: candidateData.puntaje2 || 0,
+        puntaje3: candidateData.puntaje3 || 0,
+        puntaje4: candidateData.puntaje4 || 0,
+        puntaje5: candidateData.puntaje5 || 0,
+        puntaje6: candidateData.puntaje6 || 0,
+        puntaje7: candidateData.puntaje7 || 0,
+        puntaje8: candidateData.puntaje8 || 0,
+        puntaje9: candidateData.puntaje9 || 0
+    };
+    
+    try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+    } catch (error) {
+        console.error('Error guardando rechazo duplicado:', error);
+    }
+}
 
 function nextStep(currentStep){
     const validation=validateStep(currentStep);
@@ -505,10 +537,11 @@ function confirmAppointment(){
         document.getElementById('email-link-final').textContent=reclutadorInfo.email;
         document.getElementById('email-link-final').href='mailto:'+reclutadorInfo.email;
         document.getElementById('seccion-post-cita').scrollIntoView({ behavior: 'smooth' });
-    }).catch(error=>{
+    }).catch(async error=>{
     console.error('Error:',error);
     
     if (error.message === 'DUPLICADO') {
+        await guardarRechazoDuplicado();
         document.getElementById('approved-screen').classList.remove('active');
         document.getElementById('duplicado-screen').classList.add('active');
     } else {
