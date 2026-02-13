@@ -538,18 +538,23 @@ function confirmAppointment(){
         document.getElementById('email-link-final').href='mailto:'+reclutadorInfo.email;
         document.getElementById('seccion-post-cita').scrollIntoView({ behavior: 'smooth' });
     }).catch(async error=>{
-    console.error('Error:',error);
-    
-    if (error.message === 'DUPLICADO') {
-        await guardarRechazoDuplicado();
-        document.getElementById('approved-screen').classList.remove('active');
-        document.getElementById('duplicado-screen').classList.add('active');
-    } else {
-        alert('⚠️ Hubo un problema. Intenta de nuevo.');
-        btn.disabled=false;
-        btn.textContent='Confirmar Cita →';
-    }
-})
+        console.log('=== CATCH EJECUTADO ===');
+        console.log('Error completo:', error);
+        console.log('Error message:', error.message);
+        console.log('Es DUPLICADO?:', error.message === 'DUPLICADO');
+        
+        if (error.message === 'DUPLICADO') {
+            console.log('Guardando rechazo duplicado...');
+            await guardarRechazoDuplicado();
+            console.log('Mostrando pantalla duplicado...');
+            document.getElementById('approved-screen').classList.remove('active');
+            document.getElementById('duplicado-screen').classList.add('active');
+        } else {
+            alert('⚠️ Hubo un problema. Intenta de nuevo.');
+            btn.disabled=false;
+            btn.textContent='Confirmar Cita →';
+        }
+    });
 }
 
 async function sendToGoogleSheets(data){
