@@ -110,8 +110,12 @@ function nextStepFuente() {
         candidateData.fuenteDetalle = nombreRecomendador;
     } else if (selectedFuente === 'internet') {
         const pagina = document.getElementById('pagina-internet').value;
+        if (!pagina) {
+            alert('Por favor selecciona en qué página de internet viste la vacante.');
+            return;
+        }
         candidateData.fuente = 'Internet';
-        candidateData.fuenteDetalle = pagina || 'No especificó';
+        candidateData.fuenteDetalle = pagina;
     } else if (selectedFuente === 'reclutadora') {
         const reclutadora = document.getElementById('reclutadora-especifica').value;
         if (!reclutadora) {
@@ -120,16 +124,37 @@ function nextStepFuente() {
         }
         candidateData.fuente = 'Reclutadora';
         candidateData.fuenteDetalle = reclutadora;
-        reclutadoraAsignada = reclutadora; // Guardar para asignación directa
+        reclutadoraAsignada = reclutadora;
+        
+        // Asignar sucursal automáticamente según la reclutadora
+        if (reclutadora === 'Karla Flores') {
+            selectedSucursal = 'Torre JV Juárez';
+            selectedDireccion = 'Av. Juárez 2925, La Paz, 72160, Puebla';
+        } else if (reclutadora === 'Yessica Huerta' || reclutadora === 'Jezabel Monterrosas') {
+            selectedSucursal = 'Edificio Inbursa Antequera';
+            selectedDireccion = 'Cto Interior 49, Nueva Antequera, 72180, Puebla';
+        }
+        candidateData.sucursal = selectedSucursal;
+        candidateData.direccionSucursal = selectedDireccion;
     } else if (selectedFuente === 'otro') {
         const otroMedio = document.getElementById('otro-medio').value.trim();
+        if (!otroMedio) {
+            alert('Por favor especifica cómo te enteraste de la vacante.');
+            return;
+        }
         candidateData.fuente = 'Otro';
-        candidateData.fuenteDetalle = otroMedio || 'No especificó';
+        candidateData.fuenteDetalle = otroMedio;
     }
     
     // Pasar al siguiente paso
     document.getElementById('step-fuente').classList.remove('active');
-    document.getElementById('step0').classList.add('active');
+    
+    // Si ya se asignó sucursal por reclutadora, saltar el paso de selección de sucursal
+    if (selectedFuente === 'reclutadora' && selectedSucursal) {
+        document.getElementById('step1').classList.add('active');
+    } else {
+        document.getElementById('step0').classList.add('active');
+    }
 }
 
 function selectSucursal(sucursal,direccion){
